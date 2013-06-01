@@ -8,15 +8,20 @@
           <element id="module-output" name="ihelpoo-api" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-server:1.17.1" />
+          <element id="library" level="project" name="Maven: asm:asm:3.1" />
+          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-core:1.17.1" />
           <element id="library" level="project" name="Maven: org.springframework:spring-core:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: commons-logging:commons-logging:1.1.1" />
           <element id="library" level="project" name="Maven: org.springframework:spring-web:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: aopalliance:aopalliance:1.0" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-aop:3.2.3.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:2.5.6" />
           <element id="library" level="project" name="Maven: org.springframework:spring-beans:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-context:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-expression:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:3.2.3.RELEASE" />
+          <element id="library" level="project" name="Maven: com.sun.jersey.contribs:jersey-spring:1.17.1" />
+          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-servlet:1.17.1" />
         </element>
       </element>
     </root>

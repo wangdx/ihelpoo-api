@@ -1,11 +1,10 @@
 package com.ihelpoo.api.transaction.impl;
 
-/**
- * Created with IntelliJ IDEA.
- * User: wdx
- * Date: 13-6-2
- * Time: AM1:18
- * To change this template use File | Settings | File Templates.
- */
-public class TransactionBoImpl {
+import com.ihelpoo.api.transaction.TransactionBo;
+
+public class TransactionBoImpl implements TransactionBo{
+    @Override
+    public String save() {
+        return "Jersey + Spring";
+    }
 }

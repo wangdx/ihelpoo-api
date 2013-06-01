@@ -7,18 +7,8 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
     <mvc:annotation-driven />
-    <context:component-scan base-package="com.ihelpoo.api, com.ihelpoo.api.controller"/>
     <bean id="transactionBo"
           class="com.ihelpoo.api.transaction.impl.TransactionBoImpl"/>
 
-    <bean
-            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix">
-            <value>/WEB-INF/pages/</value>
-        </property>
-        <property name="suffix">
-            <value>.jsp</value>
-        </property>
-    </bean>
     <import resource="security-context.xml" />
 </beans>
