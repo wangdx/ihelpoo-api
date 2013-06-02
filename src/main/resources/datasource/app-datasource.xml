@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+
+        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver" />-->
+        <!--<property name="url" value="jdbc:mysql://localhost:3306/ihelpooapi" />-->
+        <!--<property name="username" value="root" />-->
+        <!--<property name="password" value="" />-->
+
+
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://r.rdc.sae.sina.com.cn:3307/app_miihelpoo" />
+        <property name="username" value="wo1m0oznx4" />
+        <property name="password" value="1zy2lkzwxy01i5ymilxi33wzh1li0y4il0jzy3hh" />
+    </bean>
+
+</beans>

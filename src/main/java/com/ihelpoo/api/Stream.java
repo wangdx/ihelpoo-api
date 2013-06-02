@@ -1,27 +1,68 @@
 package com.ihelpoo.api;
 
-import com.ihelpoo.api.transaction.TransactionBo;
+import com.ihelpoo.api.dao.JdbcRecordSayDao;
+import com.ihelpoo.api.model.RecordSay;
+import com.ihelpoo.api.model.RecordSayList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+import java.util.List;
 
-@Component
-@Path("/stream")
+@RequestMapping("/api")
+@Controller
 public class Stream {
 
+
     @Autowired
-    TransactionBo transactionBo;
+    JdbcRecordSayDao recordSayDao;
 
-    @GET
-    @Path("/a")
-    public Response savePayment() {
+    @RequestMapping(value = {"/get"}, method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RecordSayList savePayment() {
 
-        String result = transactionBo.save();
+        RecordSayList recordSays = recordSayDao.getRecordSays(1);
 
-        return Response.status(200).entity(result).build();
+        return recordSays;
+
+    }
+
+    @RequestMapping(value = {"/getOne"})
+    public
+    @ResponseBody
+    RecordSay savePayment1() {
+
+        RecordSay recordSays = recordSayDao.getRecordSay(1);
+
+        return recordSays;
+
+    }
+
+    @RequestMapping(value = {"/put"}, method = {RequestMethod.PUT})
+    public
+    @ResponseBody
+    String b() {
+        return "put";
+
+    }
+
+    @RequestMapping(value = {"/delete"}, method = {RequestMethod.DELETE})
+    public
+    @ResponseBody
+    String c() {
+        return "delete";
+
+    }
+
+    @RequestMapping(value = {"/post"}, method = {RequestMethod.POST})
+    public
+    @ResponseBody
+    String d() {
+        return "post";
 
     }
 
