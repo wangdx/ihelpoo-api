@@ -20,6 +20,7 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-context:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-expression:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:3.2.3.RELEASE" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.25" />
           <element id="library" level="project" name="Maven: com.sun.jersey.contribs:jersey-spring:1.17.1" />
           <element id="library" level="project" name="Maven: com.sun.jersey:jersey-servlet:1.17.1" />
         </element>
