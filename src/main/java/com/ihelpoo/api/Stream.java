@@ -5,64 +5,91 @@ import com.ihelpoo.api.model.RecordSay;
 import com.ihelpoo.api.model.RecordSayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+/**
+ * stream.
+ *
+ * @author dongxu.wang@acm.org
+ * @version 1
+ */
 
 @RequestMapping("/api")
 @Controller
 public class Stream {
 
 
+    /**
+     * record say dao.
+     */
     @Autowired
-    JdbcRecordSayDao recordSayDao;
+    private JdbcRecordSayDao recordSayDao;
 
+    /**
+     * get.
+     *
+     * @return list
+     */
     @RequestMapping(value = {"/get"}, method = RequestMethod.GET)
-    public
     @ResponseBody
-    RecordSayList getTenElements() {
+    public RecordSayList getTenElements() {
 
-        RecordSayList recordSays = recordSayDao.getRecordSays(1);
+        final RecordSayList recordSays = recordSayDao.getRecordSays(1);
 
         System.out.println("get lots of things");
         return recordSays;
 
     }
 
+    /**
+     * get.
+     *
+     * @return one
+     */
     @RequestMapping(value = {"/getOne"})
-    public
     @ResponseBody
-    RecordSay getOnlyOneElement() {
+    public RecordSay getOnlyOneElement() {
 
-        RecordSay recordSays = recordSayDao.getRecordSay(1);
+        final RecordSay recordSays = recordSayDao.getRecordSay(1);
         System.out.println("---get only one thing--");
         return recordSays;
 
     }
 
+    /**
+     * put.
+     *
+     * @return body
+     */
     @RequestMapping(value = {"/put"}, method = {RequestMethod.PUT})
-    public
     @ResponseBody
-    String b() {
+    public String b() {
         return "put";
 
     }
 
+    /**
+     * delete.
+     *
+     * @return body
+     */
     @RequestMapping(value = {"/delete"}, method = {RequestMethod.DELETE})
-    public
     @ResponseBody
-    String c() {
+    public String c() {
         return "delete";
 
     }
 
+    /**
+     * method.
+     *
+     * @return body
+     */
     @RequestMapping(value = {"/post"}, method = {RequestMethod.POST})
-    public
     @ResponseBody
-    String d() {
+    public String d() {
         return "post";
 
     }

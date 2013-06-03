@@ -9,6 +9,7 @@
     <url>http://www.ihelpoo.com</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <checkstyle-version>2.10</checkstyle-version>
         <spring-version>3.2.3.RELEASE</spring-version>
         <junit-version>4.11</junit-version>
         <jersey-version>1.17.1</jersey-version>
@@ -58,10 +59,39 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <finalName>miihelpoo</finalName>
 
         <plugins>
+            <!-- For source code style check -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle-version}</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <configLocation>src/main/resources/beyondtrack_checks.xml</configLocation>
+                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                    <excludes>
+                        org/**/*.java,
+                    </excludes>
+                    <consoleOutput>true</consoleOutput>
+                    <failOnViolation>true</failOnViolation>
+                    <failsOnError>true</failsOnError>
+                    <encoding>UTF-8</encoding>
+                    <!-- Do NOT skip code style check before committing -->
+                    <skip>false</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -93,4 +123,13 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
