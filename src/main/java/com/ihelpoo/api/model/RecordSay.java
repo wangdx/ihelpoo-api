@@ -1,20 +1,25 @@
 package com.ihelpoo.api.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
+@SuppressWarnings("unused")
 @XmlRootElement
-public class RecordSay {
+public class RecordSay implements Serializable {
     private Integer sid;
     private Integer uid;
     private String content;
+    private String url;
 
     public RecordSay() {
     }
 
-    public RecordSay(Integer sid, Integer uid, String content) {
-        this.sid = sid;
-        this.uid = uid;
-        this.content = content;
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Integer getSid() {

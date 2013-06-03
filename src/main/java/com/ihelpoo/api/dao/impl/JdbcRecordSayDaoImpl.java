@@ -12,8 +12,7 @@ public class JdbcRecordSayDaoImpl extends JdbcDaoSupport implements JdbcRecordSa
 
     @Override
     public RecordSay getRecordSay(Integer uid) {
-
-        String sql = "SELECT sid, uid, content FROM i_record_say LIMIT 1";
+        String sql = "SELECT sid, uid, content, url FROM i_record_say LIMIT 1";
         RecordSay recordSay = (RecordSay) getJdbcTemplate().queryForObject(sql, new BeanPropertyRowMapper<RecordSay>(RecordSay.class));
         return recordSay;
     }
@@ -21,8 +20,8 @@ public class JdbcRecordSayDaoImpl extends JdbcDaoSupport implements JdbcRecordSa
     @Override
     public RecordSayList getRecordSays(Integer uid) {
         RecordSayList recordSays = new RecordSayList();
-        String sql = "SELECT sid, uid, content FROM i_record_say LIMIT 10";
-        List<RecordSay> recordSays1 = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(RecordSay.class));
+        String sql = "SELECT sid, uid, content,url FROM i_record_say LIMIT 10";
+        List<RecordSay> recordSays1 = getJdbcTemplate().query(sql, new BeanPropertyRowMapper<RecordSay>(RecordSay.class));
         recordSays.setList(recordSays1);
         return recordSays;
     }
