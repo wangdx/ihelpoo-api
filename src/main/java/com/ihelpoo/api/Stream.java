@@ -23,10 +23,11 @@ public class Stream {
     @RequestMapping(value = {"/get"}, method = RequestMethod.GET)
     public
     @ResponseBody
-    RecordSayList savePayment() {
+    RecordSayList getTenElements() {
 
         RecordSayList recordSays = recordSayDao.getRecordSays(1);
 
+        System.out.println("get lots of things");
         return recordSays;
 
     }
@@ -34,10 +35,10 @@ public class Stream {
     @RequestMapping(value = {"/getOne"})
     public
     @ResponseBody
-    RecordSay savePayment1() {
+    RecordSay getOnlyOneElement() {
 
         RecordSay recordSays = recordSayDao.getRecordSay(1);
-
+        System.out.println("---get only one thing--");
         return recordSays;
 
     }
