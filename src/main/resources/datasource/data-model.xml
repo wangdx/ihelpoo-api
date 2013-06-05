@@ -9,4 +9,9 @@
         <!--<property name="dataSource" ref="dataSource" />-->
     </bean>
 
+    <bean id="userDao" class="com.ihelpoo.api.dao.impl.UserDaoImpl">
+        <property name="dataSource" ref="dataSourceLocal" />
+        <!--<property name="dataSource" ref="dataSource" />-->
+    </bean>
+
 </beans>

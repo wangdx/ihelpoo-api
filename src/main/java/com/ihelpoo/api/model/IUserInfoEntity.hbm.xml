@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.ihelpoo.api.model.entity.IUserInfoEntity" table="i_user_info" schema="" catalog="ihelpooapi">
+        <id name="uid" column="uid"/>
+        <property name="introduction" column="introduction"/>
+        <property name="introductionRe" column="introduction_re"/>
+        <property name="academyOp" column="academy_op"/>
+        <property name="specialtyOp" column="specialty_op"/>
+        <property name="dormitoryOp" column="dormitory_op"/>
+        <property name="provinceOp" column="province_op"/>
+        <property name="cityOp" column="city_op"/>
+        <property name="realname" column="realname"/>
+        <property name="realnameRe" column="realname_re"/>
+        <property name="mobile" column="mobile"/>
+        <property name="qq" column="qq"/>
+        <property name="weibo" column="weibo"/>
+        <property name="room" column="room"/>
+        <property name="dynamic" column="dynamic"/>
+        <property name="fans" column="fans"/>
+        <property name="follow" column="follow"/>
+    </class>
+</hibernate-mapping>

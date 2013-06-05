@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.ihelpoo.api.model.entity.IUserLoginEntity" table="i_user_login" schema="" catalog="ihelpooapi">
+        <id name="uid" column="uid"/>
+        <property name="status" column="status"/>
+        <property name="email" column="email"/>
+        <property name="password" column="password"/>
+        <property name="nickname" column="nickname"/>
+        <property name="sex" column="sex"/>
+        <property name="birthday" column="birthday"/>
+        <property name="enteryear" column="enteryear"/>
+        <property name="type" column="type"/>
+        <property name="priority" column="priority"/>
+        <property name="ip" column="ip"/>
+        <property name="logintime" column="logintime"/>
+        <property name="lastlogintime" column="lastlogintime"/>
+        <property name="creatTi" column="creat_ti"/>
+        <property name="loginDaysCo" column="login_days_co"/>
+        <property name="online" column="online"/>
+        <property name="coins" column="coins"/>
+        <property name="active" column="active"/>
+        <property name="iconFl" column="icon_fl"/>
+        <property name="iconUrl" column="icon_url"/>
+        <property name="skin" column="skin"/>
+        <property name="school" column="school"/>
+    </class>
+</hibernate-mapping>

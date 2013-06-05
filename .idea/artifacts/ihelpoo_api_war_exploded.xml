@@ -2,10 +2,10 @@
   <artifact type="exploded-war" name="ihelpoo-api:war exploded">
     <output-path>$PROJECT_DIR$/target/miihelpoo</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="ihelpoo-api/web/Web" />
+      <element id="javaee-facet-resources" facet="oo-hibernate/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="ihelpoo-api" />
+          <element id="module-output" name="oo-hibernate" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.12" />
@@ -22,6 +22,7 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-tx:3.2.3.RELEASE" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.25" />
+          <element id="library" level="project" name="hibernate-4.2.2" />
         </element>
       </element>
     </root>

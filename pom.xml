@@ -15,6 +15,7 @@
         <jersey-version>1.17.1</jersey-version>
         <jdk-version>1.6</jdk-version>
         <mysql-version>5.1.25</mysql-version>
+        <log4j-version>1.2.17</log4j-version>
     </properties>
     <dependencies>
         <dependency>
@@ -58,40 +59,17 @@
             <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j-version}</version>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>miihelpoo</finalName>
 
         <plugins>
-            <!-- For source code style check -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${checkstyle-version}</version>
-                <inherited>false</inherited>
-                <configuration>
-                    <configLocation>src/main/resources/beyondtrack_checks.xml</configLocation>
-                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
-                    <excludes>
-                        org/**/*.java,
-                    </excludes>
-                    <consoleOutput>true</consoleOutput>
-                    <failOnViolation>true</failOnViolation>
-                    <failsOnError>true</failsOnError>
-                    <encoding>UTF-8</encoding>
-                    <!-- Do NOT skip code style check before committing -->
-                    <skip>false</skip>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>checkstyle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
