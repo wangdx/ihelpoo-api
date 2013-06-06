@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.ihelpoo.api.model.entity.IRecordSayEntity" table="i_record_say" schema="" catalog="ihelpooapi">
+        <id name="sid" column="sid"/>
+        <property name="uid" column="uid"/>
+        <property name="sayType" column="say_type"/>
+        <property name="content" column="content"/>
+        <property name="image" column="image"/>
+        <property name="url" column="url"/>
+        <property name="authority" column="authority"/>
+        <property name="commentCo" column="comment_co"/>
+        <property name="diffusionCo" column="diffusion_co"/>
+        <property name="hitCo" column="hit_co"/>
+        <property name="time" column="time"/>
+        <property name="from" column="from"/>
+        <property name="lastCommentTi" column="last_comment_ti"/>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.ihelpoo.api.model.entity.VUserPostEntity" table="v_user_post" schema="" catalog="ihelpooapi">
+        <property name="uid" column="uid"/>
+        <property name="status" column="status"/>
+        <property name="email" column="email"/>
+        <property name="password" column="password"/>
+        <property name="nickname" column="nickname"/>
+        <property name="sex" column="sex"/>
+        <property name="birthday" column="birthday"/>
+        <property name="enteryear" column="enteryear"/>
+        <property name="type" column="type"/>
+        <property name="priority" column="priority"/>
+        <property name="ip" column="ip"/>
+        <property name="logintime" column="logintime"/>
+        <property name="lastlogintime" column="lastlogintime"/>
+        <property name="creatTi" column="creat_ti"/>
+        <property name="loginDaysCo" column="login_days_co"/>
+        <property name="online" column="online"/>
+        <property name="coins" column="coins"/>
+        <property name="active" column="active"/>
+        <property name="iconFl" column="icon_fl"/>
+        <property name="iconUrl" column="icon_url"/>
+        <property name="skin" column="skin"/>
+        <property name="school" column="school"/>
+        <property name="sid" column="sid"/>
+        <property name="sayType" column="say_type"/>
+        <property name="content" column="content"/>
+        <property name="image" column="image"/>
+        <property name="url" column="url"/>
+        <property name="authority" column="authority"/>
+        <property name="commentCo" column="comment_co"/>
+        <property name="diffusionCo" column="diffusion_co"/>
+        <property name="hitCo" column="hit_co"/>
+        <property name="time" column="time"/>
+        <property name="from" column="from"/>
+        <property name="lastCommentTi" column="last_comment_ti"/>
+    </class>
+</hibernate-mapping>

@@ -23,28 +23,28 @@ public class OoUser {
     private
     UserDao userDao;
 
-    @RequestMapping(value = "/users/{dimension}.xml", method = RequestMethod.GET, produces = "application/xml")
+    @RequestMapping(value = "/users/{dimension}/{level}.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
     public UserList getUsers(@PathVariable String dimension,
-                             @RequestParam(value="_p") int param,
+                             @PathVariable(value="level") int level,
                              @RequestParam(value="limit") int limit,
                              @RequestParam(value="offset") int offset) {
         UserDimension userDimension = new UserDimension();
-        userDimension.addAttribute(dimension, param);
+        userDimension.addAttribute(dimension, level);
         userDimension.addAttribute("limit", limit);
         userDimension.addAttribute("offset", offset);
         return findAllUsers(userDimension);
 //        return userDao.getUserList(grade);
     }
 
-    @RequestMapping(value = "/users/{dimension}.json", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/users/{dimension}/{level}.json", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public UserList getUsersJson(@PathVariable String dimension,
-                                 @RequestParam(value="_p") int param,
+                                 @PathVariable(value="level") int level,
                                  @RequestParam(value="limit") int limit,
                                  @RequestParam(value="offset") int offset) {
         UserDimension userDimension = new UserDimension();
-        userDimension.addAttribute(dimension, param);
+        userDimension.addAttribute(dimension, level);
         userDimension.addAttribute("limit", limit);
         userDimension.addAttribute("offset", offset);
         return findAllUsers(userDimension);
