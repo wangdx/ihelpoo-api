@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-/**
- * @author: dongxu.wang@acm.org
- */
-
 @Controller
 public class OoPost {
 
@@ -25,9 +21,14 @@ public class OoPost {
     public PostList getPostList(@RequestParam(value = "pageIndex") int pageIndex,
                                 @RequestParam(value = "pageSize") int pageSize,
                                 @RequestParam(value = "catalog") int catalog) {
+        return postDao.getPostListByTimeLevel("//TODO, with time level", catalog, pageIndex, pageSize);
+    }
 
-
-
+    @RequestMapping(value = "/posts.json", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public PostList getPostListJson(@RequestParam(value = "pageIndex") int pageIndex,
+                                @RequestParam(value = "pageSize") int pageSize,
+                                @RequestParam(value = "catalog") int catalog) {
         return postDao.getPostListByTimeLevel("//TODO, with time level", catalog, pageIndex, pageSize);
     }
 }

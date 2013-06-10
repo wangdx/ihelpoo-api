@@ -1,15 +1,12 @@
 package com.ihelpoo.api.dao.impl;
 
 import com.ihelpoo.api.dao.PostDao;
-import com.ihelpoo.api.model.Post;
 import com.ihelpoo.api.model.PostList;
-import com.ihelpoo.api.model.Posts;
 import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.entity.VUserPostEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,10 +28,10 @@ public class PostDaoImpl extends JdbcDaoSupport implements PostDao {
         List<VUserPostEntity> postEntityList = getJdbcTemplate().query(
                 sql, new Object[]{order < 4 ? 0 : 1, /*System.currentTimeMillis() / 1000 - 3600 * 24 * 7*/0, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VUserPostEntity>(VUserPostEntity.class));
 
-        Posts posts = new Posts();
-        List<Post> postList = new ArrayList<Post>();
+        PostList.Posts posts = new PostList.Posts();
+        List<PostList.Post> postList = new ArrayList<PostList.Post>();
         for (VUserPostEntity vUser : postEntityList) {
-            Post post = new Post();
+            PostList.Post post = new PostList.Post();
             post.setId(vUser.getSid());
             post.setAnswerCount(vUser.getCommentCo());
             post.setAuthor(vUser.getNickname());
