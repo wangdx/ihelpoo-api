@@ -4,6 +4,7 @@ import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -34,7 +35,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
         UserList userList = new UserList();
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        int grade = (Integer)userDimension.getAttribute("grade");
+        int grade = (Integer) userDimension.getAttribute("grade");
         int enrolledYear = currentMonth > Calendar.AUGUST ? currentYear - grade + 1 : currentYear - grade;
 
         String sql = "SELECT uid, status, email, nickname, sex, birthday, enteryear, type, priority, ip, logintime, lastlogintime, creat_ti, login_days_co, online, coins, active, icon_fl, icon_url, skin, school " +
@@ -48,5 +49,21 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
                 new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
         userList.setUsers(users);
         return userList;
+    }
+
+    @Override
+    public IUserLoginEntity findByUserName(String username) {
+        String sql = " SELECT uid, password, school, nickname, coins FROM i_user_login WHERE email=? ";
+        String[] params = new String[]{username};
+        IUserLoginEntity userLoginEntity = null;
+        userLoginEntity = getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
+        return userLoginEntity;
+    }
+
+    @Override
+    public IUserLoginEntity findUserById(int uid) {
+        String sql = " SELECT * FROM i_user_login WHERE uid=? ";
+        Object[] params = new Object[]{uid};
+        return getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
     }
 }

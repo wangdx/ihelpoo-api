@@ -14,6 +14,14 @@ public class Result {
     @XmlElement
     private String errorMessage;
 
+    public Result() {
+    }
+
+    public Result(String errorCode, String errorMessage) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
+
     public String getErrorCode() {
         return errorCode;
     }

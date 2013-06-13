@@ -4,6 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
+    <!-- public interface for dao-s -->
+    <bean id="dataSource" parent="dataSourceLocal"/>
+    <!--<bean id="dataSource" parent="dataSourceServer"/>-->
+
     <!-- local DB -->
     <bean id="dataSourceLocal"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -14,12 +18,16 @@
     </bean>
 
     <!-- remote SAE's DB -->
-    <bean id="dataSource"
+    <bean id="dataSourceServer"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://r.rdc.sae.sina.com.cn:3307/app_miihelpoo"/>
         <property name="username" value="wo1m0oznx4"/>
         <property name="password" value="1zy2lkzwxy01i5ymilxi33wzh1li0y4il0jzy3hh"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
 </beans>

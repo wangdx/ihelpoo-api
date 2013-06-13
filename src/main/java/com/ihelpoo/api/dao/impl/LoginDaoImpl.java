@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -25,17 +24,19 @@ public class LoginDaoImpl extends JdbcDaoSupport implements LoginDao {
         String sql = " SELECT uid, password, school, nickname, coins FROM i_user_login WHERE email=? ";
         String[] params = new String[]{username};
 
-        IUserLoginEntity userLoginEntity;
+        IUserLoginEntity userLoginEntity = null;
         try {
             userLoginEntity = getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
         } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();
-            return createErrorResult(loginResult);
+            loginResult.setResult(new Result("0", "用户名或密码错误2"));
+            return loginResult;
         }
         String pwd = null;
         pwd = md5(password);
         if (!userLoginEntity.getPassword().equals(pwd)) {
-            return createErrorResult(loginResult);
+            loginResult.setResult(new Result("0", "用户名或密码错误2"));
+            return loginResult;
         }
         User user = new User();
         user.setUid(userLoginEntity.getUid());
@@ -43,24 +44,13 @@ public class LoginDaoImpl extends JdbcDaoSupport implements LoginDao {
         user.setName(userLoginEntity.getNickname());
         user.setScore((userLoginEntity.getCoins() == null || "".equals(userLoginEntity.getCoins())) ? 0 : Integer.parseInt(userLoginEntity.getCoins()));
         Notice notice = new Notice();
-        Result result = new Result();
-        result.setErrorCode("1");
-        result.setErrorMessage("登录成功");
         loginResult.setUser(user);
-        loginResult.setResult(result);
+        loginResult.setResult(new Result("1","登录成功"));
         loginResult.setNotice(notice);
         return loginResult;
     }
 
-    private LoginResult createErrorResult(LoginResult loginResult) {
-        Result result = new Result();
-        result.setErrorCode("0");
-        result.setErrorMessage("用户名或密码错误2");
-        loginResult.setResult(result);
-        return loginResult;
-    }
-
-//    public static String md5(String input) throws NoSuchAlgorithmException {
+    //    public static String md5(String input) throws NoSuchAlgorithmException {
 //        String result = input;
 //        if (input != null) {
 //            MessageDigest md = MessageDigest.getInstance("MD5"); //or "SHA-1"
@@ -74,7 +64,7 @@ public class LoginDaoImpl extends JdbcDaoSupport implements LoginDao {
 //        return result;
 //    }
 
-    public static String md5(String str) {
+    public static String md5(String origin) {
         MessageDigest messageDigest = null;
 
         try {
@@ -82,7 +72,7 @@ public class LoginDaoImpl extends JdbcDaoSupport implements LoginDao {
 
             messageDigest.reset();
 
-            messageDigest.update(str.getBytes("UTF-8"));
+            messageDigest.update(origin.getBytes("UTF-8"));
         } catch (NoSuchAlgorithmException e) {
         } catch (UnsupportedEncodingException e) {
         }

@@ -19,6 +19,52 @@ public class Notice {
     @XmlElement
     private int newFansCount;
 
+    /**
+     * @deprecated
+     */
+    public Notice(){};
+
+    public Notice(Builder builder) {
+        this.atmeCount = builder.atmeCount;
+        this.msgCount = builder.msgCount;
+        this.reviewCount = builder.reviewCount;
+        this.newFansCount = builder.newFansCount;
+    }
+
+    public static class Builder{
+        /* at messages count */
+        private int atmeCount;
+        /* Talk contents count */
+        private int msgCount;
+        /* comment messages count */
+        private int reviewCount;
+        /* System messages count */
+        private int newFansCount;
+
+        public Builder(){}
+        public Builder at(int atCount) {
+            this.atmeCount = atCount;
+            return this;
+        }
+
+        public Builder talk(int talkCount) {
+            this.msgCount = talkCount;
+            return this;
+        }
+
+        public Builder comment(int commentCount) {
+            this.reviewCount = commentCount;
+            return this;
+        }
+
+        public Builder system(int systemCount) {
+            this.newFansCount = systemCount;
+            return this;
+        }
+        public Notice build(){
+            return new Notice(this);
+        }
+    }
     public void setAtmeCount(int atmeCount) {
         this.atmeCount = atmeCount;
     }

@@ -98,6 +98,7 @@
                 <configuration>
                     <!-- Use SAE one's -->
                     <packagingExcludes>
+                        WEB-INF/lib/servlet-api-2.5.jar,
                     </packagingExcludes>
                 </configuration>
             </plugin>
