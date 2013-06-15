@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<oschina>
+    <activeCount>0</activeCount>
+    <!-- 总动弹数 -->
+    <pagesize>7</pagesize>
+    <activies>
+        <active>
+            <id>2127658</id>  detail id
+            <portrait>http://static.oschina.net/uploads/user/457/915579_50.jpg?t=1370707416000</portrait>   avatar
+            <author><![CDATA[echow]]></author>      城园山
+            <authorid>915579</authorid>             author id
+            <catalog>4</catalog>信息流      x
+            <objecttype>3</objecttype>艺术设计
+            <objectcatalog>0</objectcatalog>大三摩羯男  d
+            <objecttitle><![CDATA[test]]></objecttitle>等级
+            <appclient>0</appclient>来自                      l
+            <url></url>评论数                        p
+            <objectID>136727</objectID>在线    z
+            <message><![CDATA[test]]></message>内容  n
+            <commentCount>0</commentCount>回复数    h
+            <pubDate>2013-06-09 10:59:38</pubDate>时间  s
+            <tweetimage></tweetimage>图片
+            <academy></academy>
+            <authorType></authorType>
+            <authorGossip></authorGossip>
+            <diffusionCount></diffusionCount>
+            <online></online>
+            <rank></rank>
+        </active>
+        <active>
+            <id>2127255</id>
+            <portrait>http://static.oschina.net/uploads/user/457/915579_50.jpg?t=1370707416000</portrait>
+            <author><![CDATA[echow]]></author>
+            <authorid>915579</authorid>
+            <catalog>3</catalog>
+            <objecttype>100</objecttype>
+            <objectcatalog>0</objectcatalog>
+            <objecttitle><![CDATA[]]></objecttitle>
+            <appclient>3</appclient>
+            <url></url>
+            <objectID>2127255</objectID>
+            <message><![CDATA[动弹不了了]]></message>
+            <commentCount>0</commentCount>
+            <pubDate>2013-06-09 10:10:44</pubDate>
+            <tweetimage></tweetimage>
+        </active>
+        <active>
+            <id>2126163</id>
+            <portrait>http://static.oschina.net/uploads/user/457/915579_50.jpg?t=1370707416000</portrait>
+            <author><![CDATA[echow]]></author>
+            <authorid>915579</authorid>
+            <catalog>2</catalog>
+            <objecttype>17</objecttype>
+            <objectcatalog>3</objectcatalog>
+            <objecttitle><![CDATA[java 如何将html 存为 图片]]></objecttitle>
+            <appclient>0</appclient>
+            <objectreply>
+                <objectname><![CDATA[echow]]></objectname>
+                <objectbody><![CDATA[你是web系统吗]]></objectbody>
+            </objectreply>
+            <url></url>
+            <objectID>114057</objectID>
+            <message><![CDATA[可以搜下html2canvas]]></message>
+            <commentCount>3</commentCount>
+            <pubDate>2013-06-08 23:53:01</pubDate>
+            <tweetimage></tweetimage>
+        </active>
+        <active>
+            <id>2114510</id>
+            <portrait>http://static.oschina.net/uploads/user/457/915579_50.jpg?t=1370707416000</portrait>
+            <author><![CDATA[echow]]></author>
+            <authorid>915579</authorid>
+            <catalog>2</catalog>
+            <objecttype>17</objecttype>
+            <objectcatalog>3</objectcatalog>
+            <objecttitle><![CDATA[java 如何将html 存为 图片]]></objecttitle>
+            <appclient>0</appclient>
+            <objectreply>
+                <objectname><![CDATA[echow]]></objectname>
+                <objectbody><![CDATA[你是web系统吗]]></objectbody>
+            </objectreply>
+            <url></url>
+            <objectID>114057</objectID>
+            <message><![CDATA[可以试试通过JS截图]]></message>
+            <commentCount>3</commentCount>
+            <pubDate>2013-06-06 20:33:50</pubDate>
+            <tweetimage></tweetimage>
+        </active>
+        <active>
+            <id>2114370</id>
+            <portrait>http://static.oschina.net/uploads/user/457/915579_50.jpg?t=1370707416000</portrait>
+            <author><![CDATA[echow]]></author>
+            <authorid>915579</authorid>
+            <catalog>2</catalog>
+            <objecttype>17</objecttype>
+            <objectcatalog>1</objectcatalog>
+            <objecttitle><![CDATA[java 如何将html 存为 图片]]></objecttitle>
+            <appclient>0</appclient>
+            <url></url>
+            <objectID>114057</objectID>
+            <message><![CDATA[你是web系统吗]]></message>
+            <commentCount>5</commentCount>
+            <pubDate>2013-06-06 19:43:19</pubDate>
+            <tweetimage></tweetimage>
+        </active>
+        <active>
+            <id>1493879</id>
+            <portrait>http://static.oschina.net/uploads/user/457/915579_50.jpg?t=1370707416000</portrait>
+            <author><![CDATA[echow]]></author>
+            <authorid>915579</authorid>
+            <catalog>4</catalog>
+            <objecttype>18</objecttype>
+            <objectcatalog>0</objectcatalog>
+            <objecttitle><![CDATA[【CF 应用开发大赛】B3log Solo 博客系统]]></objecttitle>
+            <appclient>0</appclient>
+            <url></url>
+            <objectID>100441</objectID>
+            <message><![CDATA[b3log官方demo http://demo.b3log.org/]]></message>
+            <commentCount>27</commentCount>
+            <pubDate>2013-01-07 12:46:46</pubDate>
+            <tweetimage></tweetimage>
+        </active>
+        <active>
+            <id>1386861</id>
+            <portrait>http://static.oschina.net/uploads/user/457/915579_50.jpg?t=1370707416000</portrait>
+            <author><![CDATA[echow]]></author>
+            <authorid>915579</authorid>
+            <catalog>0</catalog>
+            <objecttype>32</objecttype>
+            <objectcatalog>0</objectcatalog>
+            <objecttitle><![CDATA[]]></objecttitle>
+            <appclient>0</appclient>
+            <url></url>
+            <objectID>915579</objectID>
+            <message><![CDATA[<无文本内容>]]></message>
+            <commentCount>0</commentCount>
+            <pubDate>2012-12-09 13:48:05</pubDate>
+            <tweetimage></tweetimage>
+        </active>
+    </activies>
+    <notice>
+        <atmeCount>0</atmeCount>
+        <msgCount>0</msgCount>
+        <reviewCount>0</reviewCount>
+        <newFansCount>0</newFansCount>
+    </notice>
+</oschina>
+        <!-- Generated by OsChina.NET (init:0[ms],page:12[ms],ip:112.97.39.152) -->
