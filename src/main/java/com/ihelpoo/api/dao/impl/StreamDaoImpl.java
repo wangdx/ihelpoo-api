@@ -22,9 +22,9 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         if(sids.length() > 0){
             sql.append(" and i_record_say.uid IN (").append(sids).append(") ");
         }
-        if (catalog == 2 && pids.length() > 0) {//只看我圈的
+        if (catalog == Integer.MIN_VALUE && pids.length() > 0) {//只看我圈的,TODO 没圈需要提醒，目前只是显是所有
             sql.append(" and i_record_say.uid IN (").append(pids).append(") ");
-        } else if (3 == catalog) {
+        } else if (-1 == catalog) {
             sql.append(" and say_type = '1' ");
         }
 
