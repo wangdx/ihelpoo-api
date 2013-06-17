@@ -2,6 +2,7 @@ package com.ihelpoo.api;
 
 import com.ihelpoo.api.common.OoConstant;
 import com.ihelpoo.api.model.StreamResult;
+import com.ihelpoo.api.model.TweetDetailResult;
 import com.ihelpoo.api.model.TweetResult;
 import com.ihelpoo.api.service.TweetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class OoTweet {
     @Autowired
     TweetService tweetService;
 
-    @RequestMapping(value = "/tweet.xml", method = RequestMethod.GET, produces = "application/xml")
+    @RequestMapping(value = "/tweets.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
     public TweetResult stream(@RequestParam(value = "pageIndex", required = false) int pageIndex,
                                @RequestParam(value = "pageSize", required = false) int pageSize,
@@ -26,5 +27,15 @@ public class OoTweet {
         //TODO credential verification by cookie
         return tweetService.pullBy(uid, catalog, pageIndex, pageSize);
     }
+
+    @RequestMapping(value = "/tweets/{id}.xml", method = RequestMethod.GET, produces = "application/xml")
+    @ResponseBody
+    public TweetDetailResult say(@RequestParam(value = "sid", required = false) int sid, //TODO sid == id
+                                 @PathVariable int id,
+                                        @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie){
+        return tweetService.pullTweetBy(id);
+    }
+
+
 
 }

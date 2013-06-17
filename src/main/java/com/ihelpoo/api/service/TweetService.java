@@ -1,20 +1,16 @@
 package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.StreamDao;
+import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.dao.UserPriorityDao;
-import com.ihelpoo.api.model.StreamResult;
+import com.ihelpoo.api.model.TweetDetailResult;
 import com.ihelpoo.api.model.TweetResult;
 import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.entity.IUserLoginEntity;
-import com.ihelpoo.api.model.entity.IUserPriorityEntity;
-import com.ihelpoo.api.model.entity.VTweetStreamEntity;
+import com.ihelpoo.api.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: dongxu.wang@acm.org
@@ -27,6 +23,9 @@ public class TweetService {
 
     @Autowired
     UserPriorityDao userPriorityDao;
+
+    @Autowired
+    UserDao userDao;
 
     public TweetResult pullBy(int uid, int catalog, int pageIndex, int pageSize) {
         int offset = pageIndex * pageSize;
@@ -46,10 +45,10 @@ public class TweetService {
             sids.deleteCharAt(sids.length() - 1);
         }
 
-        long t = System.currentTimeMillis();
         List<VTweetStreamEntity> tweetEntities = streamDao.findAllTweetsBy(catalog, pids, sids, pageIndex, pageSize);
         List<TweetResult.Tweet> tweets = new ArrayList<TweetResult.Tweet>();
         for (VTweetStreamEntity tweetEntity : tweetEntities) {
+            String firstImgUrl = convertToImageUrl(tweetEntity.getSid());
             TweetResult.Tweet tweet = new TweetResult.Tweet.Builder()
                     .academy("[" + tweetEntity.getName() + "]")
                     .authorRank(convertToRank(tweetEntity.getActive()))
@@ -62,8 +61,8 @@ public class TweetService {
                             "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (tweetEntity.getTime().floatValue() * 1000))))
                     .spreads(tweetEntity.getDiffusionCo() == null ? 0 : tweetEntity.getDiffusionCo())
                     .authorGossip(convertToGossip(tweetEntity.getSex(), tweetEntity.getBirthday()))
-                    .small(convertToImageUrl(tweetEntity.getImage()))
-                    .big(convertToImageUrl(tweetEntity.getImage()))
+                    .small(firstImgUrl)
+                    .big(firstImgUrl)
                     .author(tweetEntity.getNickname())
                     .id(tweetEntity.getSid())
                     .authorType(convertToType(tweetEntity.getType(), tweetEntity.getEnteryear()))
@@ -87,23 +86,76 @@ public class TweetService {
         return tweetResult;
     }
 
-    private String convertToOnlineState(String onlineCode){
+
+    public TweetDetailResult pullTweetBy(int sid) {
+
+        IRecordSayEntity tweetEntity = streamDao.findTweetBy(sid);
+        IUserLoginEntity userLoginEntity = userDao.findUserById(tweetEntity.getUid());
+        List<IRecordDiffusionEntity> spreads = streamDao.findSpreadsBySid(sid);
+        int spreadCount = spreads == null ? 0 : spreads.size();
+        List<VTweetSpreadEntity> spreadEntities = Collections.emptyList();
+        if (spreadCount > 0) {
+            spreadEntities = streamDao.findUserSpreadsBy(sid);
+        }
+        List<String> imgs = streamDao.findUserImgLinkEntitiesBy(sid);
+        tweetEntity.setHitCo(tweetEntity.getHitCo() == null ? 1 : 1 + tweetEntity.getHitCo());
+        streamDao.updateTweet(tweetEntity);
+
+
+        long t = System.currentTimeMillis();
+        String imgUrl = convertToImageUrl(tweetEntity.getSid());
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+        TweetResult.Tweet tweet = new TweetResult.Tweet.Builder()
+                .spreads(spreadCount)
+                .onlineState(convertToOnlineState(userLoginEntity.getOnline()))
+                .from(convertToBy(tweetEntity.getFrom()))
+                .content(tweetEntity.getContent())
+                .date((new java.text.SimpleDateFormat(
+                        "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (tweetEntity.getTime().floatValue() * 1000))))
+                .comments(tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo())
+                .small(imgUrl)//TODO cope with
+                .big(imgUrl)
+                .avatar(convertToAvatarUrl(userLoginEntity.getIconUrl(), tweetEntity.getUid()))
+                .authorRank(convertToRank(userLoginEntity.getActive()))
+                .authorGossip(convertToGossip(userLoginEntity.getSex(), userLoginEntity.getBirthday()))
+                .academy("[化学院]")
+                .id(tweetEntity.getSid())
+                .authorType(convertToType(userLoginEntity.getType(), userLoginEntity.getEnteryear()))
+                .author(userLoginEntity.getNickname())
+                .authorid(userLoginEntity.getUid())
+                .build();
+        TweetDetailResult tdr = new TweetDetailResult(tweet, notice);
+        return tdr;
+    }
+
+    private String[] fetchLinks(List<IRecordOutimgEntity> imgLinkEntities) {
+        return new String[0];  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private String convertToOnlineState(String onlineCode) {
         return "1".equals(onlineCode) ? "在线" : "";
 
 
     }
+
     /**
      * TODO get real images urls
      *
-     * @param image
+     *
+     * @param sid
      * @return
      */
-    private String convertToImageUrl(String image) {
-        if (!empty(image)) {
-            return "http://zzuli.sinaapp.com/Public/image/common/0.jpg?t=" + System.currentTimeMillis();
-        } else {
-            return "";
-        }
+    private String convertToImageUrl(int sid) {
+        List<String> imgs = streamDao.findUserImgLinkEntitiesBy(sid);
+        String imgUrl = "";
+        if (imgs != null && imgs.size() > 0)
+            imgUrl = imgs.get(0) + "?t=" + System.currentTimeMillis();
+        return imgUrl;
     }
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
