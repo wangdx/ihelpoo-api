@@ -88,12 +88,22 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         } catch (EmptyResultDataAccessException e) {
             return Collections.emptyList();
         }
-        return imgs;  //To change body of implemented methods use File | Settings | File Templates.
+        return imgs;
     }
 
     @Override
     public void updateTweet(IRecordSayEntity tweetEntity) {
         String sql = " update i_record_say set hit_co=? where sid=? ";
         getJdbcTemplate().update(sql, new Object[]{tweetEntity.getHitCo(), tweetEntity.getSid()});
+    }
+
+    @Override
+    public List<VTweetCommentEntity> findAllCommentssBy(int sid, int catalog, int pageIndex, int pageSize) {
+        String sql = "select cid,i_user_login.uid,sid,toid,content,image,diffusion_co,time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_comment\n" +
+                "join i_user_login on i_record_comment.uid=i_user_login.uid\n" +
+                "where sid=?\n" +
+                "order by cid ASC\n" +
+                "limit ? offset ? ";
+        return getJdbcTemplate().query(sql, new Object[]{sid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VTweetCommentEntity>(VTweetCommentEntity.class));
     }
 }

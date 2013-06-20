@@ -19,4 +19,6 @@ public interface StreamDao {
     List<String> findUserImgLinkEntitiesBy(int sid);
 
     void updateTweet(IRecordSayEntity tweetEntity);
+
+    List<VTweetCommentEntity> findAllCommentssBy(int sid, int catalog, int pageIndex, int pageSize);
 }

@@ -3,9 +3,12 @@ package com.ihelpoo.api.service;
 import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.dao.UserPriorityDao;
+import com.ihelpoo.api.model.TweetCommentPushResult;
+import com.ihelpoo.api.model.TweetCommentResult;
 import com.ihelpoo.api.model.TweetDetailResult;
 import com.ihelpoo.api.model.TweetResult;
 import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,8 +60,7 @@ public class TweetService {
                     .from(convertToBy(tweetEntity.getFrom()))
                     .comments(tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo())
                     .content(tweetEntity.getContent())
-                    .date((new java.text.SimpleDateFormat(
-                            "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (tweetEntity.getTime().floatValue() * 1000))))
+                    .date(convertToDate(tweetEntity.getTime()))
                     .spreads(tweetEntity.getDiffusionCo() == null ? 0 : tweetEntity.getDiffusionCo())
                     .authorGossip(convertToGossip(tweetEntity.getSex(), tweetEntity.getBirthday()))
                     .small(firstImgUrl)
@@ -115,8 +117,7 @@ public class TweetService {
                 .onlineState(convertToOnlineState(userLoginEntity.getOnline()))
                 .from(convertToBy(tweetEntity.getFrom()))
                 .content(tweetEntity.getContent())
-                .date((new java.text.SimpleDateFormat(
-                        "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (tweetEntity.getTime().floatValue() * 1000))))
+                .date(convertToDate(tweetEntity.getTime()))
                 .comments(tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo())
                 .small(imgUrl)//TODO cope with
                 .big(imgUrl)
@@ -132,6 +133,67 @@ public class TweetService {
         TweetDetailResult tdr = new TweetDetailResult(tweet, notice);
         return tdr;
     }
+
+    private String convertToDate(Integer time) {
+        return (new java.text.SimpleDateFormat(
+                "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (time.floatValue() * 1000)));
+    }
+
+    public TweetCommentResult pullCommentsBy(int sid, int catalog, int pageIndex, int pageSize){
+        List<VTweetCommentEntity> commentEntities = streamDao.findAllCommentssBy(sid, catalog, pageIndex, pageSize);
+        int allCount = commentEntities.size();
+        List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
+        for(VTweetCommentEntity commentEntity : commentEntities){
+            TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
+                    .content(commentEntity.getContent())
+                    .date(convertToDate(commentEntity.getTime()))
+                    .author(commentEntity.getNickname())
+                    .authorid(commentEntity.getUid())
+                    .avatar(convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid()))
+                    .by(0)
+                    .id(commentEntity.getSid())
+                    .build();
+            comments.add(comment);
+        }
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+
+        TweetCommentResult commentResult = new TweetCommentResult();
+        TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
+        commentResult.setAllCount(allCount);
+        commentResult.setPagesize(pageSize);
+        commentResult.setComments(commentWrapper);
+        commentResult.setNotice(notice);
+        return commentResult;
+    }
+
+
+    public TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int isPostToMyZone){
+        Result result = new Result("1", "操作成功");
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+        TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
+                .id(id)
+                .authorid(uid)
+                .avatar("http://static.oschina.net/uploads/user/457/915579_50.jpg?t="+System.currentTimeMillis())
+                .author("echowdx")
+                .content("test@echow不加空格")
+                .date("2013-06-19 23:18:54")
+                .build();
+
+        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, comment, notice);
+        return commentPushResult;
+    }
+
+
 
     private String[] fetchLinks(List<IRecordOutimgEntity> imgLinkEntities) {
         return new String[0];  //To change body of created methods use File | Settings | File Templates.
