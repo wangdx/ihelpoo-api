@@ -173,24 +173,7 @@ public class TweetService {
 
 
     public TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int isPostToMyZone){
-        Result result = new Result("1", "操作成功");
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
-        TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
-                .id(id)
-                .authorid(uid)
-                .avatar("http://static.oschina.net/uploads/user/457/915579_50.jpg?t="+System.currentTimeMillis())
-                .author("echowdx")
-                .content("test@echow不加空格")
-                .date("2013-06-19 23:18:54")
-                .build();
-
-        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, comment, notice);
-        return commentPushResult;
+        return streamDao.pushComment(id, uid, atUsers, content, catalog, isPostToMyZone);
     }
 
 

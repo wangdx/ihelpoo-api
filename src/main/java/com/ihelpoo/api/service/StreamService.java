@@ -3,6 +3,9 @@ package com.ihelpoo.api.service;
 import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.dao.UserPriorityDao;
 import com.ihelpoo.api.model.StreamResult;
+import com.ihelpoo.api.model.UserActiveResult;
+import com.ihelpoo.api.model.base.Active;
+import com.ihelpoo.api.model.base.Actives;
 import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserPriorityEntity;
@@ -26,6 +29,156 @@ public class StreamService {
     @Autowired
     UserPriorityDao userPriorityDao;
 
+    public UserActiveResult pullUserActiveBy(int uid, String hisname, int hisuid, int pageIndex, int pageSize){
+        long t = System.currentTimeMillis();
+        UserActiveResult.User user = new UserActiveResult.User.Builder()
+                .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t="+System.currentTimeMillis())
+                .academy("文学与传媒学院")
+                .foer("12")
+                .foing("21")
+                .gossip("狮子女")
+                .major("汉语言文学")
+                .nickname("孤独不苦")
+                .rank("6")
+                .type("大四")
+                .uid(123456)
+                .build();
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+        int pagesize = 20;
+        Actives actives = new Actives();
+        Active active0 = new Active.Builder()
+                .sid(24968)
+                .avatar("http://ihelpoo-public.stor.sinaapp.com/useralbum/10116/101161364749925_m.jpg?t=" + t)
+                .name("陈源杉")
+                .uid(10116)
+                .catalog(4)
+                .setObjecttype(3)
+                .setObjectcatalog(0)
+                .setObjecttitle("孤独")
+                .by(3)
+                .setUrl("")
+                .setObjectID(136727)
+                .content("还没断网哦！得瑟一个……千万别刚得瑟完就断了啊万别刚得瑟完就断了啊万别刚得瑟完就断了啊万别刚得瑟完就断了啊万别刚得瑟完就断了啊万别刚得瑟完就断了啊")
+                .commentCount(0)
+                .date("2012-06-14 22:00:22")
+                .image("http://ihelpoo-public.stor.sinaapp.com/useralbum/12781/thumb_recordsay1368613690.jpg?t=" + t)
+                .academy("[汉语言文学1]")
+                .type("大三")
+                .rank("2")
+                .gossip("处女女")
+                .diffusionCount(2)
+                .online(0)
+                .build();
+                Active active1 = new Active.Builder()
+                .sid(24968)
+                .avatar("http://ihelpoo-public.stor.sinaapp.com/useralbum/10116/101161364749925_m.jpg?t=" + t)
+                .name("陈源杉")
+                .uid(10116)
+                .catalog(4)
+                .setObjecttype(3)
+                .setObjectcatalog(0)
+                .setObjecttitle("孤独")
+                .by(3)
+                .rank("2")
+                .setUrl("")
+                .setObjectID(136727)
+                .content("还没断网哦！得瑟一个……千万别刚得瑟完就断了啊万别刚得瑟完就断了啊万别刚得瑟完就断了啊万别刚得瑟完就断了啊万别刚得瑟完就断了啊万别刚得瑟完就断了啊")
+                .commentCount(0)
+                .date("2012-06-14 22:00:22")
+                .image("http://ihelpoo-public.stor.sinaapp.com/useralbum/12781/thumb_recordsay1368613690.jpg?t=" + t)
+                .academy("[汉语言文学1]")
+                .type("大三")
+                .gossip("处女女")
+                .diffusionCount(2)
+                .online(0)
+                .build();
+        Active active2 = new Active.Builder()
+                .sid(24968)
+                .rank("2")
+                .avatar("http://ihelpoo-public.stor.sinaapp.com/useralbum/10116/101161364749925_m.jpg?t=" + t)
+                .name("李云龙")
+                .uid(10116)
+                .catalog(4)
+                .setObjecttype(3)
+                .setObjectcatalog(0)
+                .setObjecttitle("TEST")
+                .by(2)
+                .setUrl("")
+                .setObjectID(136727)
+                .content("还没断网哦！得瑟一个……千万别刚得瑟完就断了啊…… ")
+                .commentCount(3)
+                .date("2013-06-14 22:00:22")
+                .academy("[汉语言文学]")
+                .type("大四")
+                .gossip("狮子女")
+                .diffusionCount(4)
+                .online(1)
+                .build();
+        Active active3 = new Active.Builder()
+                .sid(24968)
+                .avatar("http://ihelpoo-public.stor.sinaapp.com/useralbum/10116/101161364749925_m.jpg?t=" + t)
+                .name("李云龙")
+                .rank("2")
+                .uid(10116)
+                .catalog(4)
+                .setObjecttype(3)
+                .setObjectcatalog(0)
+                .setObjecttitle("TEST")
+                .by(3)
+                .setUrl("")
+                .setObjectID(136727)
+                .content("还没断网哦！得瑟一个……千万别刚得瑟完就断了啊…… ")
+                .commentCount(3)
+                .date("2013-06-14 22:00:22")
+                .academy("[汉语言文学]")
+                .type("大四")
+                .gossip("狮子男")
+                .diffusionCount(4)
+                .online(1)
+                .build();
+        Active active4 = new Active.Builder()
+                .sid(24968)
+                .avatar("http://ihelpoo-public.stor.sinaapp.com/useralbum/10116/101161364749925_m.jpg?t=" + t)
+                .name("李云龙")
+                .uid(10116)
+                .rank("4")
+                .catalog(4)
+                .setObjecttype(3)
+                .setObjectcatalog(0)
+                .setObjecttitle("TEST")
+                .by(3)
+                .setUrl("")
+                .setObjectID(136727)
+                .content("还没断网哦！得瑟一个……千万别刚得瑟完就断了啊…… ")
+                .commentCount(3)
+                .date("2013-06-14 22:00:22")
+                .academy("[汉语言文学]")
+                .type("大四")
+                .gossip("狮子男")
+                .diffusionCount(4)
+                .online(1)
+                .build();
+        List<Active> activeList = new ArrayList<Active>();
+        activeList.add(active0);
+        activeList.add(active1);
+        activeList.add(active2);
+        activeList.add(active3);
+        activeList.add(active4);
+        actives.setActive(activeList);
+        UserActiveResult uar = new UserActiveResult();
+        uar.setNotice(notice);
+        uar.setPagesize(20);
+        uar.setActives(actives);
+        uar.setUser(user);
+
+        return uar;
+    }
+
     public StreamResult pullBy(int uid, int catalog, int pageIndex, int pageSize) {
         int offset = pageIndex * pageSize;
         List<IUserPriorityEntity> priorityEntities = userPriorityDao.findAllPrioritiesByUid(uid);
@@ -46,9 +199,9 @@ public class StreamService {
         StreamResult streamResult = new StreamResult();
         long t = System.currentTimeMillis();
         List<VTweetStreamEntity> tweets = streamDao.findAllTweetsBy(catalog, pids, sids, pageIndex, pageSize);
-        List<StreamResult.Active> actives = new ArrayList<StreamResult.Active>();
+        List<Active> actives = new ArrayList<Active>();
         for (VTweetStreamEntity tweet : tweets) {
-            StreamResult.Active active = new StreamResult.Active.Builder()
+            Active active = new Active.Builder()
                     .academy("[" + tweet.getName() + "]")
                     .rank(convertToRank(tweet.getActive()))
                     .online(tweet.getOnline() == null ? 0 : Integer.parseInt(tweet.getOnline().trim()))
@@ -77,7 +230,7 @@ public class StreamService {
                 .build();
 
         StreamResult sr = new StreamResult();
-        StreamResult.Actives activesWrapper = new StreamResult.Actives();
+        Actives activesWrapper = new Actives();
         activesWrapper.setActive(actives);
         sr.setActiveCount(0);
         sr.setPagesize(pageSize);

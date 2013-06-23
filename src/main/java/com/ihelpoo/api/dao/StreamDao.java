@@ -1,5 +1,6 @@
 package com.ihelpoo.api.dao;
 
+import com.ihelpoo.api.model.TweetCommentPushResult;
 import com.ihelpoo.api.model.entity.*;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface StreamDao {
     void updateTweet(IRecordSayEntity tweetEntity);
 
     List<VTweetCommentEntity> findAllCommentssBy(int sid, int catalog, int pageIndex, int pageSize);
+
+    TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int postToMyZone);
 }

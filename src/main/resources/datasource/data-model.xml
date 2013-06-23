@@ -10,8 +10,19 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-    <bean id="streamDao" class="com.ihelpoo.api.dao.impl.StreamDaoImpl">
+    <bean id="streamDaoTarget" class="com.ihelpoo.api.dao.impl.StreamDaoImpl">
         <property name="dataSource" ref="dataSource" />
+    </bean>
+    <bean id="streamDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="target" ref="streamDaoTarget"/>
+        <property name="proxyTargetClass" value="true"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="get*">PROPAGATION_SUPPORTS</prop>
+            </props>
+        </property>
     </bean>
 
     <bean id="notificationDao" class="com.ihelpoo.api.dao.impl.NotificationDaoImpl">
