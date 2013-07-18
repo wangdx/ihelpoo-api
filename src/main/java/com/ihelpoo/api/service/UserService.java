@@ -22,4 +22,6 @@ public class UserService {
         IUserLoginEntity user = userDao.findUserById(uid);
         return user.getEmail();
     }
+
+
 }

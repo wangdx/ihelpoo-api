@@ -5,7 +5,8 @@
 	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <!-- public interface for dao-s -->
-    <bean id="dataSource" parent="dataSourceLocal"/>
+    <bean id="dataSource" parent="Udb"/>
+    <!--<bean id="dataSource" parent="dataSourceLocal"/>-->
     <!--<bean id="dataSource" parent="dataSourceServer"/>-->
 
     <!-- local DB -->
@@ -24,6 +25,14 @@
         <property name="url" value="jdbc:mysql://r.rdc.sae.sina.com.cn:3307/app_miihelpoo"/>
         <property name="username" value="wo1m0oznx4"/>
         <property name="password" value="1zy2lkzwxy01i5ymilxi33wzh1li0y4il0jzy3hh"/>
+    </bean>
+    <!-- Udb -->
+    <bean id="Udb"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://10.6.1.208:3306/ihelpoo"/>
+        <property name="username" value="root"/>
+        <property name="password" value="Ihelpoo.com"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

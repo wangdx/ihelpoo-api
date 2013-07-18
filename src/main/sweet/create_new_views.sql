@@ -15,3 +15,14 @@ join i_user_info on i_record_say.uid=i_user_info.uid
 join i_op_specialty on i_user_info.specialty_op=i_op_specialty.id
 );
 
+create view v_tweet_spread as
+(
+select id,i_user_login.uid,i_record_diffusion.sid,i_record_diffusion.time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_diffusion
+join i_user_login on i_record_diffusion.uid=i_user_login.uid
+);
+
+create view v_tweet_comment as(
+select cid,i_user_login.uid,sid,toid,content,image,diffusion_co,time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_comment
+join i_user_login on i_record_comment.uid=i_user_login.uid
+);
+
