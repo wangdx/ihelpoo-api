@@ -44,7 +44,9 @@ public class TweetService {
                     sids.append(userPriorityEntity.getSid());
                 }
             }
+            if(pids.length() - 1 >= 0)
             pids.deleteCharAt(pids.length() - 1);
+            if(sids.length() - 1 >= 0)
             sids.deleteCharAt(sids.length() - 1);
         }
 
