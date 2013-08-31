@@ -12,6 +12,6 @@ public class LoginServiceTest {
 
     @Test
     public void _(){
-//        loginService.validate("","",1);
+//        loginService.login("","",1);
     }
 }

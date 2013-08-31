@@ -2,6 +2,27 @@ package com.ihelpoo.api.model.entity;
 
 public class IUserLoginEntity {
     private int uid;
+    private Integer status;
+    private String email;
+    private String password;
+    private String nickname;
+    private Integer sex;
+    private String birthday;
+    private String enteryear;
+    private Integer type;
+    private Integer priority;
+    private String ip;
+    private Integer logintime;
+    private Integer lastlogintime;
+    private Integer creatTi;
+    private Integer loginDaysCo;
+    private String online;
+    private String coins;
+    private Integer active;
+    private String iconFl;
+    private String iconUrl;
+    private String skin;
+    private String school;
 
     public int getUid() {
         return uid;
@@ -11,8 +32,6 @@ public class IUserLoginEntity {
         this.uid = uid;
     }
 
-    private Integer status;
-
     public Integer getStatus() {
         return status;
     }
@@ -20,8 +39,6 @@ public class IUserLoginEntity {
     public void setStatus(Integer status) {
         this.status = status;
     }
-
-    private String email;
 
     public String getEmail() {
         return email;
@@ -31,8 +48,6 @@ public class IUserLoginEntity {
         this.email = email;
     }
 
-    private String password;
-
     public String getPassword() {
         return password;
     }
@@ -40,8 +55,6 @@ public class IUserLoginEntity {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    private String nickname;
 
     public String getNickname() {
         return nickname;
@@ -51,8 +64,6 @@ public class IUserLoginEntity {
         this.nickname = nickname;
     }
 
-    private Integer sex;
-
     public Integer getSex() {
         return sex;
     }
@@ -60,8 +71,6 @@ public class IUserLoginEntity {
     public void setSex(Integer sex) {
         this.sex = sex;
     }
-
-    private String birthday;
 
     public String getBirthday() {
         return birthday;
@@ -71,8 +80,6 @@ public class IUserLoginEntity {
         this.birthday = birthday;
     }
 
-    private String enteryear;
-
     public String getEnteryear() {
         return enteryear;
     }
@@ -80,8 +87,6 @@ public class IUserLoginEntity {
     public void setEnteryear(String enteryear) {
         this.enteryear = enteryear;
     }
-
-    private Integer type;
 
     public Integer getType() {
         return type;
@@ -91,8 +96,6 @@ public class IUserLoginEntity {
         this.type = type;
     }
 
-    private Integer priority;
-
     public Integer getPriority() {
         return priority;
     }
@@ -100,8 +103,6 @@ public class IUserLoginEntity {
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
-
-    private String ip;
 
     public String getIp() {
         return ip;
@@ -111,8 +112,6 @@ public class IUserLoginEntity {
         this.ip = ip;
     }
 
-    private Integer logintime;
-
     public Integer getLogintime() {
         return logintime;
     }
@@ -120,8 +119,6 @@ public class IUserLoginEntity {
     public void setLogintime(Integer logintime) {
         this.logintime = logintime;
     }
-
-    private Integer lastlogintime;
 
     public Integer getLastlogintime() {
         return lastlogintime;
@@ -131,8 +128,6 @@ public class IUserLoginEntity {
         this.lastlogintime = lastlogintime;
     }
 
-    private Integer creatTi;
-
     public Integer getCreatTi() {
         return creatTi;
     }
@@ -140,8 +135,6 @@ public class IUserLoginEntity {
     public void setCreatTi(Integer creatTi) {
         this.creatTi = creatTi;
     }
-
-    private Integer loginDaysCo;
 
     public Integer getLoginDaysCo() {
         return loginDaysCo;
@@ -151,8 +144,6 @@ public class IUserLoginEntity {
         this.loginDaysCo = loginDaysCo;
     }
 
-    private String online;
-
     public String getOnline() {
         return online;
     }
@@ -160,8 +151,6 @@ public class IUserLoginEntity {
     public void setOnline(String online) {
         this.online = online;
     }
-
-    private String coins;
 
     public String getCoins() {
         return coins;
@@ -171,8 +160,6 @@ public class IUserLoginEntity {
         this.coins = coins;
     }
 
-    private Integer active;
-
     public Integer getActive() {
         return active;
     }
@@ -180,8 +167,6 @@ public class IUserLoginEntity {
     public void setActive(Integer active) {
         this.active = active;
     }
-
-    private String iconFl;
 
     public String getIconFl() {
         return iconFl;
@@ -191,8 +176,6 @@ public class IUserLoginEntity {
         this.iconFl = iconFl;
     }
 
-    private String iconUrl;
-
     public String getIconUrl() {
         return iconUrl;
     }
@@ -201,8 +184,6 @@ public class IUserLoginEntity {
         this.iconUrl = iconUrl;
     }
 
-    private String skin;
-
     public String getSkin() {
         return skin;
     }
@@ -210,8 +191,6 @@ public class IUserLoginEntity {
     public void setSkin(String skin) {
         this.skin = skin;
     }
-
-    private String school;
 
     public String getSchool() {
         return school;

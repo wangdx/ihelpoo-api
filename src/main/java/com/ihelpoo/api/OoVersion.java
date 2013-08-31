@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class OoVersion {
 
-    public static final String VERSION_NAME = "1.0.0.1-beta";
+    public static final String VERSION_NAME = "1.0.1";
     public static final String VERSION_CODE = "1";
     public static final String DOWNLOADS_URL = "http://www.ihelpoo.com/app/mobile/downloads";
     public static final String WP7_VERSION_NAME = "1.1-alpha";

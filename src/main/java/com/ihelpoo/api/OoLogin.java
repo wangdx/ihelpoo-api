@@ -34,14 +34,14 @@ public class OoLogin {
 
     @RequestMapping(value = "/login.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public LoginResult validate(@RequestParam(value = "username", required = false) String username,
+    public LoginResult login(@RequestParam(value = "username", required = false) String username,
                                 @RequestParam(value = "pwd", required = false) String pwd,
-                                @RequestParam(value = "keep_login", required = false) String keep_login,
+                                @RequestParam(value = "status", required = false) String status,
+                                @RequestParam(value = "ip", required = false) String ip,
                                 HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
         Cookie ooidCookie = new Cookie(OoConstant.OO_USER_COOKIE, md5.encrypt(username) + md5.encrypt(pwd) + md5.encrypt(String.valueOf(System.currentTimeMillis())));
         response.addCookie(ooidCookie);
         response.setContentType("text/xml; charset=utf-8");
-        return loginService.validate(username, pwd, 1);
+        return loginService.login(username, pwd, status, ip);
     }
-
 }

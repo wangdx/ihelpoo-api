@@ -19,6 +19,7 @@ import java.util.List;
 public class PostDaoImpl extends JdbcDaoSupport implements PostDao {
     @Override
     public PostList getPostListByTimeLevel(String timeLevel, int order, int pageIndex, int pageSize) {
+
         PostList postListRoot = new PostList();
 
         String sql = "SELECT user.*, sid, say_type, content, image, url, authority, comment_co, diffusion_co, hit_co, post.time, post.from, last_comment_ti " +

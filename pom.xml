@@ -8,6 +8,8 @@
     <name>ihelpoo-api webapp</name>
     <url>http://www.ihelpoo.com</url>
     <properties>
+        <api-version>v1</api-version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle-version>2.10</checkstyle-version>
         <spring-version>3.2.3.RELEASE</spring-version>
@@ -17,6 +19,7 @@
         <jdk-version>1.6</jdk-version>
         <mysql-version>5.1.25</mysql-version>
         <log4j-version>1.2.17</log4j-version>
+        <aop-version>1.7.3</aop-version>
     </properties>
     <dependencies>
         <dependency>
@@ -71,15 +74,25 @@
             <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aop-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aop-version}</version>
+        </dependency>
         <!--<dependency>-->
-            <!--<groupId>log4j</groupId>-->
-            <!--<artifactId>log4j</artifactId>-->
-            <!--<version>${log4j-version}</version>-->
+        <!--<groupId>log4j</groupId>-->
+        <!--<artifactId>log4j</artifactId>-->
+        <!--<version>${log4j-version}</version>-->
         <!--</dependency>-->
     </dependencies>
 
     <build>
-        <finalName>miihelpoo</finalName>
+        <finalName>${api-version}</finalName>
 
         <plugins>
             <plugin>

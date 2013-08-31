@@ -4,12 +4,11 @@ import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
-import org.springframework.dao.EmptyResultDataAccessException;
+import com.ihelpoo.api.model.entity.IUserStatusEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: dongxu.wang@acm.org
@@ -53,7 +52,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
     @Override
     public IUserLoginEntity findByUserName(String username) {
-        String sql = " SELECT uid, password, school, nickname, coins FROM i_user_login WHERE email=? ";
+        String sql = " SELECT * FROM i_user_login WHERE email=? ";
         String[] params = new String[]{username};
         IUserLoginEntity userLoginEntity = null;
         userLoginEntity = getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
@@ -65,5 +64,59 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
         String sql = " SELECT * FROM i_user_login WHERE uid=? ";
         Object[] params = new Object[]{uid};
         return getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
+    }
+
+    @Override
+    public IUserStatusEntity findUserStatusById(int uid) {
+        String sql = " SELECT * FROM i_user_status WHERE uid=? ";
+        Object[] params = new Object[]{uid};
+        return getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserStatusEntity>(IUserStatusEntity.class));
+    }
+
+    @Override
+    public int updateLogin(int uid, int newUserActive, int count) {
+        final String sql = " UPDATE i_user_login SET active=?, login_days_co=? WHERE uid=? ";
+        return getJdbcTemplate().update(sql, newUserActive, count, uid);
+    }
+
+    @Override
+    public int updateLogin(String ip, long loginTime, String status, Integer lastLoginTime, int uid) {
+        final String sql = " UPDATE i_user_login SET ip=?, logintime=?, online=?, lastlogintime=? WHERE uid=? ";
+        return getJdbcTemplate().update(sql, ip, loginTime, status, lastLoginTime, uid);
+    }
+
+    @Override
+    public int updateActive(int uid, int newUserActive) {
+        final String sql = " UPDATE i_user_login SET active=? WHERE uid=? ";
+        return getJdbcTemplate().update(sql, newUserActive, uid);
+    }
+
+    @Override
+    public int saveMsgActive(int uid, int total, int change, String reason, String school) {
+        String sql = " INSERT INTO i_msg_active(way, `time`, deliver, uid, total, `change`, reason, school) VALUES('add', unix_timestamp(), '0', ?,?,?,?,?) ";
+        return getJdbcTemplate().update(sql, new Object[]{uid, total, change, reason, school});
+    }
+
+    @Override
+    public int updateStatus(int uid, int activeFlag, int clear) {
+        String otherFields = " ,total_active_ti=0, active_s_limit=0, active_c_limit=0 ";
+        if (clear != 0) {
+            otherFields = "";
+        }
+        final String sql = " UPDATE i_user_status SET active_flag=? " + otherFields + " WHERE uid=? ";
+        return getJdbcTemplate().update(sql, activeFlag, uid);
+    }
+
+
+    public static void main(String[] args) {
+
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        System.out.println(thisYear);
+        Calendar calendar = Calendar.getInstance();
+        int todayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+        calendar.setTimeInMillis(((long) 1377850396 * 1000));
+        int latestLoginDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+        System.out.println(todayOfYear + " " + latestLoginDayOfYear);
+
     }
 }

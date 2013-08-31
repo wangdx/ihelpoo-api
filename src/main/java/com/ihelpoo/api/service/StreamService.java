@@ -29,10 +29,10 @@ public class StreamService {
     @Autowired
     UserPriorityDao userPriorityDao;
 
-    public UserActiveResult pullUserActiveBy(int uid, String hisname, int hisuid, int pageIndex, int pageSize){
+    public UserActiveResult pullUserActiveBy(int uid, String hisname, int hisuid, int pageIndex, int pageSize) {
         long t = System.currentTimeMillis();
         UserActiveResult.User user = new UserActiveResult.User.Builder()
-                .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t="+System.currentTimeMillis())
+                .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t=" + System.currentTimeMillis())
                 .academy("文学与传媒学院")
                 .foer("12")
                 .foing("21")
@@ -74,7 +74,7 @@ public class StreamService {
                 .diffusionCount(2)
                 .online(0)
                 .build();
-                Active active1 = new Active.Builder()
+        Active active1 = new Active.Builder()
                 .sid(24968)
                 .avatar("http://ihelpoo-public.stor.sinaapp.com/useralbum/10116/101161364749925_m.jpg?t=" + t)
                 .name("陈源杉")
@@ -193,8 +193,10 @@ public class StreamService {
                     sids.append(userPriorityEntity.getSid());
                 }
             }
-            pids.deleteCharAt(pids.length() - 1);
-            sids.deleteCharAt(sids.length() - 1);
+            if (pids.length() > 0)
+                pids.deleteCharAt(pids.length() - 1);
+            if (sids.length() > 0)
+                sids.deleteCharAt(sids.length() - 1);
         }
         StreamResult streamResult = new StreamResult();
         long t = System.currentTimeMillis();
