@@ -9,3 +9,4 @@ target/
 *.war
 *.ear
 *.hbm.xml
+src/main/sweet/test.xml
