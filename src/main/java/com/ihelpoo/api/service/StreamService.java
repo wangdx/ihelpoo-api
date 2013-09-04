@@ -179,18 +179,16 @@ public class StreamService {
         return uar;
     }
 
-    public StreamResult pullBy(int uid, int catalog, int pageIndex, int pageSize) {
-        int offset = pageIndex * pageSize;
+    public StreamResult pullBy(int uid, int catalog, int schoolId, int pageIndex, int pageSize) {
         List<IUserPriorityEntity> priorityEntities = userPriorityDao.findAllPrioritiesByUid(uid);
         StringBuilder pids = new StringBuilder();
         StringBuilder sids = new StringBuilder();
-        List<IUserLoginEntity> pidGroupList = null;
         if (!priorityEntities.isEmpty()) {
             for (IUserPriorityEntity userPriorityEntity : priorityEntities) {
                 if (null != userPriorityEntity.getPid()) {
-                    pids.append(userPriorityEntity.getPid());
+                    pids.append(userPriorityEntity.getPid()).append(",");
                 } else if (null != userPriorityEntity.getSid()) {
-                    sids.append(userPriorityEntity.getSid());
+                    sids.append(userPriorityEntity.getSid()).append(",");
                 }
             }
             if (pids.length() > 0)
@@ -200,7 +198,7 @@ public class StreamService {
         }
         StreamResult streamResult = new StreamResult();
         long t = System.currentTimeMillis();
-        List<VTweetStreamEntity> tweets = streamDao.findAllTweetsBy(catalog, pids, sids, pageIndex, pageSize);
+        List<VTweetStreamEntity> tweets = streamDao.findAllTweetsBy(catalog, pids, sids, schoolId, pageIndex, pageSize);
         List<Active> actives = new ArrayList<Active>();
         for (VTweetStreamEntity tweet : tweets) {
             Active active = new Active.Builder()
@@ -370,11 +368,11 @@ public class StreamService {
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
 
-        String baseUrl = "http://ihelpoo-public.stor.sinaapp.com/";
+        String baseUrl = "http://ihelpoo.b0.upaiyun.com/";
         if (!empty(iconUrl)) {
-            return baseUrl + "useralbum/" + uid + "/" + iconUrl + "_m.jpg?t=" + System.currentTimeMillis();
+            return baseUrl + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
         } else {
-            return "http://zzuli.sinaapp.com/Public/image/common/0.jpg?t=" + System.currentTimeMillis();
+            return "http://ihelpoo.b0.upaiyun.com/useralbum/default_avatar.jpg!app";
         }
     }
 

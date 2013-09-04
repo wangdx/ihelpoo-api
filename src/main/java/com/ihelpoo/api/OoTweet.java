@@ -21,9 +21,10 @@ public class OoTweet {
                                @RequestParam(value = "pageSize", required = false) int pageSize,
                                @RequestParam(value = "catalog", required = false) int catalog,
                                @RequestParam(value = "uid", required = false) int uid,
+                               @RequestParam(value = "schoolId", required = false) int schoolId,
                                @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie){
         //TODO credential verification by cookie
-        return tweetService.pullBy(uid, catalog, pageIndex, pageSize);
+        return tweetService.pullBy(uid, catalog, schoolId, pageIndex, pageSize);
     }
 
     @RequestMapping(value = "/tweets/{id}.xml", method = RequestMethod.GET, produces = "application/xml")

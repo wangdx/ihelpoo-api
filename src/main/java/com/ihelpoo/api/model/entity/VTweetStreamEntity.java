@@ -28,6 +28,13 @@ public class VTweetStreamEntity {
     private String name;
     private String number;
     private String academy;
+    private String school;
+    private int plusCo;
+    private int schoolId;
+    private int id;
+    private String schoolname;
+    private String domain;
+    private String domainMain;
 
     public int getSid() {
         return sid;
@@ -284,5 +291,61 @@ public class VTweetStreamEntity {
         result = 31 * result + (number != null ? number.hashCode() : 0);
         result = 31 * result + (academy != null ? academy.hashCode() : 0);
         return result;
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
+    }
+
+    public int getPlusCo() {
+        return plusCo;
+    }
+
+    public void setPlusCo(int plusCo) {
+        this.plusCo = plusCo;
+    }
+
+    public int getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(int schoolId) {
+        this.schoolId = schoolId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getSchoolname() {
+        return schoolname;
+    }
+
+    public void setSchoolname(String schoolname) {
+        this.schoolname = schoolname;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public String getDomainMain() {
+        return domainMain;
+    }
+
+    public void setDomainMain(String domainMain) {
+        this.domainMain = domainMain;
     }
 }

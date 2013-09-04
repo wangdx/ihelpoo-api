@@ -15,6 +15,17 @@ join i_user_info on i_record_say.uid=i_user_info.uid
 join i_op_specialty on i_user_info.specialty_op=i_op_specialty.id
 );
 
+
+create view v2_tweet_stream as
+(
+select i_record_say.sid,i_user_login.uid,say_type,content,image,url,i_user_login.school,comment_co,diffusion_co,hit_co,plus_co,i_record_say.time,`from`,last_comment_ti,school_id,nickname,sex,birthday,enteryear,type,online,active,icon_url,i_user_info.specialty_op,i_op_specialty.name,i_op_specialty.academy,i_school_info.id,i_school_info.school as schoolname,i_school_info.domain,i_school_info.domain_main
+from i_record_say
+join i_user_login ON i_record_say.uid = i_user_login.uid
+join i_user_info ON i_record_say.uid = i_user_info.uid
+join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id
+join i_school_info ON i_user_login.school = i_school_info.id
+};
+
 create view v_tweet_spread as
 (
 select id,i_user_login.uid,i_record_diffusion.sid,i_record_diffusion.time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_diffusion

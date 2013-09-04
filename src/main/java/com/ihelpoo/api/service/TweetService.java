@@ -30,27 +30,25 @@ public class TweetService {
     @Autowired
     UserDao userDao;
 
-    public TweetResult pullBy(int uid, int catalog, int pageIndex, int pageSize) {
-        int offset = pageIndex * pageSize;
+    public TweetResult pullBy(int uid, int catalog, int schoolId, int pageIndex, int pageSize) {
         List<IUserPriorityEntity> priorityEntities = userPriorityDao.findAllPrioritiesByUid(uid);
         StringBuilder pids = new StringBuilder();
         StringBuilder sids = new StringBuilder();
-        List<IUserLoginEntity> pidGroupList = null;
         if (!priorityEntities.isEmpty()) {
             for (IUserPriorityEntity userPriorityEntity : priorityEntities) {
                 if (null != userPriorityEntity.getPid()) {
-                    pids.append(userPriorityEntity.getPid());
+                    pids.append(userPriorityEntity.getPid()).append(",");
                 } else if (null != userPriorityEntity.getSid()) {
-                    sids.append(userPriorityEntity.getSid());
+                    sids.append(userPriorityEntity.getSid()).append(",");
                 }
             }
-            if(pids.length() - 1 >= 0)
-            pids.deleteCharAt(pids.length() - 1);
-            if(sids.length() - 1 >= 0)
-            sids.deleteCharAt(sids.length() - 1);
+            if (pids.length() - 1 >= 0)
+                pids.deleteCharAt(pids.length() - 1);
+            if (sids.length() - 1 >= 0)
+                sids.deleteCharAt(sids.length() - 1);
         }
 
-        List<VTweetStreamEntity> tweetEntities = streamDao.findAllTweetsBy(catalog, pids, sids, pageIndex, pageSize);
+        List<VTweetStreamEntity> tweetEntities = streamDao.findAllTweetsBy(catalog, pids, sids, schoolId, pageIndex, pageSize);
         List<TweetResult.Tweet> tweets = new ArrayList<TweetResult.Tweet>();
         for (VTweetStreamEntity tweetEntity : tweetEntities) {
             String firstImgUrl = convertToImageUrl(tweetEntity.getSid());
@@ -141,11 +139,11 @@ public class TweetService {
                 "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (time.floatValue() * 1000)));
     }
 
-    public TweetCommentResult pullCommentsBy(int sid, int catalog, int pageIndex, int pageSize){
+    public TweetCommentResult pullCommentsBy(int sid, int catalog, int pageIndex, int pageSize) {
         List<VTweetCommentEntity> commentEntities = streamDao.findAllCommentssBy(sid, catalog, pageIndex, pageSize);
         int allCount = commentEntities.size();
         List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
-        for(VTweetCommentEntity commentEntity : commentEntities){
+        for (VTweetCommentEntity commentEntity : commentEntities) {
             TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
                     .content(commentEntity.getContent())
                     .date(convertToDate(commentEntity.getTime()))
@@ -174,10 +172,9 @@ public class TweetService {
     }
 
 
-    public TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int isPostToMyZone){
+    public TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int isPostToMyZone) {
         return streamDao.pushComment(id, uid, atUsers, content, catalog, isPostToMyZone);
     }
-
 
 
     private String[] fetchLinks(List<IRecordOutimgEntity> imgLinkEntities) {
@@ -193,7 +190,6 @@ public class TweetService {
     /**
      * TODO get real images urls
      *
-     *
      * @param sid
      * @return
      */
@@ -207,11 +203,11 @@ public class TweetService {
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
 
-        String baseUrl = "http://ihelpoo-public.stor.sinaapp.com/";
+        String baseUrl = "http://ihelpoo.b0.upaiyun.com/";
         if (!empty(iconUrl)) {
-            return baseUrl + "useralbum/" + uid + "/" + iconUrl + "_m.jpg?t=" + System.currentTimeMillis();
+            return baseUrl + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
         } else {
-            return "http://zzuli.sinaapp.com/Public/image/common/0.jpg?t=" + System.currentTimeMillis();
+            return "http://ihelpoo.b0.upaiyun.com/useralbum/default_avatar.jpg!app";
         }
     }
 
