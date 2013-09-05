@@ -21,6 +21,8 @@ import java.util.*;
 @Service
 public class TweetService {
 
+    public static final String IMG_STORAGE_ROOT = "http://ihelpoo.b0.upaiyun.com/";
+
     @Autowired
     StreamDao streamDao;
 
@@ -90,22 +92,9 @@ public class TweetService {
 
 
     public TweetDetailResult pullTweetBy(int sid) {
-
-        IRecordSayEntity tweetEntity = streamDao.findTweetBy(sid);
-        IUserLoginEntity userLoginEntity = userDao.findUserById(tweetEntity.getUid());
-        List<IRecordDiffusionEntity> spreads = streamDao.findSpreadsBySid(sid);
-        int spreadCount = spreads == null ? 0 : spreads.size();
-        List<VTweetSpreadEntity> spreadEntities = Collections.emptyList();
-        if (spreadCount > 0) {
-            spreadEntities = streamDao.findUserSpreadsBy(sid);
-        }
-        List<String> imgs = streamDao.findUserImgLinkEntitiesBy(sid);
-        tweetEntity.setHitCo(tweetEntity.getHitCo() == null ? 1 : 1 + tweetEntity.getHitCo());
-        streamDao.updateTweet(tweetEntity);
-
-
+        VTweetDetailEntity tweetDetailEntity = streamDao.findTweetDetailBy(sid);
         long t = System.currentTimeMillis();
-        String imgUrl = convertToImageUrl(tweetEntity.getSid());
+        String imgUrl = convertToImageUrl(tweetDetailEntity.getSid());
         Notice notice = new Notice.Builder()
                 .talk(0)
                 .system(0)
@@ -113,22 +102,22 @@ public class TweetService {
                 .at(0)
                 .build();
         TweetResult.Tweet tweet = new TweetResult.Tweet.Builder()
-                .spreads(spreadCount)
-                .onlineState(convertToOnlineState(userLoginEntity.getOnline()))
-                .from(convertToBy(tweetEntity.getFrom()))
-                .content(tweetEntity.getContent())
-                .date(convertToDate(tweetEntity.getTime()))
-                .comments(tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo())
+                .spreads(tweetDetailEntity.getDiffusionCo() == null ? 0 : tweetDetailEntity.getDiffusionCo())
+                .onlineState(convertToOnlineState(tweetDetailEntity.getOnline()))
+                .from(convertToBy(tweetDetailEntity.getBy()))
+                .content(tweetDetailEntity.getContent())
+                .date(convertToDate(tweetDetailEntity.getTime()))
+                .comments(tweetDetailEntity.getCommentCo() == null ? 0 : tweetDetailEntity.getCommentCo())
                 .small(imgUrl)//TODO cope with
                 .big(imgUrl)
-                .avatar(convertToAvatarUrl(userLoginEntity.getIconUrl(), tweetEntity.getUid()))
-                .authorRank(convertToRank(userLoginEntity.getActive()))
-                .authorGossip(convertToGossip(userLoginEntity.getSex(), userLoginEntity.getBirthday()))
-                .academy("[化学院]")
-                .id(tweetEntity.getSid())
-                .authorType(convertToType(userLoginEntity.getType(), userLoginEntity.getEnteryear()))
-                .author(userLoginEntity.getNickname())
-                .authorid(userLoginEntity.getUid())
+                .avatar(convertToAvatarUrl(tweetDetailEntity.getIconUrl(), tweetDetailEntity.getUid()))
+                .authorRank(convertToRank(tweetDetailEntity.getActive()))
+                .authorGossip(convertToGossip(tweetDetailEntity.getSex(), tweetDetailEntity.getBirthday()))
+                .academy(tweetDetailEntity.getAcademy())
+                .id(tweetDetailEntity.getSid())
+                .authorType(convertToType(tweetDetailEntity.getAuthorType(), tweetDetailEntity.getEnterYear()))
+                .author(tweetDetailEntity.getAuthor())
+                .authorid(tweetDetailEntity.getUid())
                 .build();
         TweetDetailResult tdr = new TweetDetailResult(tweet, notice);
         return tdr;
@@ -202,12 +191,10 @@ public class TweetService {
     }
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
-
-        String baseUrl = "http://ihelpoo.b0.upaiyun.com/";
         if (!empty(iconUrl)) {
-            return baseUrl + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+            return IMG_STORAGE_ROOT + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
         } else {
-            return "http://ihelpoo.b0.upaiyun.com/useralbum/default_avatar.jpg!app";
+            return IMG_STORAGE_ROOT + "useralbum/default_avatar.jpg!app";
         }
     }
 

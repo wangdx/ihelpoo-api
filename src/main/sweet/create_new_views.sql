@@ -26,6 +26,16 @@ join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id
 join i_school_info ON i_user_login.school = i_school_info.id
 };
 
+create view v_tweet_detail as (
+select sid,i_record_say.uid,online,comment_co,diffusion_co,`from` `by`,
+	content,`time`,active,sex,birthday,i_op_specialty.`name` academy,
+	`type`,enteryear,nickname author
+from i_record_say
+join i_user_login on i_record_say.uid=i_user_login.uid
+join i_user_info on i_record_say.uid=i_user_info.uid
+join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id
+);
+
 create view v_tweet_spread as
 (
 select id,i_user_login.uid,i_record_diffusion.sid,i_record_diffusion.time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_diffusion

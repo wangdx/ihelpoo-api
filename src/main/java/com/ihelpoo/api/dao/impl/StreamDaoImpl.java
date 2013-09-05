@@ -45,7 +45,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         if (sids.length() > 0) {
             sql.append(" and i_record_say.uid IN (").append(sids).append(") ");
         }
-        if (catalog == CATALOG_MINE && pids.length() > 0) {//只看我圈的,TODO 没圈需要提醒，目前只是显是所有
+        if (catalog == CATALOG_MINE && pids.length() > 0) {
             sql.append(" and i_record_say.uid IN (").append(pids).append(") ");
         } else if (CATALOG_HELP == catalog) {
             sql.append(" and i_record_say.school_id = ").append(schoolId).append(" and say_type = '1' ");
@@ -164,7 +164,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
             getJdbcTemplate().update(sqlUpdateStatus, new Object[]{userStatusEntity.getActiveCLimit() + 1, uid});
             String sqlUpdateUser = "update i_user_login set active=? where uid=? ";
             getJdbcTemplate().update(sqlUpdateUser, new Object[]{fetchUserActive(userLoginEntity), uid});
-            String sqlUpdateMsg = "insert into i_msg_active (uid, total, `change`, way, reason, time, deliver) values (?, ?, 1, 'add', '评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)', unix_timestamp(), 0)";
+            String sqlUpdateMsg = "insert into i_msg_active (uid, total, `change`, way, reason, `time`, deliver) values (?, ?, 1, 'add', '评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)', unix_timestamp(), 0)";
             getJdbcTemplate().update(sqlUpdateMsg, new Object[]{uid, fetchUserActive(userLoginEntity)});
         }
         if (uid != recordSayEntity.getUid()) {
@@ -208,6 +208,17 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, comment, notice);
 
         return commentPushResult;
+    }
+
+    @Override
+    public VTweetDetailEntity findTweetDetailBy(int sid) {
+        String sql = "select sid,i_record_say.uid,i_user_login.icon_url,online,comment_co,diffusion_co,`from` `by`,content,`time`,active,sex,birthday,i_op_specialty.`name` academy, `type` author_type,enteryear enter_year,nickname author\n" +
+                " from i_record_say " +
+                " join i_user_login on i_record_say.uid=i_user_login.uid " +
+                " join i_user_info on i_record_say.uid=i_user_info.uid " +
+                " join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id " +
+                " where sid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{sid}, new BeanPropertyRowMapper<VTweetDetailEntity>(VTweetDetailEntity.class));
     }
 
     private int fetchUserActive(IUserLoginEntity userLoginEntity) {
