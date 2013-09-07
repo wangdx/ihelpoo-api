@@ -16,4 +16,11 @@ public class ObjectReply implements Serializable {
     public String objectname;
     @XmlElement(name = "objectbody")
     public String objectbody;
+
+    public ObjectReply(String name, String body){
+        this.objectname = name;
+        this.objectbody = body;
+    }
+
+    public ObjectReply(){}
 }

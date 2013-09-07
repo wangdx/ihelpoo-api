@@ -197,7 +197,6 @@ public class StreamService {
             if (sids.length() > 0)
                 sids.deleteCharAt(sids.length() - 1);
         }
-        StreamResult streamResult = new StreamResult();
         long t = System.currentTimeMillis();
         List<VTweetStreamEntity> tweets = streamDao.findAllTweetsBy(catalog, pids, sids, schoolId, pageIndex, pageSize);
         List<Active> actives = new ArrayList<Active>();

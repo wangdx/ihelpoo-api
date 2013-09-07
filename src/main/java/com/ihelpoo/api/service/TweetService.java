@@ -1,5 +1,6 @@
 package com.ihelpoo.api.service;
 
+import com.ihelpoo.api.common.OoConstant;
 import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.dao.UserPriorityDao;
@@ -8,7 +9,6 @@ import com.ihelpoo.api.model.TweetCommentResult;
 import com.ihelpoo.api.model.TweetDetailResult;
 import com.ihelpoo.api.model.TweetResult;
 import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +20,6 @@ import java.util.*;
  */
 @Service
 public class TweetService {
-
-    public static final String IMG_STORAGE_ROOT = "http://ihelpoo.b0.upaiyun.com/";
 
     @Autowired
     StreamDao streamDao;
@@ -192,9 +190,9 @@ public class TweetService {
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
         if (!empty(iconUrl)) {
-            return IMG_STORAGE_ROOT + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+            return OoConstant.IMG_STORAGE_ROOT + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
         } else {
-            return IMG_STORAGE_ROOT + "useralbum/default_avatar.jpg!app";
+            return OoConstant.IMG_STORAGE_ROOT + "useralbum/default_avatar.jpg!app";
         }
     }
 
