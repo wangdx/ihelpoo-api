@@ -47,3 +47,10 @@ select cid,i_user_login.uid,sid,toid,content,image,diffusion_co,time,nickname,se
 join i_user_login on i_record_comment.uid=i_user_login.uid
 );
 
+
+create view v_msg_login as (
+
+select * from i_msg_notice
+join i_user_login on source_id = uid
+);
+

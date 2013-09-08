@@ -3,11 +3,10 @@ package com.ihelpoo.api.service;
 import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.dao.UserPriorityDao;
 import com.ihelpoo.api.model.StreamResult;
-import com.ihelpoo.api.model.UserActiveResult;
+import com.ihelpoo.api.model.UserWordResult;
 import com.ihelpoo.api.model.base.Active;
 import com.ihelpoo.api.model.base.Actives;
 import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserPriorityEntity;
 import com.ihelpoo.api.model.entity.VTweetStreamEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,9 @@ public class StreamService {
     @Autowired
     UserPriorityDao userPriorityDao;
 
-    public UserActiveResult pullUserActiveBy(int uid, String hisname, int hisuid, int pageIndex, int pageSize) {
+    public UserWordResult pullUserActiveBy(int uid, String hisname, int hisuid, int pageIndex, int pageSize) {
         long t = System.currentTimeMillis();
-        UserActiveResult.User user = new UserActiveResult.User.Builder()
+        UserWordResult.User user = new UserWordResult.User.Builder()
                 .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t=" + System.currentTimeMillis())
                 .academy("文学与传媒学院")
                 .foer("12")
@@ -171,7 +170,7 @@ public class StreamService {
         activeList.add(active3);
         activeList.add(active4);
         actives.setActive(activeList);
-        UserActiveResult uar = new UserActiveResult();
+        UserWordResult uar = new UserWordResult();
         uar.setNotice(notice);
         uar.setPagesize(20);
         uar.setActives(actives);

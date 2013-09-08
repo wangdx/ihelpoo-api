@@ -36,6 +36,9 @@
     <bean id="userDao" class="com.ihelpoo.api.dao.impl.UserDaoImpl">
         <property name="dataSource" ref="dataSource" />
     </bean>
+    <bean id="messageDao" class="com.ihelpoo.api.dao.impl.MessageDaoImpl">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
     <bean id="postDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager" ref="transactionManager"/>
         <property name="target" ref="postDaoTarget"/>

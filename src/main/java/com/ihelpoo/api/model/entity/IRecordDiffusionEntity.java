@@ -11,6 +11,8 @@ public class IRecordDiffusionEntity {
     private Integer helpreplyId;
     private Integer assessId;
     private int time;
+    private String view;
+    private int school;
 
     public int getId() {
         return id;
@@ -96,5 +98,21 @@ public class IRecordDiffusionEntity {
         result = 31 * result + (assessId != null ? assessId.hashCode() : 0);
         result = 31 * result + time;
         return result;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
+    }
+
+    public int getSchool() {
+        return school;
+    }
+
+    public void setSchool(int school) {
+        this.school = school;
     }
 }

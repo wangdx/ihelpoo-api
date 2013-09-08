@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = OoConstant.IHELPOO_XML_ROOT)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class UserActiveResult {
+public class UserWordResult {
     @XmlElement
     int pagesize;
     @XmlElement

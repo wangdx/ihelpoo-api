@@ -69,8 +69,10 @@ public class MessageResult {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Message {
+
         private Message(Builder builder) {
             this.author = builder.author;
+            this.inout = builder.inout;
             this.commentCount = builder.commentCount;
             this.id = builder.id;
             this.pubDate = builder.pubDate;
@@ -85,6 +87,7 @@ public class MessageResult {
             private String author;
             private String pubDate;
             private String url;
+            private String inout;
 
             public Message build() {
                 return new Message(this);
@@ -110,6 +113,11 @@ public class MessageResult {
                 return this;
             }
 
+            public Builder inout(String inout) {
+                this.inout = inout;
+                return this;
+            }
+
             public Builder pubDate(String pubDate) {
                 this.pubDate = pubDate;
                 return this;
@@ -129,6 +137,8 @@ public class MessageResult {
         private int commentCount;
         @XmlElement
         private String author;
+        @XmlElement
+        private String inout;
         @XmlElement
         private String pubDate;
         @XmlElement
