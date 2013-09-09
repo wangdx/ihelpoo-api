@@ -15,7 +15,7 @@ import java.util.List;
 public class MessageDaoImpl extends JdbcDaoSupport implements MessageDao {
     @Override
     public List<VMsgLoginEntity> findNoticesByIds(String ids, int pageIndex, int pageSize) {
-        String sql = " SELECT * FROM i_msg_notice JOIN i_user_login ON source_id = uid WHERE notice_id IN ("+ids+") order by create_time DESC LIMIT ? OFFSET ?  ";
+        String sql = " SELECT * FROM i_msg_notice JOIN i_user_login ON source_id = uid WHERE notice_id IN (" + ids + ") order by create_time DESC LIMIT ? OFFSET ?  ";
         return getJdbcTemplate().query(sql, new Object[]{pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VMsgLoginEntity>(VMsgLoginEntity.class));
     }
 
@@ -29,6 +29,12 @@ public class MessageDaoImpl extends JdbcDaoSupport implements MessageDao {
     public List<IMsgActiveEntity> findActivesByUid(int uid, int pageIndex, int pageSize) {
         String sql = " SELECT * FROM i_msg_active WHERE uid=? ORDER BY id DESC LIMIT ? OFFSET ? ";
         return getJdbcTemplate().query(sql, new Object[]{uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<IMsgActiveEntity>(IMsgActiveEntity.class));
+    }
+
+    @Override
+    public int updateActiveDeliver(int uid) {
+        final String sql = " UPDATE i_msg_active SET deliver=1 WHERE uid=? AND deliver=0 ";
+        return getJdbcTemplate().update(sql, uid);
     }
 
 

@@ -17,4 +17,6 @@ public interface MessageDao {
     IRecordDiffusionEntity findDiffusionBy(int id);
 
     List<IMsgActiveEntity> findActivesByUid(int uid, int pageIndex, int pageSize);
+
+    int updateActiveDeliver(int uid);
 }

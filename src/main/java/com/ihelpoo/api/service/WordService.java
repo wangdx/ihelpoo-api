@@ -162,12 +162,13 @@ public class WordService extends RecordService {
 
     public MessageResult fetchActive(int uid, int pageIndex, int pageSize) {
         List<IMsgActiveEntity> actives = messageDao.findActivesByUid(uid, pageIndex, pageSize);
+        messageDao.updateActiveDeliver(uid);
         List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();
         for (IMsgActiveEntity active : actives) {
             MessageResult.Message msgs = new MessageResult.Message.Builder()
                     .id(active.getId())
                     .author("(" + active.getTotal() + ")")
-                    .commentCount(2)
+                    .commentCount(Integer.valueOf(active.getDeliver()))
                     .pubDate(convertToDate(active.getTime()))
                     .title(" " + active.getReason())
                     .inout("min".equals(active.getWay()) ? "-" + active.getChange() : "+" + active.getChange())
@@ -186,5 +187,9 @@ public class WordService extends RecordService {
         mr.setNotice(notice);
         mr.setNewslist(newslist);
         return mr;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Integer.valueOf("w"));
     }
 }
