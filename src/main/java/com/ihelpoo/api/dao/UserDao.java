@@ -5,6 +5,9 @@ import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author dongxu.wang@acm.org
  */
@@ -28,4 +31,6 @@ public interface UserDao {
     int saveMsgActive(int uid, int total, int change, String reason, String school);
 
     int updateStatus(int uid, int activeFlag, int clear);
+
+    List<IUserLoginEntity> findUsersBy(Set<Integer> uids);
 }

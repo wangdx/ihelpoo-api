@@ -1,16 +1,16 @@
 package com.ihelpoo.api.service;
 
+import com.ihelpoo.api.dao.CommentDao;
 import com.ihelpoo.api.dao.MessageDao;
+import com.ihelpoo.api.dao.UserDao;
+import com.ihelpoo.api.model.ChatResult;
 import com.ihelpoo.api.model.MessageResult;
 import com.ihelpoo.api.model.UserWordResult;
 import com.ihelpoo.api.model.base.Active;
 import com.ihelpoo.api.model.base.Actives;
 import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.base.ObjectReply;
-import com.ihelpoo.api.model.entity.IMsgActiveEntity;
-import com.ihelpoo.api.model.entity.IRecordDiffusionEntity;
-import com.ihelpoo.api.model.entity.VMsgLoginEntity;
-import com.ihelpoo.api.model.entity.VTweetDetailEntity;
+import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.service.base.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author: dongxu.wang@acm.org
@@ -39,10 +39,17 @@ public class WordService extends RecordService {
     @Autowired
     MessageDao messageDao;
 
+    @Autowired
+    UserDao userDao;
+
+    @Autowired
+    CommentDao commentDao;
+
     public UserWordResult fetchNotice(int uid, int catalog, int schoolId, int pageIndex, int pageSize) {
 
         switch (catalog) {
             case 2:
+            case 3:
                 return fetchComment(uid, schoolId, pageIndex, pageSize);
             default:
                 break;
@@ -104,7 +111,7 @@ public class WordService extends RecordService {
 
 
             String tpl = jedis.hget(R_Notice_Message_Template, msg.getFormatId());
-            String content = String.format(tpl.replace("详情", "").replace("去看看", "").replace("去帮忙", ""), "", "", "", "", "");
+            String content = String.format(replace(tpl, "详情|去看看|去帮忙", ""), "", "", "", "", "");
             content += view;
 
             VTweetDetailEntity tweetDetailEntity = null;
@@ -156,11 +163,81 @@ public class WordService extends RecordService {
     }
 
     private UserWordResult fetchComment(int uid, int schoolId, int pageIndex, int pageSize) {
-        return null;
+        List<IMsgCommentEntity> msgCommentEntities = commentDao.fetchAllCommentsBy(uid, pageIndex, pageSize);
+        List<Active> activeList = new ArrayList<Active>();
+        for(IMsgCommentEntity msgCommentEntity:msgCommentEntities){
+            IUserLoginEntity user = userDao.findUserById(msgCommentEntity.getRid());
+            String nickname = user.getNickname() == null ?  "匿名用户" : user.getNickname();
+            String content = null;
+            String info = null;
+            String contentDetail = null;
+            if(msgCommentEntity.getCid() != null){
+                IRecordCommentEntity commentEntity = commentDao.fetchCommentBy(msgCommentEntity.getCid());
+                content = commentEntity.getContent() == null ? "这条评论被你删除了的" : commentEntity.getContent();
+                info = "回复了你的评论: ";
+            }else {
+                IRecordSayEntity sayEntity = streamDao.findTweetBy(msgCommentEntity.getSid());
+                content = sayEntity.getContent() == null ? "内容被你删除了的" : sayEntity.getContent();
+                info = "评论了你：";
+            }
+            if(msgCommentEntity.getNcid() != null){
+                IRecordCommentEntity commentEntityDetail = commentDao.fetchCommentBy(msgCommentEntity.getNcid());
+                contentDetail = commentEntityDetail.getContent() == null ? "评论又被"+nickname+"删除了":commentEntityDetail.getContent();
+            }
+
+            ObjectReply or =  new ObjectReply("我", content);
+            Active active = new Active.Builder()
+                    .sid(msgCommentEntity.getSid())
+                    .avatar(convertToAvatarUrl(user.getIconUrl(), user.getUid()))
+                    .name(user.getNickname())
+                    .uid(user.getUid())
+                    .catalog(4)
+                    .setObjecttype(3)
+                    .setObjectcatalog(0)
+                    .setObjecttitle("孤独")
+                    .setObjectreply(or)
+                    .academy(info)
+                    .by(3)
+                    .setUrl("")
+                    .setObjectID(msgCommentEntity.getCid() == null ? msgCommentEntity.getSid() : msgCommentEntity.getCid())
+                    .content(contentDetail)
+                    .commentCount(0)
+                    .date(convertToDate(msgCommentEntity.getTime()))
+                    .online(Integer.parseInt(user.getOnline()))
+                    .setObjectreply(or)
+                    .build();
+            activeList.add(active);
+
+        }
+        Actives actives = new Actives();
+        UserWordResult.User user = new UserWordResult.User.Builder()
+                .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t=" + System.currentTimeMillis())
+                .academy("文学与传媒学院")
+                .foer("12")
+                .foing("21")
+                .gossip("狮子女")
+                .major("汉语言文学")
+                .nickname("孤独不苦")
+                .rank("6")
+                .type("大四")
+                .uid(123456)
+                .build();
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+        actives.setActive(activeList);
+        UserWordResult uar = new UserWordResult();
+        uar.setNotice(notice);
+        uar.setPagesize(20);
+        uar.setActives(actives);
+        return uar;
     }
 
 
-    public MessageResult fetchActive(int uid, int pageIndex, int pageSize) {
+    public MessageResult fetchAndDeliverActive(int uid, int pageIndex, int pageSize) {
         List<IMsgActiveEntity> actives = messageDao.findActivesByUid(uid, pageIndex, pageSize);
         messageDao.updateActiveDeliver(uid);
         List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();
@@ -192,4 +269,136 @@ public class WordService extends RecordService {
     public static void main(String[] args) {
         System.out.println(Integer.valueOf("w"));
     }
+
+    public ChatResult fetchChats(int uid, int pageIndex, int pageSize) {
+        List<ITalkContentEntity> talks = messageDao.findRecentChatsBy(uid, pageIndex, pageSize);
+        Collection<ITalkContentEntity> oneWayTalks = normalizeToOneWay(talks);
+        Set<Integer> uids = new HashSet<Integer>();
+        for (ITalkContentEntity talk : talks) {
+            uids.add(talk.getUid());
+            uids.add(talk.getTouid());
+        }
+        List<IUserLoginEntity> users = userDao.findUsersBy(uids);
+        Map<Integer, IUserLoginEntity> usersMap = new HashMap<Integer, IUserLoginEntity>();
+        for (IUserLoginEntity user : users) {
+            usersMap.put(user.getUid(), user);
+        }
+
+
+        ChatResult chatResult = new ChatResult();
+
+        List<ChatResult.Chat> chats = new ArrayList<ChatResult.Chat>();
+
+
+        for (ITalkContentEntity talk : oneWayTalks) {
+            ChatResult.Chat c1 = new ChatResult.Chat.Builder()
+                    .id(talk.getId())
+                    .portrait(convertToAvatarUrl(usersMap.get(talk.getUid()).getIconUrl(), talk.getUid()))
+                    .friendid(talk.getTouid())
+                    .friendname(usersMap.get(talk.getTouid()).getNickname())
+                    .sender(usersMap.get(talk.getUid()).getNickname())
+                    .senderid(talk.getUid())
+                    .content(talk.getContent())
+                    .messageCount(talk.getChatNum())
+                    .pubDate(convertToDate(talk.getTime()))
+                    .build();
+            chats.add(c1);
+
+        }
+
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+
+
+        ChatResult.Chats chatList = new ChatResult.Chats(chats);
+
+        chatResult.setMessageCount(oneWayTalks.size());
+        chatResult.setMessages(chatList);
+        chatResult.setNotice(notice);
+        chatResult.setPagesize(pageSize);
+        return chatResult;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private Collection<ITalkContentEntity> normalizeToOneWay(List<ITalkContentEntity> talks) {
+        Map<String, ITalkContentEntity> talkMap = new HashMap<String, ITalkContentEntity>();
+        ValueComparator bvc =  new ValueComparator(talkMap);
+        TreeMap<String,ITalkContentEntity> sortedMap = new TreeMap<String,ITalkContentEntity>(bvc);
+        for (ITalkContentEntity talk : talks) {
+            String key = talk.getUid() + "-" + talk.getTouid();
+            if (talkMap.keySet().contains(talk.getTouid() + "-" +talk.getUid())) {
+                ITalkContentEntity originTalk = talkMap.get(talk.getTouid() + "-" +talk.getUid());
+                originTalk.setChatNum(originTalk.getChatNum() + talk.getChatNum());
+                continue;
+            }
+            talkMap.put(key, talk);
+        }
+        sortedMap.putAll(talkMap);
+        return sortedMap.values();  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    class ValueComparator implements Comparator<String> {
+
+        Map<String, ITalkContentEntity> base;
+        public ValueComparator(Map<String, ITalkContentEntity> base) {
+            this.base = base;
+        }
+
+        // Note: this comparator imposes orderings that are inconsistent with equals.
+        public int compare(String a, String b) {
+            if (base.get(a).getTime() >= base.get(b).getTime()) {
+                return -1;
+            } else {
+                return 1;
+            } // returning 0 would merge keys
+        }
+    }
+
+
+    public String replace(String src, String patternStr, String replacement){
+        StringBuffer target = new StringBuffer();
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(src);
+        while(matcher.find()){
+            matcher.appendReplacement(target, replacement);
+        }
+        matcher.appendTail(target);
+        return target.toString();
+    }
+
+//    public TweetCommentResult pullChatsBy(int id, int pageIndex, int pageSize) {
+//
+//        List<VTweetCommentEntity> commentEntities = messageDao.findAllChatsBy(id, pageIndex, pageSize);
+//        int allCount = commentEntities.size();
+//        List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
+//        for (VTweetCommentEntity commentEntity : commentEntities) {
+//            TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
+//                    .content(commentEntity.getContent())
+//                    .date(convertToDate(commentEntity.getTime()))
+//                    .author(commentEntity.getNickname())
+//                    .authorid(commentEntity.getUid())
+//                    .avatar(convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid()))
+//                    .by(0)
+//                    .id(commentEntity.getSid())
+//                    .build();
+//            comments.add(comment);
+//        }
+//        Notice notice = new Notice.Builder()
+//                .talk(0)
+//                .system(0)
+//                .comment(0)
+//                .at(0)
+//                .build();
+//
+//        TweetCommentResult commentResult = new TweetCommentResult();
+//        TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
+//        commentResult.setAllCount(allCount);
+//        commentResult.setPagesize(pageSize);
+//        commentResult.setComments(commentWrapper);
+//        commentResult.setNotice(notice);
+//        return commentResult;
+//    }
 }

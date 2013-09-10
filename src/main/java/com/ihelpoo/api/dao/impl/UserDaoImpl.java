@@ -6,6 +6,8 @@ import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.*;
@@ -13,7 +15,18 @@ import java.util.*;
 /**
  * @author: dongxu.wang@acm.org
  */
-public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
+public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao {
+
+
+    @Override
+    public List<IUserLoginEntity> findUsersBy(Set<Integer> uids){
+        if(uids == null || uids.size() < 1){
+            return Collections.emptyList();
+        }
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("ids", uids);
+        return getNamedParameterJdbcTemplate().query(" SELECT * FROM i_user_login WHERE uid IN (:ids) ", parameters, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
+    }
 
 
     @Override

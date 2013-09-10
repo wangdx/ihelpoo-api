@@ -1,6 +1,7 @@
 package com.ihelpoo.api;
 
 import com.ihelpoo.api.common.OoConstant;
+import com.ihelpoo.api.model.ChatResult;
 import com.ihelpoo.api.model.UserWordResult;
 import com.ihelpoo.api.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,16 @@ public class OoWord {
                                    @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie) {
 
         return wordService.fetchNotice(uid, catalog, schoolId, pageIndex, pageSize);
+    }
+
+
+    @RequestMapping(value = "/chats.xml", method = RequestMethod.GET, produces = "application/xml")
+    @ResponseBody
+    public ChatResult chats(@RequestParam(value = "pageIndex", required = false) int pageIndex,
+                                 @RequestParam(value = "pageSize", required = false) int pageSize,
+                                 @RequestParam(value = "uid", required = false) int uid,
+                                 @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie) {
+
+        return wordService.fetchChats(uid, pageIndex, pageSize);
     }
 }

@@ -5,6 +5,13 @@ package com.ihelpoo.api.model.entity;
  */
 public class IMsgCommentEntity {
     private int id;
+    private Integer uid;
+    private Integer sid;
+    private Integer cid;
+    private Integer ncid;
+    private Integer rid;
+    private Integer time;
+    private Integer deliver;
 
     public int getId() {
         return id;
@@ -14,8 +21,6 @@ public class IMsgCommentEntity {
         this.id = id;
     }
 
-    private Integer uid;
-
     public Integer getUid() {
         return uid;
     }
@@ -23,8 +28,6 @@ public class IMsgCommentEntity {
     public void setUid(Integer uid) {
         this.uid = uid;
     }
-
-    private Integer sid;
 
     public Integer getSid() {
         return sid;
@@ -34,8 +37,6 @@ public class IMsgCommentEntity {
         this.sid = sid;
     }
 
-    private Integer cid;
-
     public Integer getCid() {
         return cid;
     }
@@ -43,8 +44,6 @@ public class IMsgCommentEntity {
     public void setCid(Integer cid) {
         this.cid = cid;
     }
-
-    private Integer ncid;
 
     public Integer getNcid() {
         return ncid;
@@ -54,8 +53,6 @@ public class IMsgCommentEntity {
         this.ncid = ncid;
     }
 
-    private Integer rid;
-
     public Integer getRid() {
         return rid;
     }
@@ -64,8 +61,6 @@ public class IMsgCommentEntity {
         this.rid = rid;
     }
 
-    private Integer time;
-
     public Integer getTime() {
         return time;
     }
@@ -73,8 +68,6 @@ public class IMsgCommentEntity {
     public void setTime(Integer time) {
         this.time = time;
     }
-
-    private Integer deliver;
 
     public Integer getDeliver() {
         return deliver;

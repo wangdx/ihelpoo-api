@@ -4,7 +4,7 @@
 <oschina>
     <messageCount>3</messageCount>
     <pagesize>3</pagesize>
-    <messages>
+    <chats>
         <message>
             <id>868633</id>
             <portrait>http://static.oschina.net/uploads/user/583/1166611_50.jpg?t=1370763973000</portrait>
@@ -39,7 +39,7 @@
             <messageCount>1</messageCount>
             <pubDate>2012-12-09 13:49:08</pubDate>
         </message>
-    </messages>
+    </chats>
     <notice>
         <atmeCount>0</atmeCount>
         <msgCount>0</msgCount>

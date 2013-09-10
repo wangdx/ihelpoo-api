@@ -21,7 +21,7 @@ public interface StreamDao {
 
     void updateTweet(IRecordSayEntity tweetEntity);
 
-    List<VTweetCommentEntity> findAllCommentssBy(int sid, int catalog, int pageIndex, int pageSize);
+    List<VTweetCommentEntity> findAllCommentsBy(int sid, int pageIndex, int pageSize);
 
     TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int postToMyZone);
 

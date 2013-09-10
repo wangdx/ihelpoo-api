@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author: dongxu.wang@acm.org
  */
@@ -64,7 +61,7 @@ public class OoNotice {
 //                              @RequestParam(value = "schoolId", required = false) int schoolId,
                               @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie){
 
-        return wordService.fetchActive(uid, pageIndex, pageSize);
+        return wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
 
 //        Notice notice = new Notice.Builder()
 //                .talk(0)
@@ -74,7 +71,7 @@ public class OoNotice {
 //                .build();
 //        List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();
 //
-//        wordService.fetchActive(uid, pageIndex, pageSize);
+//        wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
 //
 //        MessageResult.Message m1 = new MessageResult.Message.Builder()
 //                .author("蔡耀华")

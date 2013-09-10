@@ -1,7 +1,5 @@
 package com.ihelpoo.api.service;
 
-import com.ihelpoo.api.common.OoConstant;
-import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.dao.UserPriorityDao;
 import com.ihelpoo.api.model.TweetCommentPushResult;
@@ -119,8 +117,8 @@ public class TweetService extends RecordService{
         return tdr;
     }
 
-    public TweetCommentResult pullCommentsBy(int sid, int catalog, int pageIndex, int pageSize) {
-        List<VTweetCommentEntity> commentEntities = streamDao.findAllCommentssBy(sid, catalog, pageIndex, pageSize);
+    public TweetCommentResult pullCommentsBy(int sid, int pageIndex, int pageSize) {
+        List<VTweetCommentEntity> commentEntities = streamDao.findAllCommentsBy(sid, pageIndex, pageSize);
         int allCount = commentEntities.size();
         List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
         for (VTweetCommentEntity commentEntity : commentEntities) {

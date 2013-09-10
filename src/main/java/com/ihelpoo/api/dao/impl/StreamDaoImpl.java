@@ -120,7 +120,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public List<VTweetCommentEntity> findAllCommentssBy(int sid, int catalog, int pageIndex, int pageSize) {
+    public List<VTweetCommentEntity> findAllCommentsBy(int sid, int pageIndex, int pageSize) {
         String sql = "select cid,i_user_login.uid,sid,toid,content,image,diffusion_co,time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_comment\n" +
                 "join i_user_login on i_record_comment.uid=i_user_login.uid\n" +
                 "where sid=?\n" +

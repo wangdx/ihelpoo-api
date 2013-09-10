@@ -1,9 +1,6 @@
 package com.ihelpoo.api.dao;
 
-import com.ihelpoo.api.model.entity.IMsgActiveEntity;
-import com.ihelpoo.api.model.entity.IMsgNoticeEntity;
-import com.ihelpoo.api.model.entity.IRecordDiffusionEntity;
-import com.ihelpoo.api.model.entity.VMsgLoginEntity;
+import com.ihelpoo.api.model.entity.*;
 
 import java.util.List;
 
@@ -19,4 +16,8 @@ public interface MessageDao {
     List<IMsgActiveEntity> findActivesByUid(int uid, int pageIndex, int pageSize);
 
     int updateActiveDeliver(int uid);
+
+//    List<VTweetCommentEntity> findAllChatsBy(int id, int pageIndex, int pageSize);
+
+    List<ITalkContentEntity> findRecentChatsBy(int uid, int pageIndex, int pageSize);
 }

@@ -5,6 +5,22 @@ package com.ihelpoo.api.model.entity;
  */
 public class ITalkContentEntity {
     private int id;
+    private Integer uid;
+    private Integer touid;
+    private String content;
+    private String image;
+    private Integer time;
+    private String deliver;
+    private Integer del;
+    private Integer chatNum;
+
+    public Integer getChatNum() {
+        return chatNum;
+    }
+
+    public void setChatNum(Integer chatNum) {
+        this.chatNum = chatNum;
+    }
 
     public int getId() {
         return id;
@@ -14,8 +30,6 @@ public class ITalkContentEntity {
         this.id = id;
     }
 
-    private Integer uid;
-
     public Integer getUid() {
         return uid;
     }
@@ -23,8 +37,6 @@ public class ITalkContentEntity {
     public void setUid(Integer uid) {
         this.uid = uid;
     }
-
-    private Integer touid;
 
     public Integer getTouid() {
         return touid;
@@ -34,8 +46,6 @@ public class ITalkContentEntity {
         this.touid = touid;
     }
 
-    private String content;
-
     public String getContent() {
         return content;
     }
@@ -43,8 +53,6 @@ public class ITalkContentEntity {
     public void setContent(String content) {
         this.content = content;
     }
-
-    private String image;
 
     public String getImage() {
         return image;
@@ -54,8 +62,6 @@ public class ITalkContentEntity {
         this.image = image;
     }
 
-    private Integer time;
-
     public Integer getTime() {
         return time;
     }
@@ -64,8 +70,6 @@ public class ITalkContentEntity {
         this.time = time;
     }
 
-    private String deliver;
-
     public String getDeliver() {
         return deliver;
     }
@@ -73,8 +77,6 @@ public class ITalkContentEntity {
     public void setDeliver(String deliver) {
         this.deliver = deliver;
     }
-
-    private Integer del;
 
     public Integer getDel() {
         return del;
@@ -99,6 +101,7 @@ public class ITalkContentEntity {
         if (time != null ? !time.equals(that.time) : that.time != null) return false;
         if (touid != null ? !touid.equals(that.touid) : that.touid != null) return false;
         if (uid != null ? !uid.equals(that.uid) : that.uid != null) return false;
+        if (chatNum != null ? !chatNum.equals(that.chatNum) : that.chatNum != null) return false;
 
         return true;
     }
@@ -113,6 +116,7 @@ public class ITalkContentEntity {
         result = 31 * result + (time != null ? time.hashCode() : 0);
         result = 31 * result + (deliver != null ? deliver.hashCode() : 0);
         result = 31 * result + (del != null ? del.hashCode() : 0);
+        result = 31 * result + (chatNum != null ? chatNum.hashCode() : 0);
         return result;
     }
 }

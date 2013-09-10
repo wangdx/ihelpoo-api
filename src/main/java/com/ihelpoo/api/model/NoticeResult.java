@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NoticeResult {
 
-    //TODO add amount of the messages count
+    //TODO add amount of the chats count
 
     @XmlElement
     private Result result;
