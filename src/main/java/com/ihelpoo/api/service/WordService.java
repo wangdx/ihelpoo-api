@@ -1,5 +1,6 @@
 package com.ihelpoo.api.service;
 
+import com.ihelpoo.api.common.OoConstant;
 import com.ihelpoo.api.dao.CommentDao;
 import com.ihelpoo.api.dao.MessageDao;
 import com.ihelpoo.api.dao.UserDao;
@@ -34,7 +35,6 @@ public class WordService extends RecordService {
     public static final String R_SYSTEM = "SY:";
     public static final String R_Notice_Message_Template = "Notice:Message:Template";
     public static final String R_Notice_Message_Link = "Notice:Message:Link";
-    public static final String R_HOST = "42.62.50.238";
 
     @Autowired
     MessageDao messageDao;
@@ -63,7 +63,7 @@ public class WordService extends RecordService {
                 .at(0)
                 .build();
 
-        Jedis jedis = new Jedis(R_HOST);
+        Jedis jedis = new Jedis(OoConstant.R_HOST);
         Set<String> notices = jedis.hkeys(R_ACCOUNT + R_MESSAGE + uid);
 
 

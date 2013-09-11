@@ -28,6 +28,20 @@ public class OoWord {
         return wordService.fetchNotice(uid, catalog, schoolId, pageIndex, pageSize);
     }
 
+    @RequestMapping(value = "/words.json", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public UserWordResult streamJson(@RequestParam(value = "pageIndex", required = false) int pageIndex,
+                                 @RequestParam(value = "pageSize", required = false) int pageSize,
+                                 @RequestParam(value = "catalog", required = false) int catalog,
+                                 @RequestParam(value = "uid", required = false) int uid,
+                                 @RequestParam(value = "schoolId", required = false) int schoolId,
+                                 @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie) {
+
+        return wordService.fetchNotice(uid, catalog, schoolId, pageIndex, pageSize);
+    }
+
+
+
 
     @RequestMapping(value = "/chats.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody

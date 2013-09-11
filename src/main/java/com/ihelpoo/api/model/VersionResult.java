@@ -27,11 +27,11 @@ public class VersionResult {
     public static class Update {
 
         @XmlElement
-        String wp7;
+        public String wp7;
         @XmlElement
-        String ios;
+        public String ios;
         @XmlElement
-        Android android;
+        public Android android;
 
         private Update(Builder builder){
             this.wp7 = builder.wp7;
@@ -62,41 +62,17 @@ public class VersionResult {
                 return new Update(this);
             }
         }
-
-        private String getWp7() {
-            return wp7;
-        }
-
-        private void setWp7(String wp7) {
-            this.wp7 = wp7;
-        }
-
-        private String getIos() {
-            return ios;
-        }
-
-        private void setIos(String ios) {
-            this.ios = ios;
-        }
-
-        private Android getAndroid() {
-            return android;
-        }
-
-        private void setAndroid(Android android) {
-            this.android = android;
-        }
     }
 
     public static class Android {
         @XmlElement
-        String versionCode;
+        public String versionCode;
         @XmlElement
-        String versionName;
+        public String versionName;
         @XmlElement
-        String downloadUrl;
+        public String downloadUrl;
         @XmlElement
-        String updateLog;
+        public String updateLog;
 
         private Android(Builder builder) {
             this.versionCode = builder.versionCode;
@@ -134,38 +110,6 @@ public class VersionResult {
             public Android build(){
                 return new Android(this);
             }
-        }
-
-        private String getVersionCode() {
-            return versionCode;
-        }
-
-        private void setVersionCode(String versionCode) {
-            this.versionCode = versionCode;
-        }
-
-        private String getVersionName() {
-            return versionName;
-        }
-
-        private void setVersionName(String versionName) {
-            this.versionName = versionName;
-        }
-
-        private String getDownloadUrl() {
-            return downloadUrl;
-        }
-
-        private void setDownloadUrl(String downloadUrl) {
-            this.downloadUrl = downloadUrl;
-        }
-
-        private String getUpdateLog() {
-            return updateLog;
-        }
-
-        public void setUpdateLog(String updateLog) {
-            this.updateLog = updateLog;
         }
     }
 }

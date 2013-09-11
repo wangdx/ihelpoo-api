@@ -15,8 +15,8 @@ public class OoVersion {
     public static final String VERSION_NAME = "1.0.1";
     public static final String VERSION_CODE = "1";
     public static final String DOWNLOADS_URL = "http://www.ihelpoo.com/app/mobile/downloads";
-    public static final String WP7_VERSION_NAME = "1.1-alpha";
-    public static final String IOS_VERSION_NAME = "1.0.1-alpha";
+    public static final String WP7_VERSION_NAME = "1.0";
+    public static final String IOS_VERSION_NAME = "1.0.0";
 
     @RequestMapping(value = "/versions.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
@@ -40,4 +40,13 @@ public class OoVersion {
         vr.setUpdate(update);
         return vr;
     }
+
+
+    @RequestMapping(value = "/versions.json", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public VersionResult checkVersionJson(){
+        return checkVersion();
+    }
 }
+
+
