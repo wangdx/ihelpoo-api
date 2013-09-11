@@ -1,6 +1,6 @@
 HOST: http://api.ihelpoo.com/v1
 
---- OO API v1 ---
+--- IHELPOO API version 1.0 ---
 ---
 Welcome to the our sample API documentation. All comments can be written in (support [Markdown](http://daringfireball.net/projects/markdown/syntax) syntax)
 ---
@@ -10,13 +10,10 @@ Shopping Cart Resources
 The following is a section of resources related to the shopping cart
 --
 List products added into your shopping-cart. (comment block again in Markdown)
-GET /api/get
+GET /versions.json
 < 200
 < Content-Type: application/json
-{ "items": [
-{ "url": "/shopping-cart/1", "product":"2ZY48XPZ", "quantity": 1, "name": "New socks", "price": 1.25 }
-] }
-
+{"update":{"wp7":"1.1-alpha","ios":"1.0.1-alpha","android":{"versionCode":"1","versionName":"1.0.1","downloadUrl":"http://www.ihelpoo.com/app/mobile/downloads/ihelpoo-1.0.1.apk","updateLog":"\r\n  版本信息：IHelpOO.com for Android v1.0.1\r\n  更新日志：首次发布\r\n"}}}
 
 Save new products in your shopping cart
 POST /shopping-cart
