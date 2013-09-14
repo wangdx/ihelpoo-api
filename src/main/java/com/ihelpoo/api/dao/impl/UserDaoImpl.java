@@ -8,7 +8,6 @@ import com.ihelpoo.api.model.entity.IUserStatusEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.*;
 
@@ -105,9 +104,9 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int saveMsgActive(int uid, int total, int change, String reason, String school) {
-        String sql = " INSERT INTO i_msg_active(way, `time`, deliver, uid, total, `change`, reason, school) VALUES('add', unix_timestamp(), '0', ?,?,?,?,?) ";
-        return getJdbcTemplate().update(sql, new Object[]{uid, total, change, reason, school});
+    public int saveMsgActive(int uid, int total, int change, String reason) {
+        String sql = " INSERT INTO i_msg_active(way, `time`, deliver, uid, total, `change`, reason) VALUES('add', unix_timestamp(), '0', ?,?,?,?) ";
+        return getJdbcTemplate().update(sql, new Object[]{uid, total, change, reason});
     }
 
     @Override

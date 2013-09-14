@@ -116,7 +116,7 @@ public class LoginService {
             }
             if (hourRules == 1) {
                 userDao.updateActive(uid, newUserActive);
-                userDao.saveMsgActive(userLoginEntity.getUid(), total, change, reason, userLoginEntity.getSchool());
+                userDao.saveMsgActive(userLoginEntity.getUid(), total, change, reason);
             }
             if (1 == timeIntervalType && userLoginEntity.getLoginDaysCo() != null) {
 
@@ -157,7 +157,7 @@ public class LoginService {
             }
 
             if (dayRules > 0) {
-                userDao.saveMsgActive(uid, total, change, reason, userLoginEntity.getSchool());
+                userDao.saveMsgActive(uid, total, change, reason);
             }
         }
 

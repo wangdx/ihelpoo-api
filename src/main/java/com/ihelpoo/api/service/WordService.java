@@ -13,6 +13,8 @@ import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.base.ObjectReply;
 import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.service.base.RecordService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ import java.util.regex.Pattern;
  */
 @Service
 public class WordService extends RecordService {
+
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     public static final String R_ACCOUNT = "A:";
     public static final String R_MESSAGE = "M:";
@@ -289,14 +294,24 @@ public class WordService extends RecordService {
 
         List<ChatResult.Chat> chats = new ArrayList<ChatResult.Chat>();
 
-
         for (ITalkContentEntity talk : oneWayTalks) {
+
+            logger.debug("-talk.getId()="+ talk.getId() +" talk.getUid()="+talk.getUid()+" talk.getTouid()="+talk.getTouid()
+                    +" talk.getContent()"+talk.getContent()+" talk.getChatNum()"+talk.getChatNum() +" talk.getTime()"+talk.getTime());
+            IUserLoginEntity fromUser = usersMap.get(talk.getUid());
+            logger.debug(" fromUser: "+fromUser);
+            String fromIcon = fromUser == null ? "" : fromUser.getIconUrl();
+
+            IUserLoginEntity friend = usersMap.get(talk.getUid());
+            logger.debug(" friend: "+friend);
+            String friendName = friend == null ?"":friend.getNickname();
+
             ChatResult.Chat c1 = new ChatResult.Chat.Builder()
                     .id(talk.getId())
-                    .portrait(convertToAvatarUrl(usersMap.get(talk.getUid()).getIconUrl(), talk.getUid()))
+                    .portrait(convertToAvatarUrl(fromIcon, talk.getUid()))
                     .friendid(talk.getTouid())
                     .friendname(usersMap.get(talk.getTouid()).getNickname())
-                    .sender(usersMap.get(talk.getUid()).getNickname())
+                    .sender(friendName)
                     .senderid(talk.getUid())
                     .content(talk.getContent())
                     .messageCount(talk.getChatNum())

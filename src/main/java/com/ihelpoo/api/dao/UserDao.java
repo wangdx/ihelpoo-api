@@ -28,7 +28,7 @@ public interface UserDao {
 
     int updateActive(int uid, int newUserActive);
 
-    int saveMsgActive(int uid, int total, int change, String reason, String school);
+    int saveMsgActive(int uid, int total, int change, String reason);
 
     int updateStatus(int uid, int activeFlag, int clear);
 
