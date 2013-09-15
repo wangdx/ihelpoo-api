@@ -30,6 +30,16 @@ public class OoTweet {
         //TODO credential verification by cookie
         return tweetService.pullBy(uid, catalog, schoolId, pageIndex, pageSize);
     }
+    @RequestMapping(value = "/tweets.json", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public TweetResult streamJson(@RequestParam(value = "pageIndex", required = false) int pageIndex,
+                              @RequestParam(value = "pageSize", required = false) int pageSize,
+                              @RequestParam(value = "catalog", required = false) int catalog,
+                              @RequestParam(value = "uid", required = false) int uid,
+                              @RequestParam(value = "schoolId", required = false) int schoolId,
+                              @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie){
+        return stream(pageIndex, pageSize, catalog, uid, schoolId, userCookie);
+    }
 
     @RequestMapping(value = "/tweets/{id}.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody

@@ -5,8 +5,8 @@
 	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!-- public interface for dao-s -->
-    <bean id="dataSource" parent="Udb"/>
-    <!--<bean id="dataSource" parent="dataSourceLocal"/>-->
+    <!--<bean id="dataSource" parent="Udb"/>-->
+    <bean id="dataSource" parent="dataSourceLocal"/>
     <!--<bean id="dataSource" parent="dataSourceServer"/>-->
 
     <!-- local DB -->

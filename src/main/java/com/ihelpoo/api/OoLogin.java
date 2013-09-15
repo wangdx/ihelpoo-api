@@ -44,4 +44,14 @@ public class OoLogin {
         response.setContentType("text/xml; charset=utf-8");
         return loginService.login(username, pwd, status, ip);
     }
+
+    @RequestMapping(value = "/login.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public LoginResult loginJson(@RequestParam(value = "username", required = false) String username,
+                             @RequestParam(value = "pwd", required = false) String pwd,
+                             @RequestParam(value = "status", required = false) String status,
+                             @RequestParam(value = "ip", required = false) String ip,
+                             HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
+        return this.login(username, pwd, status, ip, response);
+    }
 }

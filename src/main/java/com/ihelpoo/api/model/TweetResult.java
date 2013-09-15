@@ -200,38 +200,38 @@ public class TweetResult {
         }
 
         @XmlElement
-        private int id;
+        public int id;
         @XmlElement
-        private String portrait;
+        public String portrait;
         @XmlElement
-        private String author;
+        public String author;
         @XmlElement
-        private int authorid;
+        public int authorid;
         @XmlElement
-        private String body;
+        public String body;
         @XmlElement
-        private int appclient;
+        public int appclient;
         @XmlElement
-        private int commentCount;
+        public int commentCount;
         @XmlElement
-        private String pubDate;
+        public String pubDate;
         @XmlElement
-        private String imgSmall;
+        public String imgSmall;
         @XmlElement
-        private String imgBig;
+        public String imgBig;
 
         @XmlElement
-        private int spreadCount;
+        public int spreadCount;
         @XmlElement
-        private String academy;
+        public String academy;
         @XmlElement
-        private String authorType;
+        public String authorType;
         @XmlElement
-        private String authorGossip;
+        public String authorGossip;
         @XmlElement
-        private String onlineState;
+        public String onlineState;
         @XmlElement
-        private int rank;
+        public int rank;
 
     }
 
