@@ -52,6 +52,6 @@ public class OoLogin {
                              @RequestParam(value = "status", required = false) String status,
                              @RequestParam(value = "ip", required = false) String ip,
                              HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
-        return this.login(username, pwd, status, ip, response);
+        return login(username, pwd, status, ip, response);
     }
 }

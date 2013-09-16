@@ -84,7 +84,7 @@ public class LoginService {
 
         if (!("1".equals(iUserStatusEntity.getActiveFlag()) && 0 == timeIntervalType)) {
 
-            int newUserActive = userLoginEntity.getActive();
+            int newUserActive = userLoginEntity.getActive() == null ? 0 : userLoginEntity.getActive();
             int activeFlag = 0;
             int hourRules = 0;
             int dayRules = 0;
@@ -183,12 +183,18 @@ public class LoginService {
     private Integer mayUpdateLastLoginTime(IUserLoginEntity userLoginEntity) {
         Calendar calendar = Calendar.getInstance();
         int todayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-        calendar.setTimeInMillis((long) userLoginEntity.getLastlogintime() * 1000);
+        if (!isLoginFirstTime(userLoginEntity)) {
+            calendar.setTimeInMillis((long) userLoginEntity.getLastlogintime() * 1000);
+        }
         int latestLoginDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-        if (latestLoginDayOfYear != todayOfYear) {
+        if (latestLoginDayOfYear != todayOfYear || isLoginFirstTime(userLoginEntity)) {
             userLoginEntity.setLastlogintime(userLoginEntity.getLogintime());
         }
         return userLoginEntity.getLastlogintime();
+    }
+
+    private boolean isLoginFirstTime(IUserLoginEntity userLoginEntity) {
+        return userLoginEntity.getLastlogintime() == null;
     }
 
     private LoginResult succeedToLogin(IUserLoginEntity userLoginEntity) {
@@ -196,6 +202,7 @@ public class LoginService {
         User user = new User();
         user.setUid(userLoginEntity.getUid());
 
+        user.setSchoolId(userLoginEntity.getSchool());
         user.setLocation(userLoginEntity.getSchool());
         user.setName(userLoginEntity.getNickname());
         user.setScore((userLoginEntity.getCoins() == null || "".equals(userLoginEntity.getCoins())) ? 0 : Integer.parseInt(userLoginEntity.getCoins()));

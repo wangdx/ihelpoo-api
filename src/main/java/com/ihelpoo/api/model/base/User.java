@@ -14,6 +14,8 @@ public class User {
     @XmlElement
     private String location;
     @XmlElement
+    private String schoolId;
+    @XmlElement
     private String name;
     @XmlElement
     private int followers;
@@ -38,6 +40,14 @@ public class User {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(String schoolId) {
+        this.schoolId = schoolId;
     }
 
     public String getName() {

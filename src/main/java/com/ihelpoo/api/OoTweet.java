@@ -43,10 +43,17 @@ public class OoTweet {
 
     @RequestMapping(value = "/tweets/{id}.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
-    public TweetDetailResult say(@RequestParam(value = "sid", required = false) int sid, //TODO sid == id
-                                 @PathVariable int id,
-                                        @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie){
+    public TweetDetailResult say(@PathVariable int id,
+                                 @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie){
         return tweetService.pullTweetBy(id);
+    }
+
+
+    @RequestMapping(value = "/tweets/{id}.json", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public TweetDetailResult sayJson(@PathVariable int id,
+                                 @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie){
+        return say(id, userCookie);
     }
 
     @RequestMapping(value = "/comments.xml", method = RequestMethod.GET, produces = "application/xml")
