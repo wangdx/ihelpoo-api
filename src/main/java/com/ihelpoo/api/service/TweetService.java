@@ -1,5 +1,6 @@
 package com.ihelpoo.api.service;
 
+import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.dao.UserPriorityDao;
 import com.ihelpoo.api.model.TweetCommentPushResult;
@@ -11,6 +12,7 @@ import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.service.base.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -159,4 +161,13 @@ public class TweetService extends RecordService{
         return new String[0];  //To change body of created methods use File | Settings | File Templates.
     }
 
+    public int pubTweet(int uid, long t, String msg, String reward, String filePath, String by, int schoolId) {
+        int sayId = -1, imgId = -1;
+        if(!StringUtils.isEmpty(filePath)) {
+            imgId = userDao.saveOutimg(uid, t, Constant.IMG_STORAGE_ROOT+filePath);
+        }
+        String imageIds = imgId == -1? "":String.valueOf(imgId);
+        sayId = userDao.saveSay(uid, t, msg, imageIds, reward, by, schoolId);
+        return sayId;
+    }
 }

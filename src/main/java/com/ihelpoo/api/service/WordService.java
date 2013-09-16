@@ -1,6 +1,6 @@
 package com.ihelpoo.api.service;
 
-import com.ihelpoo.api.common.OoConstant;
+import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.CommentDao;
 import com.ihelpoo.api.dao.MessageDao;
 import com.ihelpoo.api.dao.UserDao;
@@ -68,7 +68,7 @@ public class WordService extends RecordService {
                 .at(0)
                 .build();
 
-        Jedis jedis = new Jedis(OoConstant.R_HOST);
+        Jedis jedis = new Jedis(Constant.R_HOST);
         Set<String> notices = jedis.hkeys(R_ACCOUNT + R_MESSAGE + uid);
 
 

@@ -1,6 +1,6 @@
 package com.ihelpoo.api.service.base;
 
-import com.ihelpoo.api.common.OoConstant;
+import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.StreamDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,9 +36,9 @@ public class RecordService {
 
     protected String convertToAvatarUrl(String iconUrl, int uid) {
         if (!empty(iconUrl)) {
-            return OoConstant.IMG_STORAGE_ROOT + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
         } else {
-            return OoConstant.IMG_STORAGE_ROOT + "useralbum/default_avatar.jpg!app";
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
         }
     }
 

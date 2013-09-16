@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "ihelpoo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LoginResult {
+public class GenericResult {
     @XmlElement
     private Result result;
     @XmlElement

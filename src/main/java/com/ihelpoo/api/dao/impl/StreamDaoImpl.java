@@ -142,8 +142,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
                 ps.setString(3, content);
                 return ps;
             }
-        },
-                keyHolder);
+        }, keyHolder);
         IRecordSayEntity recordSayEntity = null;
         IUserLoginEntity userLoginEntity = null;
         if (keyHolder.getKey().intValue() > 0) {

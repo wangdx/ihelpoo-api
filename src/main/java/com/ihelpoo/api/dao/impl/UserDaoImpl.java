@@ -6,9 +6,15 @@ import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -18,13 +24,51 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
 
     @Override
-    public List<IUserLoginEntity> findUsersBy(Set<Integer> uids){
-        if(uids == null || uids.size() < 1){
+    public List<IUserLoginEntity> findUsersBy(Set<Integer> uids) {
+        if (uids == null || uids.size() < 1) {
             return Collections.emptyList();
         }
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("ids", uids);
         return getNamedParameterJdbcTemplate().query(" SELECT * FROM i_user_login WHERE uid IN (:ids) ", parameters, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
+    }
+
+    @Override
+    public int saveOutimg(final int uid, final long t, final String filePath) {
+        final String sql = "insert into i_record_outimg (uid, rpath, time) values(?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps =
+                        connection.prepareStatement(sql, new String[]{"id"});
+                ps.setInt(1, uid);
+                ps.setString(2, filePath);
+                ps.setLong(3, t);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public int saveSay(final int uid, final long t, final String msg, final String imageIds, final String reward, final String by, final int schoolId) {
+        final String sql = "insert into i_record_say (uid, say_type, content, image, url, authority, `time`, last_comment_ti, `from`, school_id) values(?,'0',?,?,'','0',?,?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps =
+                        connection.prepareStatement(sql, new String[]{"sid"});
+                ps.setInt(1, uid);
+                ps.setString(2, msg);
+                ps.setString(3, imageIds);
+                ps.setInt(4, (int)t);
+                ps.setInt(5, (int)t);
+                ps.setString(6, by);
+                ps.setInt(7, schoolId);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 

@@ -1,4 +1,4 @@
-package com.ihelpoo.api.util;
+package com.ihelpoo.common.util;
 
 import org.springframework.stereotype.Service;
 

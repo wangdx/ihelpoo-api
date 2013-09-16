@@ -1,6 +1,6 @@
 package com.ihelpoo.api.model;
 
-import com.ihelpoo.api.common.OoConstant;
+import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.model.base.Actives;
 import com.ihelpoo.api.model.base.Notice;
 
@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author: dongxu.wang@acm.org
  */
 
-@XmlRootElement(name = OoConstant.IHELPOO_XML_ROOT)
+@XmlRootElement(name = Constant.IHELPOO_XML_ROOT)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UserWordResult {
     @XmlElement

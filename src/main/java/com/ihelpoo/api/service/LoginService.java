@@ -1,13 +1,13 @@
 package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.UserDao;
-import com.ihelpoo.api.model.LoginResult;
+import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.model.base.User;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
-import com.ihelpoo.api.util.MD5;
+import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,26 +32,26 @@ public class LoginService {
     @Autowired
     MD5 md5;
 
-    public LoginResult login(String username, String pwd, String status, String ip) {
-        LoginResult loginResult = new LoginResult();
+    public GenericResult login(String username, String pwd, String status, String ip) {
+        GenericResult genericResult = new GenericResult();
         IUserLoginEntity userLoginEntity = null;
         try {
             userLoginEntity = userDao.findByUserName(username);
         } catch (Exception e) {
             //TODO gentle message to user
-            loginResult.setResult(new Result(FAILURE, e.getMessage()));
-            return loginResult;
+            genericResult.setResult(new Result(FAILURE, e.getMessage()));
+            return genericResult;
         }
 
 
         if (!userLoginEntity.getPassword().equals(md5.encrypt(pwd))) {
-            loginResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
-            return loginResult;
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
+            return genericResult;
         }
 
         if (syncUserStatus(userLoginEntity, status, ip) < 1) {
-            loginResult.setResult(new Result(FAILURE, MSG_ERR_SYNC_STATUS));
-            return loginResult;
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_SYNC_STATUS));
+            return genericResult;
         }
 
 
@@ -197,8 +197,8 @@ public class LoginService {
         return userLoginEntity.getLastlogintime() == null;
     }
 
-    private LoginResult succeedToLogin(IUserLoginEntity userLoginEntity) {
-        LoginResult loginResult = new LoginResult();
+    private GenericResult succeedToLogin(IUserLoginEntity userLoginEntity) {
+        GenericResult genericResult = new GenericResult();
         User user = new User();
         user.setUid(userLoginEntity.getUid());
 
@@ -207,10 +207,10 @@ public class LoginService {
         user.setName(userLoginEntity.getNickname());
         user.setScore((userLoginEntity.getCoins() == null || "".equals(userLoginEntity.getCoins())) ? 0 : Integer.parseInt(userLoginEntity.getCoins()));
         Notice notice = new Notice.Builder().build();
-        loginResult.setUser(user);
-        loginResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
-        loginResult.setNotice(notice);
-        return loginResult;
+        genericResult.setUser(user);
+        genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
+        genericResult.setNotice(notice);
+        return genericResult;
     }
 
     public static void main(String[] args) {

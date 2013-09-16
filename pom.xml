@@ -106,6 +106,11 @@
             <version>${log4j-version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
             <artifactId>commons-logging</artifactId>
             <groupId>commons-logging</groupId>
             <version>1.1</version>

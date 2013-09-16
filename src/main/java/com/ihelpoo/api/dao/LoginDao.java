@@ -1,10 +1,10 @@
 package com.ihelpoo.api.dao;
 
-import com.ihelpoo.api.model.LoginResult;
+import com.ihelpoo.api.model.GenericResult;
 
 /**
  * @author: dongxu.wang@acm.org
  */
 public interface LoginDao {
-    LoginResult validate(String username, String password, int keepAlive);
+    GenericResult validate(String username, String password, int keepAlive);
 }

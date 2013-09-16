@@ -1,6 +1,6 @@
 package com.ihelpoo.api;
 
-import com.ihelpoo.api.common.OoConstant;
+import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.model.MessageResult;
 import com.ihelpoo.api.model.NoticeResult;
 import com.ihelpoo.api.model.base.Notice;
@@ -8,7 +8,7 @@ import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.service.NotificationService;
 import com.ihelpoo.api.service.UserService;
 import com.ihelpoo.api.service.WordService;
-import com.ihelpoo.api.util.MD5;
+import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +34,7 @@ public class OoNotice {
 
     @RequestMapping(value = "/notifications.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public NoticeResult validate(@RequestParam(value = "uid", required = false) int uid, @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie) {
+    public NoticeResult validate(@RequestParam(value = "uid", required = false) int uid, @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         NoticeResult noticeResult = new NoticeResult();
 
         Result result = checkUserCookie(uid, userCookie);
@@ -59,7 +59,7 @@ public class OoNotice {
                               @RequestParam(value = "catalog", required = false) int catalog,
                               @RequestParam(value = "uid", required = false) int uid,
 //                              @RequestParam(value = "schoolId", required = false) int schoolId,
-                              @CookieValue(value = OoConstant.OO_USER_COOKIE, required = false) String userCookie){
+                              @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
 
         return wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
 

@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Service
 public class StreamService {
-    public static final String IMG_STORAGE_ROOT = "http://ihelpoo.b0.upaiyun.com/";
+    public static final String IMG_STORAGE_ROOT = "http://ihelpoo.b0.upaiyun.com";
     @Autowired
     StreamDao streamDao;
 
@@ -367,9 +367,9 @@ public class StreamService {
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
         if (!empty(iconUrl)) {
-            return IMG_STORAGE_ROOT + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+            return IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
         } else {
-            return IMG_STORAGE_ROOT + "useralbum/default_avatar.jpg!app";
+            return IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
         }
     }
 

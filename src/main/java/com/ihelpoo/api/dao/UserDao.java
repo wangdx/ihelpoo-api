@@ -33,4 +33,8 @@ public interface UserDao {
     int updateStatus(int uid, int activeFlag, int clear);
 
     List<IUserLoginEntity> findUsersBy(Set<Integer> uids);
+
+    int saveOutimg(int uid, long t, String filePath);
+
+    int saveSay(int uid, long t, String msg, String imageIds, String reward, String by, int schoolId);
 }

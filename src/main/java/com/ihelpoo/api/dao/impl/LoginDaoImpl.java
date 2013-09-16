@@ -1,7 +1,7 @@
 package com.ihelpoo.api.dao.impl;
 
 import com.ihelpoo.api.dao.LoginDao;
-import com.ihelpoo.api.model.LoginResult;
+import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.model.base.User;
@@ -19,8 +19,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class LoginDaoImpl extends JdbcDaoSupport implements LoginDao {
     @Override
-    public LoginResult validate(String username, String password, int keepAlive) {
-        LoginResult loginResult = new LoginResult();
+    public GenericResult validate(String username, String password, int keepAlive) {
+        GenericResult genericResult = new GenericResult();
         String sql = " SELECT uid, password, school, nickname, coins FROM i_user_login WHERE email=? ";
         String[] params = new String[]{username};
 
@@ -29,14 +29,14 @@ public class LoginDaoImpl extends JdbcDaoSupport implements LoginDao {
             userLoginEntity = getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
         } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();
-            loginResult.setResult(new Result("0", "用户名或密码错误2"));
-            return loginResult;
+            genericResult.setResult(new Result("0", "用户名或密码错误2"));
+            return genericResult;
         }
         String pwd = null;
         pwd = md5(password);
         if (!userLoginEntity.getPassword().equals(pwd)) {
-            loginResult.setResult(new Result("0", "用户名或密码错误2"));
-            return loginResult;
+            genericResult.setResult(new Result("0", "用户名或密码错误2"));
+            return genericResult;
         }
         User user = new User();
         user.setUid(userLoginEntity.getUid());
@@ -44,10 +44,10 @@ public class LoginDaoImpl extends JdbcDaoSupport implements LoginDao {
         user.setName(userLoginEntity.getNickname());
         user.setScore((userLoginEntity.getCoins() == null || "".equals(userLoginEntity.getCoins())) ? 0 : Integer.parseInt(userLoginEntity.getCoins()));
         Notice notice = new Notice();
-        loginResult.setUser(user);
-        loginResult.setResult(new Result("1","登录成功"));
-        loginResult.setNotice(notice);
-        return loginResult;
+        genericResult.setUser(user);
+        genericResult.setResult(new Result("1","登录成功"));
+        genericResult.setNotice(notice);
+        return genericResult;
     }
 
     //    public static String md5(String input) throws NoSuchAlgorithmException {
