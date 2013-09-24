@@ -119,16 +119,50 @@ public class OoTweet {
 
     @RequestMapping(value = "/comments.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
-    public TweetCommentResult comments(@RequestParam(value = "pageIndex", required = false) int pageIndex,
-                                       @RequestParam(value = "pageSize", required = false) int pageSize,
-                                       @RequestParam(value = "catalog", required = false) int catalog,
-                                       @RequestParam(value = "id", required = false) int id,
+    public TweetCommentResult comments(@RequestParam(value = "pageIndex", required = false) Integer pageIndex,
+                                       @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                       @RequestParam(value = "catalog", required = false) Integer catalog,
+                                       @RequestParam(value = "id", required = false) Integer id,
                                        @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        //TODO credential verification by cookie
+        if (id == null) {
+            throw new IllegalArgumentException("id is mandatory");
+        }
+        pageIndex = pageIndex == null ? Constant.DEFAULT_PAGEINDEX : pageIndex;
+        pageSize = pageSize == null ? Constant.DEFAULT_PAGESIZE : pageSize;
+        catalog = catalog == null ? 0 : catalog;
+
+
         if (catalog == 4) {//chat
 //            return wordService.pullChatsBy(id, pageIndex, pageSize);
         }
+
         return tweetService.pullCommentsBy(id, pageIndex, pageSize);
+    }
+
+    @RequestMapping(value = "/comments.json", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public TweetCommentResult commentsJSON(@RequestParam(value = "pageIndex", required = false) Integer pageIndex,
+                                           @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                           @RequestParam(value = "catalog", required = false) Integer catalog,
+                                           @RequestParam(value = "id", required = false) Integer id,
+                                           @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return comments(pageIndex, pageSize, catalog, id, userCookie);
+
+    }
+
+
+    @RequestMapping(value = "/plus.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public TweetCommentPushResult plus(
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @RequestParam(value = "id", required = false) Integer id,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        //TODO credential verification by cookie
+
+        if (uid == null || id == null) {
+            return tweetService.plus(0, 0);
+        }
+        return tweetService.plus(id, uid);
     }
 
 
@@ -155,7 +189,6 @@ public class OoTweet {
                                                @RequestParam(value = "id", required = false) int id,
                                                @RequestParam(value = "isPostToMyZone", required = false) Integer isPostToMyZone,
                                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        //TODO credential verification by cookie
         return tweetService.pushComment(id, uid, null, content, 0, 0);
     }
 

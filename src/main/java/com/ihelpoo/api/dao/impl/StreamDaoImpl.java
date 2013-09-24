@@ -163,7 +163,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
             getJdbcTemplate().update(sqlUpdateStatus, new Object[]{userStatusEntity.getActiveCLimit() + 1, uid});
             String sqlUpdateUser = "update i_user_login set active=? where uid=? ";
             getJdbcTemplate().update(sqlUpdateUser, new Object[]{fetchUserActive(userLoginEntity), uid});
-            String sqlUpdateMsg = "insert into i_msg_active (uid, total, `change`, way, reason, `time`, deliver, school) values (?, ?, 1, 'add', '评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)', unix_timestamp(), 0, 0)";//TODO school
+            String sqlUpdateMsg = "insert into i_msg_active (uid, total, `change`, way, reason, `time`, deliver) values (?, ?, 1, 'add', '评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)', unix_timestamp(), 0)";
             getJdbcTemplate().update(sqlUpdateMsg, new Object[]{uid, fetchUserActive(userLoginEntity)});
         }
         if (uid != recordSayEntity.getUid()) {

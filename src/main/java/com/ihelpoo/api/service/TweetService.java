@@ -1,5 +1,6 @@
 package com.ihelpoo.api.service;
 
+import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.dao.UserPriorityDao;
@@ -114,6 +115,7 @@ public class TweetService extends RecordService{
                 .authorType(convertToType(tweetDetailEntity.getAuthorType(), tweetDetailEntity.getEnterYear()))
                 .author(tweetDetailEntity.getAuthor())
                 .authorid(tweetDetailEntity.getUid())
+                .plusByMe(0)
                 .build();
         TweetDetailResult tdr = new TweetDetailResult(tweet, notice);
         return tdr;
@@ -169,5 +171,20 @@ public class TweetService extends RecordService{
         String imageIds = imgId == -1? "":String.valueOf(imgId);
         sayId = userDao.saveSay(uid, t, msg, imageIds, reward, by, schoolId);
         return sayId;
+    }
+
+    public TweetCommentPushResult plus(int id, int uid) {
+
+        Result result = new Result("1", "操作成功");
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+
+        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, null, notice);
+
+        return commentPushResult;
     }
 }

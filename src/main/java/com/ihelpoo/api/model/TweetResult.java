@@ -113,6 +113,7 @@ public class TweetResult {
             private String authorGossip;
             private String onlineState;
             private int rank;
+            private int plusByMe;
 
             public Tweet build() {
                 return new Tweet(this);
@@ -197,6 +198,11 @@ public class TweetResult {
                 this.rank = rank;
                 return this;
             }
+
+            public Builder plusByMe(int plusByMe){
+                this.plusByMe = plusByMe;
+                return this;
+            }
         }
 
         @XmlElement
@@ -232,6 +238,8 @@ public class TweetResult {
         public String onlineState;
         @XmlElement
         public int rank;
+        @XmlElement
+        public int plusByMe;
 
     }
 
