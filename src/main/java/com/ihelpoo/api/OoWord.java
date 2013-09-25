@@ -37,7 +37,7 @@ public class OoWord {
                                  @RequestParam(value = "schoolId", required = false) int schoolId,
                                  @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
 
-        return wordService.fetchNotice(uid, catalog, schoolId, pageIndex, pageSize);
+        return stream(pageIndex, pageSize, catalog, uid, schoolId, userCookie);
     }
 
 

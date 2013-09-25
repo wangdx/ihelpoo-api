@@ -20,4 +20,6 @@ public interface MessageDao {
 //    List<VTweetCommentEntity> findAllChatsBy(int id, int pageIndex, int pageSize);
 
     List<ITalkContentEntity> findRecentChatsBy(int uid, int pageIndex, int pageSize);
+
+    List<VTweetCommentEntity> findAllChatsBy(Integer id, Integer pageIndex, Integer pageSize);
 }

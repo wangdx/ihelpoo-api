@@ -7,6 +7,8 @@ import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.service.TweetService;
 import com.ihelpoo.api.service.WordService;
 import com.ihelpoo.common.util.UpYun;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,9 @@ public class OoTweet {
     public static final String FAILURE = "0";
     public static final String SUCCESS = "1";
     public static final String MSG_SUC_LOGIN = "发布成功";
+
+
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @RequestMapping(value = "/pubTweet.xml", method = RequestMethod.POST, produces = "application/xml")
@@ -106,7 +111,14 @@ public class OoTweet {
     @ResponseBody
     public TweetDetailResult say(@PathVariable int id,
                                  @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return tweetService.pullTweetBy(id);
+        TweetDetailResult tdr = null;
+        try {
+            tdr = tweetService.pullTweetBy(id);
+        } catch (Exception e) {
+            tdr = new TweetDetailResult();
+            logger.error(e.getMessage());
+        }
+        return tdr;
     }
 
 
@@ -133,7 +145,7 @@ public class OoTweet {
 
 
         if (catalog == 4) {//chat
-//            return wordService.pullChatsBy(id, pageIndex, pageSize);
+            return wordService.pullChatsBy(id, pageIndex, pageSize);
         }
 
         return tweetService.pullCommentsBy(id, pageIndex, pageSize);
@@ -163,6 +175,21 @@ public class OoTweet {
             return tweetService.plus(0, 0);
         }
         return tweetService.plus(id, uid);
+    }
+
+    @RequestMapping(value = "/diffuse.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public TweetCommentPushResult diffuse(
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @RequestParam(value = "id", required = false) Integer id,
+            @RequestParam(value = "content", required = false) String content,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        //TODO credential verification by cookie
+
+        if (uid == null || id == null) {
+            return tweetService.diffuse(0, 0, content);
+        }
+        return tweetService.diffuse(id, uid, content);
     }
 
 

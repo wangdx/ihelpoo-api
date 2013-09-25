@@ -154,7 +154,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
             }
             sql2 += " where sid=? ";
             recordSayEntity = getJdbcTemplate().queryForObject("select * from i_record_say where sid=? ", new Object[]{id}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
-            getJdbcTemplate().update(sql2, new Object[]{recordSayEntity.getCommentCo() + 1, recordSayEntity.getSid()});
+            getJdbcTemplate().update(sql2, new Object[]{recordSayEntity.getCommentCo() == null ? 1 :recordSayEntity.getCommentCo() + 1, recordSayEntity.getSid()});
         }
 
         IUserStatusEntity userStatusEntity = getJdbcTemplate().queryForObject(" select * from i_user_status where uid=? ", new Object[]{uid}, new BeanPropertyRowMapper<IUserStatusEntity>(IUserStatusEntity.class));

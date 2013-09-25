@@ -1,5 +1,6 @@
 package com.ihelpoo.api.service;
 
+import com.ihelpoo.api.model.TweetCommentResult;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.CommentDao;
 import com.ihelpoo.api.dao.MessageDao;
@@ -140,7 +141,7 @@ public class WordService extends RecordService {
                     .avatar(convertToAvatarUrl(msg.getIconUrl(), msg.getUid()))
                     .name(msg.getNickname())
                     .uid(msg.getUid())
-                    .catalog(4)
+                    .catalog(3)
                     .setObjecttype(3)
                     .setObjectcatalog(0)
                     .setObjecttitle("孤独")
@@ -196,7 +197,7 @@ public class WordService extends RecordService {
                     .avatar(convertToAvatarUrl(user.getIconUrl(), user.getUid()))
                     .name(user.getNickname())
                     .uid(user.getUid())
-                    .catalog(4)
+                    .catalog(3)
                     .setObjecttype(3)
                     .setObjectcatalog(0)
                     .setObjecttitle("孤独")
@@ -306,11 +307,15 @@ public class WordService extends RecordService {
             logger.debug(" friend: "+friend);
             String friendName = friend == null ?"":friend.getNickname();
 
+            int friendID = talk.getTouid() == uid ? talk.getUid() : talk.getTouid();
+
+
+
             ChatResult.Chat c1 = new ChatResult.Chat.Builder()
                     .id(talk.getId())
                     .portrait(convertToAvatarUrl(fromIcon, talk.getUid()))
-                    .friendid(talk.getTouid())
-                    .friendname(usersMap.get(talk.getTouid()).getNickname())
+                    .friendid(friendID)
+                    .friendname(usersMap.get(friendID).getNickname())
                     .sender(friendName)
                     .senderid(talk.getUid())
                     .content(talk.getContent())
@@ -353,6 +358,38 @@ public class WordService extends RecordService {
         }
         sortedMap.putAll(talkMap);
         return sortedMap.values();  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public TweetCommentResult pullChatsBy(Integer id, Integer pageIndex, Integer pageSize) {
+        List<VTweetCommentEntity> commentEntities = messageDao.findAllChatsBy(id, pageIndex, pageSize);
+        int allCount = commentEntities.size();
+        List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
+        for (VTweetCommentEntity commentEntity : commentEntities) {
+            TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
+                    .content(commentEntity.getContent())
+                    .date(convertToDate(commentEntity.getTime()))
+                    .author(commentEntity.getNickname())
+                    .authorid(commentEntity.getUid())
+                    .avatar(convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid()))
+                    .by(0)
+                    .id(commentEntity.getSid() == null ? -1 :  commentEntity.getSid())//would be chats if -1
+                    .build();
+            comments.add(comment);
+        }
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+
+        TweetCommentResult commentResult = new TweetCommentResult();
+        TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
+        commentResult.setAllCount(allCount);
+        commentResult.setPagesize(pageSize);
+        commentResult.setComments(commentWrapper);
+        commentResult.setNotice(notice);
+        return commentResult;
     }
 
     class ValueComparator implements Comparator<String> {

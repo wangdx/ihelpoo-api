@@ -54,3 +54,9 @@ select * from i_msg_notice
 join i_user_login on source_id = uid
 );
 
+
+create view v_user_talk as (
+select t.content, t.`time`,t.deliver, t.del,t.touid,t.id, u.* from i_talk_content t
+join i_user_login u
+on t.uid = u.uid);
+

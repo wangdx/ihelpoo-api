@@ -187,4 +187,19 @@ public class TweetService extends RecordService{
 
         return commentPushResult;
     }
+
+    public TweetCommentPushResult diffuse(int id, int uid, String content) {
+
+        Result result = new Result("1", "发布成功");
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+
+        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, null, notice);
+
+        return commentPushResult;
+    }
 }
