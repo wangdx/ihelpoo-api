@@ -248,14 +248,13 @@ public class WordService extends RecordService {
         messageDao.updateActiveDeliver(uid);
         List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();
         for (IMsgActiveEntity active : actives) {
-            MessageResult.Message msgs = new MessageResult.Message.Builder()
-                    .id(active.getId())
-                    .author("(" + active.getTotal() + ")")
-                    .commentCount(Integer.valueOf(active.getDeliver()))
-                    .pubDate(convertToDate(active.getTime()))
-                    .title(" " + active.getReason())
-                    .inout("min".equals(active.getWay()) ? "-" + active.getChange() : "+" + active.getChange())
-                    .build();
+            MessageResult.Message msgs = new MessageResult.Message();
+                    msgs.id = active.getId();
+                    msgs.author = "(" + active.getTotal() + ")";
+                    msgs.commentCount = Integer.valueOf(active.getDeliver());
+                    msgs.pubDate = convertToDate(active.getTime());
+                    msgs.title = " " + active.getReason();
+                    msgs.inout = "min".equals(active.getWay()) ? "-" + active.getChange() : "+" + active.getChange();
             list.add(msgs);
         }
         Notice notice = new Notice.Builder()
@@ -266,9 +265,9 @@ public class WordService extends RecordService {
                 .build();
         MessageResult.Messages newslist = new MessageResult.Messages(list);
         MessageResult mr = new MessageResult();
-        mr.setPagesize(20);
-        mr.setNotice(notice);
-        mr.setNewslist(newslist);
+        mr.pagesize = 20;
+        mr.notice = notice;
+        mr.newslist = newslist;
         return mr;
     }
 

@@ -46,6 +46,15 @@ public class OoWord {
 
 
 
+    @RequestMapping(value = "/chats.json", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ChatResult chatsJSON(@RequestParam(value = "pageIndex", required = false) int pageIndex,
+                            @RequestParam(value = "pageSize", required = false) int pageSize,
+                            @RequestParam(value = "uid", required = false) int uid,
+                            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return chats(pageIndex, pageSize, uid, userCookie);
+    }
+
 
     @RequestMapping(value = "/chats.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
@@ -77,9 +86,33 @@ public class OoWord {
         comment.setContent("测试");
         comment.setPortrait("http://static.oschina.net/uploads/user/457/915579_50.jpeg");
         comment.setPubDate("2013-09-25 11:47:54");
+        doChatResult.result = result;
+        doChatResult.comment = comment;
+        doChatResult.notice = new Notice();
+
+        return doChatResult;
+    }
 
 
 
+    @RequestMapping(value = "/doChat.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public DoChatResult doChatJSON(@RequestParam(value = "content", required = false) String content,
+                               @RequestParam(value = "receiver", required = false) Integer receiver,
+                               @RequestParam(value = "uid", required = false) Integer uid,
+                               @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        DoChatResult doChatResult = new DoChatResult();
+        Result result = new Result();
+        result.setErrorCode("1");
+        result.setErrorMessage("留言发表成功");
+
+        TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
+        comment.setId(997502);
+        comment.setAuthorid(12419);
+        comment.setAuthor("echow");
+        comment.setContent("测试");
+        comment.setPortrait("http://static.oschina.net/uploads/user/457/915579_50.jpeg");
+        comment.setPubDate("2013-09-25 11:47:54");
         doChatResult.result = result;
         doChatResult.comment = comment;
         doChatResult.notice = new Notice();

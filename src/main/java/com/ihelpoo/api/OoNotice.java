@@ -51,6 +51,15 @@ public class OoNotice {
     }
 
 
+    @RequestMapping(value = "/notices.json", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public MessageResult streamJSON(@RequestParam(value = "pageIndex", required = false) int pageIndex,
+                                @RequestParam(value = "pageSize", required = false) int pageSize,
+                                @RequestParam(value = "catalog", required = false) int catalog,
+                                @RequestParam(value = "uid", required = false) int uid,
+                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+        return stream(pageIndex, pageSize, catalog, uid, userCookie);
+    }
 
     @RequestMapping(value = "/notices.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
@@ -58,7 +67,6 @@ public class OoNotice {
                               @RequestParam(value = "pageSize", required = false) int pageSize,
                               @RequestParam(value = "catalog", required = false) int catalog,
                               @RequestParam(value = "uid", required = false) int uid,
-//                              @RequestParam(value = "schoolId", required = false) int schoolId,
                               @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
 
         return wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
