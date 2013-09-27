@@ -56,7 +56,7 @@ public class WordService extends RecordService {
         switch (catalog) {
             case 2:
             case 3:
-                return fetchComment(uid, schoolId, pageIndex, pageSize);
+                return fetchComment(uid, schoolId, pageIndex, pageSize, catalog);
             default:
                 break;
         }
@@ -168,7 +168,92 @@ public class WordService extends RecordService {
         return uar;
     }
 
-    private UserWordResult fetchComment(int uid, int schoolId, int pageIndex, int pageSize) {
+
+    private UserWordResult fetchComment(int uid, int schoolId, int pageIndex, int pageSize, int catalog) {
+        if(catalog == 2){//AT_ME
+            return fetchAt(uid, schoolId, pageIndex, pageSize);
+        } else {
+            return fetchComments(uid, pageIndex, pageSize);
+        }
+    }
+
+    private UserWordResult fetchAt(int uid, int schoolId, int pageIndex, int pageSize) {
+        List<VAtUserEntity> atUserEntities = commentDao.fetchAllAtBy(uid, pageIndex, pageSize);
+        List<Active> activeList = new ArrayList<Active>();
+        for(VAtUserEntity atUserEntity: atUserEntities){
+            String content = "";
+            String info = "";
+            String contentDetail = "";
+            if(atUserEntity.getCid() != null && atUserEntity.getCid() > 0){
+                info = "这条评论@了你";
+                IRecordCommentEntity commentEntity = commentDao.fetchCommentBy(atUserEntity.getCid());
+                content = commentEntity.getContent() == null ? "这条评论被你删除了的" : commentEntity.getContent();
+            } else if(atUserEntity.getHid() != null && atUserEntity.getHid() > 0){
+                info = "这条帮助回复@了你";
+                IRecordHelpreplyEntity helpreplyEntity = streamDao.findHelpBy(atUserEntity.getHid());
+                content = helpreplyEntity.getContent() == null ? "这条评论被你删除了的" : helpreplyEntity.getContent();
+            } else if(atUserEntity.getSid() != null && atUserEntity.getSid() > 0){
+                IRecordSayEntity sayEntity = streamDao.findTweetBy(atUserEntity.getSid());
+
+                if ("0".equals(sayEntity.getSayType())) {
+                    info = "这条记录@了你";
+                } else if ("1".equals(sayEntity.getSayType())) {
+                    info = "这条帮助@了你";
+                }
+                contentDetail = sayEntity.getContent() == null ? "信息被删除了的" : sayEntity.getContent();
+
+            }
+
+
+            Active active = new Active.Builder()
+                    .sid(atUserEntity.getSid())
+                    .avatar(convertToAvatarUrl(atUserEntity.getIconUrl(), atUserEntity.getUid()))
+                    .name(atUserEntity.getNickname())
+                    .uid(atUserEntity.getUid())
+                    .catalog(3)
+                    .setObjecttype(3)
+                    .setObjectcatalog(0)
+                    .setObjecttitle("孤独")
+                    .academy(info)
+                    .by(3)
+                    .setUrl("")
+                    .setObjectID(atUserEntity.getCid() == null ? atUserEntity.getSid() : atUserEntity.getCid())
+                    .content(contentDetail)
+                    .commentCount(0)
+                    .date(convertToDate(atUserEntity.getTime()))
+                    .online(0)
+                    .build();
+            activeList.add(active);
+
+        }
+        Actives actives = new Actives();
+        UserWordResult.User user = new UserWordResult.User.Builder()
+                .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t=" + System.currentTimeMillis())
+                .academy("文学与传媒学院")
+                .foer("12")
+                .foing("21")
+                .gossip("狮子女")
+                .major("汉语言文学")
+                .nickname("孤独不苦")
+                .rank("6")
+                .type("大四")
+                .uid(123456)
+                .build();
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+        actives.setActive(activeList);
+        UserWordResult uar = new UserWordResult();
+        uar.setNotice(notice);
+        uar.setPagesize(20);
+        uar.setActives(actives);
+        return uar;
+    }
+
+    private UserWordResult fetchComments(int uid, int pageIndex, int pageSize) {
         List<IMsgCommentEntity> msgCommentEntities = commentDao.fetchAllCommentsBy(uid, pageIndex, pageSize);
         List<Active> activeList = new ArrayList<Active>();
         for(IMsgCommentEntity msgCommentEntity:msgCommentEntities){

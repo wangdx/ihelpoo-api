@@ -60,3 +60,9 @@ select t.content, t.`time`,t.deliver, t.del,t.touid,t.id, u.* from i_talk_conten
 join i_user_login u
 on t.uid = u.uid);
 
+
+create view v_at_user as (
+select id,touid,fromuid,sid,cid,hid,aid,`time`,deliver,uid,nickname,icon_url from i_msg_at
+join i_user_login on i_msg_at.fromuid = i_user_login.uid
+);
+

@@ -220,6 +220,12 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         return getJdbcTemplate().queryForObject(sql, new Object[]{sid}, new BeanPropertyRowMapper<VTweetDetailEntity>(VTweetDetailEntity.class));
     }
 
+    @Override
+    public IRecordHelpreplyEntity findHelpBy(Integer hid) {
+        String sql = " SELECT * from i_record_helpreply where id=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{hid}, new BeanPropertyRowMapper<IRecordHelpreplyEntity>(IRecordHelpreplyEntity.class));
+    }
+
     private int fetchUserActive(IUserLoginEntity userLoginEntity) {
         return userLoginEntity.getActive() == null ? 1 : userLoginEntity.getActive() + 1;
     }

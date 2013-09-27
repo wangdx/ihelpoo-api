@@ -26,4 +26,6 @@ public interface StreamDao {
     TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int postToMyZone);
 
     VTweetDetailEntity findTweetDetailBy(int sid);
+
+    IRecordHelpreplyEntity findHelpBy(Integer hid);
 }
