@@ -9,6 +9,9 @@ import java.util.List;
  * @author: dongxu.wang@acm.org
  */
 public interface StreamDao {
+
+    List<IRecordSayEntity> findTweetsBy(int uid, int pageIndex, int pageSize);
+
     List<VTweetStreamEntity> findAllTweetsBy(int catalog, StringBuilder pids, StringBuilder sids, int schoolId, int pageIndex, int pageSize);
 
     IRecordSayEntity findTweetBy(int sid);
@@ -23,7 +26,7 @@ public interface StreamDao {
 
     List<VTweetCommentEntity> findAllCommentsBy(int sid, int pageIndex, int pageSize);
 
-    TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int postToMyZone);
+    TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog);
 
     VTweetDetailEntity findTweetDetailBy(int sid);
 

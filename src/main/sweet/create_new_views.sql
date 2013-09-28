@@ -66,3 +66,16 @@ select id,touid,fromuid,sid,cid,hid,aid,`time`,deliver,uid,nickname,icon_url fro
 join i_user_login on i_msg_at.fromuid = i_user_login.uid
 );
 
+
+create view v_user_detail as(
+select a.uid, a. status, a. email, a.password, a.nickname, a.sex, a.birthday, a.enteryear, a.type, a.priority, a.ip, a.logintime,
+a.creat_ti, a.login_days_co, a.online, a.coins, a.active, a.icon_fl, a.icon_url, a.skin,
+b.introduction, b.introduction_re, b.realname, b.mobile, b.qq, b.weibo, b.fans, b.follow,
+c.school, c.domain, d.name as academy_name, e.name as major_name
+ from i_user_login a
+join i_user_info b on a.uid=b.uid
+join i_school_info c on a.school=c.id
+join i_op_academy d on d.id=b.academy_op
+join i_op_specialty e on e.id=b.specialty_op)
+;
+

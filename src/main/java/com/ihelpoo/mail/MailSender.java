@@ -32,16 +32,16 @@ final class MailSender {
     public static final Pattern pattern = Pattern.compile("qq.com|foxmail.com|sina.com");
 
     public void send(final Message message) throws MessagingException {
-        if (isQqOrSina(message) || overQuotaOfMailgun()) {
+//        if (isQqOrSina(message) || overQuotaOfMailgun()) {
             try {
                 sendByQqmail(message);
             } catch (EmailException e) {
                 e.printStackTrace(); // here we might hit the limit of qqmail
                 sendFromLocal(message);
             }
-        } else {
-            sendByMailgun(message);
-        }
+//        } else {
+//            sendByMailgun(message);
+//        }
 
     }
 

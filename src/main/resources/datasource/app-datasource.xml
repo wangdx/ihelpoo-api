@@ -5,8 +5,8 @@
 	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!-- public interface for dao-s -->
-    <!--<bean id="dataSource" parent="Udb"/>-->
-    <bean id="dataSource" parent="dataSourceLocal"/>
+    <bean id="dataSource" parent="Udb"/>
+    <!--<bean id="dataSource" parent="dataSourceLocal"/>-->
     <!--<bean id="dataSource" parent="dataSourceServer"/>-->
 
     <!-- local DB -->
@@ -32,14 +32,14 @@
     <bean id="masterUdb"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://10.6.1.208:3306/ihelpoo"/>
+        <property name="url" value="jdbc:mysql://10.6.1.208:3306/ihelpoo?useUnicode=true&amp;characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
         <property name="password" value="Ihelpoo.com"/>
     </bean>
     <bean id="slaveUdb"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://10.6.5.68:3306/ihelpoo"/>
+        <property name="url" value="jdbc:mysql://10.6.5.68:3306/ihelpoo?useUnicode=true&amp;characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
         <property name="password" value="Ihelpoo.com"/>
     </bean>

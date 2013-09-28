@@ -33,6 +33,12 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     public static final int CATALOG_MINE = -2;
 
     @Override
+    public List<IRecordSayEntity> findTweetsBy(int uid, int pageIndex, int pageSize) {
+        String sql = " SELECT * from i_record_say where uid=? order by last_comment_ti DESC limit ? offset ?  ";
+        return getJdbcTemplate().query(sql, new Object[]{uid, pageSize, pageIndex * pageSize},  new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
+    }
+
+    @Override
     public List<VTweetStreamEntity> findAllTweetsBy(int catalog, StringBuilder pids, StringBuilder sids, int schoolId, int pageIndex, int pageSize) {
         int recentThreeMonth = (int) (System.currentTimeMillis() / 1000L) - 24 * 3600 * 90;
         StringBuilder sql = new StringBuilder(" select i_record_say.sid,i_user_login.uid,say_type,content,image,url,i_user_login.school,comment_co,diffusion_co,hit_co,plus_co,i_record_say.time,`from`,last_comment_ti,school_id,nickname,sex,birthday,enteryear,type,online,active,icon_url,i_user_info.specialty_op,i_op_specialty.name,i_op_specialty.academy,i_school_info.id,i_school_info.school as schoolname,i_school_info.domain,i_school_info.domain_main\n" +
@@ -130,7 +136,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public TweetCommentPushResult pushComment(final int id, final int uid, String[] atUsers, final String content, int catalog, int postToMyZone) {
+    public TweetCommentPushResult pushComment(final int id, final int uid, String[] atUsers, final String content, int catalog) {
         final String sql = "insert into i_record_comment (uid, sid, toid, content, image, time) values(?,?,0, ?, '', unix_timestamp());";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {

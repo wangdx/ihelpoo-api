@@ -154,8 +154,8 @@ public class TweetService extends RecordService{
     }
 
 
-    public TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog, int isPostToMyZone) {
-        return streamDao.pushComment(id, uid, atUsers, content, catalog, isPostToMyZone);
+    public TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog) {
+        return streamDao.pushComment(id, uid, atUsers, content, catalog);
     }
 
 

@@ -193,14 +193,20 @@ public class WordService extends RecordService {
                 IRecordHelpreplyEntity helpreplyEntity = streamDao.findHelpBy(atUserEntity.getHid());
                 content = helpreplyEntity.getContent() == null ? "这条评论被你删除了的" : helpreplyEntity.getContent();
             } else if(atUserEntity.getSid() != null && atUserEntity.getSid() > 0){
-                IRecordSayEntity sayEntity = streamDao.findTweetBy(atUserEntity.getSid());
-
-                if ("0".equals(sayEntity.getSayType())) {
-                    info = "这条记录@了你";
-                } else if ("1".equals(sayEntity.getSayType())) {
-                    info = "这条帮助@了你";
+                IRecordSayEntity sayEntity = null;
+                try{
+                    sayEntity = streamDao.findTweetBy(atUserEntity.getSid());
+                }catch (EmptyResultDataAccessException e){
+                    logger.error("//////"+e.getMessage());
                 }
-                contentDetail = sayEntity.getContent() == null ? "信息被删除了的" : sayEntity.getContent();
+                if(sayEntity != null){
+                    if ("0".equals(sayEntity.getSayType())) {
+                        info = "这条记录@了你";
+                    } else if ("1".equals(sayEntity.getSayType())) {
+                        info = "这条帮助@了你";
+                    }
+                    contentDetail = sayEntity.getContent() == null ? "信息被删除了的" : sayEntity.getContent();
+                }
 
             }
 

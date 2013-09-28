@@ -56,4 +56,16 @@ public class OoStream {
     }
 
 
+    @RequestMapping(value = "/userActive.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public UserWordResult userInfoJSON(@RequestParam(value = "pageIndex", required = false) int pageIndex,
+                                   @RequestParam(value = "pageSize", required = false) int pageSize,
+                                   @RequestParam(value = "hisname", required = false) String hisname,
+                                   @RequestParam(value = "uid", required = false) int uid,
+                                   @RequestParam(value = "hisuid", required = false) int hisuid,
+                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+        //TODO credential verification by cookie
+        return userInfo(pageIndex, pageSize, hisname, uid, hisuid, userCookie);
+    }
+
 }

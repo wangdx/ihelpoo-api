@@ -5,6 +5,7 @@ import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
+import com.ihelpoo.api.model.entity.VUserDetailEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -69,6 +70,12 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
             }
         }, keyHolder);
         return keyHolder.getKey().intValue();  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public VUserDetailEntity findUserDetailById(int uid) {
+        String sql = " SELECT * FROM v_user_detail where uid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<VUserDetailEntity>(VUserDetailEntity.class));
     }
 
 

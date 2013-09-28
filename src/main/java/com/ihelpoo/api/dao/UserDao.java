@@ -4,6 +4,7 @@ import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
+import com.ihelpoo.api.model.entity.VUserDetailEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -37,4 +38,6 @@ public interface UserDao {
     int saveOutimg(int uid, long t, String filePath);
 
     int saveSay(int uid, long t, String msg, String imageIds, String reward, String by, int schoolId);
+
+    VUserDetailEntity findUserDetailById(int uid);
 }
