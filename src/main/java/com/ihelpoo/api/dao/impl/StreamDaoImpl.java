@@ -130,7 +130,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         String sql = "select cid,i_user_login.uid,sid,toid,content,image,diffusion_co,time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_comment\n" +
                 "join i_user_login on i_record_comment.uid=i_user_login.uid\n" +
                 "where sid=?\n" +
-                "order by cid ASC\n" +
+                "order by cid DESC\n" +
                 "limit ? offset ? ";
         return getJdbcTemplate().query(sql, new Object[]{sid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VTweetCommentEntity>(VTweetCommentEntity.class));
     }
