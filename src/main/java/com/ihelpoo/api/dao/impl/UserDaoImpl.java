@@ -48,7 +48,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 return ps;
             }
         }, keyHolder);
-        return keyHolder.getKey().intValue();  //To change body of implemented methods use File | Settings | File Templates.
+        return keyHolder.getKey().intValue();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 return ps;
             }
         }, keyHolder);
-        return keyHolder.getKey().intValue();  //To change body of implemented methods use File | Settings | File Templates.
+        return keyHolder.getKey().intValue();
     }
 
     @Override
@@ -84,6 +84,55 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 "join i_op_academy d on d.id=b.academy_op\n" +
                 "join i_op_specialty e on e.id=b.specialty_op where a.uid=? ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<VUserDetailEntity>(VUserDetailEntity.class));
+    }
+
+    @Override
+    public int updateAvatar(int uid, int iconFlag, String iconUrl) {
+        final String sql = " UPDATE i_user_login SET icon_fl=?, icon_url=? WHERE uid=? ";
+        return getJdbcTemplate().update(sql, iconFlag, iconUrl, uid);
+    }
+
+    @Override
+    public int addImage(int uid, String avatarPath) {
+        String sql = " INSERT INTO i_record_outimg(uid, rpath, `time`) VALUES(?,?, unix_timestamp()) ";
+        return getJdbcTemplate().update(sql, new Object[]{uid, avatarPath});
+    }
+
+    @Override
+    public int addSay(final int uid, final int sayType, final String body, final int imgId, final long t, final String from, final int schoolId) {
+        final String sql = "insert into i_record_say (uid, say_type, content, image, `time`, `from`, school_id) values(?,?,?,?,?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps =
+                        connection.prepareStatement(sql, new String[]{"sid"});
+                ps.setInt(1, uid);
+                ps.setInt(2, sayType);
+                ps.setString(3, body);
+                ps.setString(4, imgId + "");
+                ps.setLong(5, t);
+                ps.setString(6, from);
+                ps.setInt(7, schoolId);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public int addDynamic(final int sayId, final String changeicon) {
+        final String sql = "insert into i_record_dynamic (sid, `type`) values(?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps =
+                        connection.prepareStatement(sql, new String[]{"id"});
+                ps.setInt(1, sayId);
+                ps.setString(2, changeicon);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
     }
 
 

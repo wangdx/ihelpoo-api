@@ -40,4 +40,12 @@ public interface UserDao {
     int saveSay(int uid, long t, String msg, String imageIds, String reward, String by, int schoolId);
 
     VUserDetailEntity findUserDetailById(int uid);
+
+    int updateAvatar(int uid, int iconFlag, String iconUrl);
+
+    int addImage(int uid, String s);
+
+    int addSay(int uid, int sayType, String body, int imgId, long t, String from, int schoolId);
+
+    int addDynamic(int dynId, String changeicon);
 }

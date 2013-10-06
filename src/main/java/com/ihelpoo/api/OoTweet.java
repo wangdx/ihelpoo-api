@@ -77,7 +77,7 @@ public class OoTweet {
         UpYun upyun = new UpYun("ihelpoo", "api", "Ihelpoo.com");
         try {
             filePath = "/useralbum/" + uid + "/recordsay" + t + imageOldName.substring(imageOldName.lastIndexOf('.'));
-            boolean result = upyun.writeFile(filePath, multipartFile.getBytes());
+            boolean result = upyun.writeFile(filePath, multipartFile.getBytes(), true, null);
         } catch (IOException e) {
 
         }

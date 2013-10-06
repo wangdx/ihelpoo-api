@@ -12,6 +12,7 @@ import com.ihelpoo.api.model.entity.IRecordSayEntity;
 import com.ihelpoo.api.model.entity.IUserPriorityEntity;
 import com.ihelpoo.api.model.entity.VTweetStreamEntity;
 import com.ihelpoo.api.model.entity.VUserDetailEntity;
+import com.ihelpoo.common.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,6 @@ import java.util.List;
  */
 @Service
 public class StreamService {
-    public static final String IMG_STORAGE_ROOT = "http://ihelpoo.b0.upaiyun.com";
     @Autowired
     StreamDao streamDao;
 
@@ -288,9 +288,9 @@ public class StreamService {
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
         if (!empty(iconUrl)) {
-            return IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+            return Constant.IMG_STORAGE_ROOT + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
         } else {
-            return IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
+            return Constant.IMG_STORAGE_ROOT + "useralbum/default_avatar.jpg!app";
         }
     }
 
