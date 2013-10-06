@@ -21,7 +21,7 @@ import java.util.*;
  * @author: dongxu.wang@acm.org
  */
 @Service
-public class TweetService extends RecordService{
+public class TweetService extends RecordService {
 
     @Autowired
     UserPriorityDao userPriorityDao;
@@ -51,24 +51,23 @@ public class TweetService extends RecordService{
         List<TweetResult.Tweet> tweets = new ArrayList<TweetResult.Tweet>();
         for (VTweetStreamEntity tweetEntity : tweetEntities) {
             String firstImgUrl = convertToImageUrl(tweetEntity.getSid());
-            TweetResult.Tweet tweet = new TweetResult.Tweet.Builder()
-                    .academy("[" + tweetEntity.getName() + "]")
-                    .authorRank(convertToRank(tweetEntity.getActive()))
-                    .onlineState(convertToOnlineState(tweetEntity.getOnline()))
-                    .avatar(convertToAvatarUrl(tweetEntity.getIconUrl(), tweetEntity.getUid()))
-                    .from(convertToBy(tweetEntity.getFrom()))
-                    .comments(tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo())
-                    .content(tweetEntity.getContent())
-                    .date(convertToDate(tweetEntity.getTime()))
-                    .spreads(tweetEntity.getDiffusionCo() == null ? 0 : tweetEntity.getDiffusionCo())
-                    .authorGossip(convertToGossip(tweetEntity.getSex(), tweetEntity.getBirthday()))
-                    .small(firstImgUrl)
-                    .big(firstImgUrl)
-                    .author(tweetEntity.getNickname())
-                    .id(tweetEntity.getSid())
-                    .authorType(convertToType(tweetEntity.getType(), tweetEntity.getEnteryear()))
-                    .authorid(tweetEntity.getUid())
-                    .build();
+            TweetResult.Tweet tweet = new TweetResult.Tweet();
+            tweet.academy = "[" + tweetEntity.getName() + "]";
+            tweet.rank = convertToRank(tweetEntity.getActive());
+            tweet.onlineState = convertToOnlineState(tweetEntity.getOnline());
+            tweet.portrait = convertToAvatarUrl(tweetEntity.getIconUrl(), tweetEntity.getUid());
+            tweet.appclient = convertToBy(tweetEntity.getFrom());
+            tweet.commentCount = tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo();
+            tweet.body = tweetEntity.getContent();
+            tweet.pubDate = convertToDate(tweetEntity.getTime());
+            tweet.spreadCount = tweetEntity.getDiffusionCo() == null ? 0 : tweetEntity.getDiffusionCo();
+            tweet.authorGossip = convertToGossip(tweetEntity.getSex(), tweetEntity.getBirthday());
+            tweet.imgSmall = firstImgUrl;
+            tweet.imgBig = firstImgUrl;
+            tweet.author = tweetEntity.getNickname();
+            tweet.id = tweetEntity.getSid();
+            tweet.authorType = convertToType(tweetEntity.getType(), tweetEntity.getEnteryear());
+            tweet.authorid = tweetEntity.getUid();
             tweets.add(tweet);
         }
         Notice notice = new Notice.Builder()
@@ -80,10 +79,10 @@ public class TweetService extends RecordService{
 
         TweetResult tweetResult = new TweetResult();
         TweetResult.Tweets tweetsWrapper = new TweetResult.Tweets(tweets);
-        tweetResult.setTweetCount(pageSize + 1);
-        tweetResult.setPagesize(pageSize);
-        tweetResult.setNotice(notice);
-        tweetResult.setTweets(tweetsWrapper);
+        tweetResult.tweetCount = pageSize + 1;
+        tweetResult.pagesize = pageSize;
+        tweetResult.notice = notice;
+        tweetResult.tweets = tweetsWrapper;
         return tweetResult;
     }
 
@@ -98,25 +97,24 @@ public class TweetService extends RecordService{
                 .comment(0)
                 .at(0)
                 .build();
-        TweetResult.Tweet tweet = new TweetResult.Tweet.Builder()
-                .spreads(tweetDetailEntity.getDiffusionCo() == null ? 0 : tweetDetailEntity.getDiffusionCo())
-                .onlineState(convertToOnlineState(tweetDetailEntity.getOnline()))
-                .from(convertToBy(tweetDetailEntity.getBy()))
-                .content(tweetDetailEntity.getContent())
-                .date(convertToDate(tweetDetailEntity.getTime()))
-                .comments(tweetDetailEntity.getCommentCo() == null ? 0 : tweetDetailEntity.getCommentCo())
-                .small(imgUrl)//TODO cope with
-                .big(imgUrl)
-                .avatar(convertToAvatarUrl(tweetDetailEntity.getIconUrl(), tweetDetailEntity.getUid()))
-                .authorRank(convertToRank(tweetDetailEntity.getActive()))
-                .authorGossip(convertToGossip(tweetDetailEntity.getSex(), tweetDetailEntity.getBirthday()))
-                .academy(tweetDetailEntity.getAcademy())
-                .id(tweetDetailEntity.getSid())
-                .authorType(convertToType(tweetDetailEntity.getAuthorType(), tweetDetailEntity.getEnterYear()))
-                .author(tweetDetailEntity.getAuthor())
-                .authorid(tweetDetailEntity.getUid())
-                .plusByMe(0)
-                .build();
+        TweetResult.Tweet tweet = new TweetResult.Tweet();
+        tweet.spreadCount = tweetDetailEntity.getDiffusionCo() == null ? 0 : tweetDetailEntity.getDiffusionCo();
+        tweet.onlineState = convertToOnlineState(tweetDetailEntity.getOnline());
+        tweet.appclient = convertToBy(tweetDetailEntity.getBy());
+        tweet.body = tweetDetailEntity.getContent();
+        tweet.pubDate = convertToDate(tweetDetailEntity.getTime());
+        tweet.commentCount = tweetDetailEntity.getCommentCo() == null ? 0 : tweetDetailEntity.getCommentCo();
+        tweet.imgSmall = imgUrl;
+        tweet.imgBig = imgUrl;
+        tweet.portrait = convertToAvatarUrl(tweetDetailEntity.getIconUrl(), tweetDetailEntity.getUid());
+        tweet.rank = convertToRank(tweetDetailEntity.getActive());
+        tweet.authorGossip = convertToGossip(tweetDetailEntity.getSex(), tweetDetailEntity.getBirthday());
+        tweet.academy = tweetDetailEntity.getAcademy();
+        tweet.id = tweetDetailEntity.getSid();
+        tweet.authorType = convertToType(tweetDetailEntity.getAuthorType(), tweetDetailEntity.getEnterYear());
+        tweet.author = tweetDetailEntity.getAuthor();
+        tweet.authorid = tweetDetailEntity.getUid();
+        tweet.plusByMe = 0;
         TweetDetailResult tdr = new TweetDetailResult(tweet, notice);
         return tdr;
     }
@@ -165,10 +163,10 @@ public class TweetService extends RecordService{
 
     public int pubTweet(int uid, long t, String msg, String reward, String filePath, String by, int schoolId) {
         int sayId = -1, imgId = -1;
-        if(!StringUtils.isEmpty(filePath)) {
-            imgId = userDao.saveOutimg(uid, t, Constant.IMG_STORAGE_ROOT+filePath);
+        if (!StringUtils.isEmpty(filePath)) {
+            imgId = userDao.saveOutimg(uid, t, Constant.IMG_STORAGE_ROOT + filePath);
         }
-        String imageIds = imgId == -1? "":String.valueOf(imgId);
+        String imageIds = imgId == -1 ? "" : String.valueOf(imgId);
         sayId = userDao.saveSay(uid, t, msg, imageIds, reward, by, schoolId);
         return sayId;
     }

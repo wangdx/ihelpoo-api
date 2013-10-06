@@ -407,9 +407,9 @@ public class WordService extends RecordService {
                     .friendid(friendID)
                     .friendname(usersMap.get(friendID).getNickname())
                     .sender(friendName)
-                    .senderid(talk.getUid())
+                    .senderid(talk.getUid() == null ? 0 : talk.getUid())
                     .content(talk.getContent())
-                    .messageCount(talk.getChatNum())
+                    .messageCount(talk.getChatNum() == null ? 0 : talk.getChatNum())
                     .pubDate(convertToDate(talk.getTime()))
                     .build();
             chats.add(c1);

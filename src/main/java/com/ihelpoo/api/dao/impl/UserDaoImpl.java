@@ -74,7 +74,15 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public VUserDetailEntity findUserDetailById(int uid) {
-        String sql = " SELECT * FROM v_user_detail where uid=? ";
+        String sql = " select a.uid, a. status, a. email, a.password, a.nickname, a.sex, a.birthday, a.enteryear, a.type, a.priority, a.ip, a.logintime,\n" +
+                "a.creat_ti, a.login_days_co, a.online, a.coins, a.active, a.icon_fl, a.icon_url, a.skin, \n" +
+                "b.introduction, b.introduction_re, b.realname, b.mobile, b.qq, b.weibo, b.fans, b.follow,  \n" +
+                "c.school, c.domain, d.name as academy_name, e.name as major_name\n" +
+                "from i_user_login a\n" +
+                "join i_user_info b on a.uid=b.uid\n" +
+                "join i_school_info c on a.school=c.id\n" +
+                "join i_op_academy d on d.id=b.academy_op\n" +
+                "join i_op_specialty e on e.id=b.specialty_op where a.uid=? ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<VUserDetailEntity>(VUserDetailEntity.class));
     }
 
