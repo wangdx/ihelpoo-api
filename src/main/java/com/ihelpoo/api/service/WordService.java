@@ -170,7 +170,7 @@ public class WordService extends RecordService {
 
 
     private UserWordResult fetchComment(int uid, int schoolId, int pageIndex, int pageSize, int catalog) {
-        if(catalog == 2){//AT_ME
+        if (catalog == 2) {//AT_ME
             return fetchAt(uid, schoolId, pageIndex, pageSize);
         } else {
             return fetchComments(uid, pageIndex, pageSize);
@@ -180,26 +180,26 @@ public class WordService extends RecordService {
     private UserWordResult fetchAt(int uid, int schoolId, int pageIndex, int pageSize) {
         List<VAtUserEntity> atUserEntities = commentDao.fetchAllAtBy(uid, pageIndex, pageSize);
         List<Active> activeList = new ArrayList<Active>();
-        for(VAtUserEntity atUserEntity: atUserEntities){
+        for (VAtUserEntity atUserEntity : atUserEntities) {
             String content = "";
             String info = "";
             String contentDetail = "";
-            if(atUserEntity.getCid() != null && atUserEntity.getCid() > 0){
+            if (atUserEntity.getCid() != null && atUserEntity.getCid() > 0) {
                 info = "这条评论@了你";
                 IRecordCommentEntity commentEntity = commentDao.fetchCommentBy(atUserEntity.getCid());
                 content = commentEntity.getContent() == null ? "这条评论被你删除了的" : commentEntity.getContent();
-            } else if(atUserEntity.getHid() != null && atUserEntity.getHid() > 0){
+            } else if (atUserEntity.getHid() != null && atUserEntity.getHid() > 0) {
                 info = "这条帮助回复@了你";
                 IRecordHelpreplyEntity helpreplyEntity = streamDao.findHelpBy(atUserEntity.getHid());
                 content = helpreplyEntity.getContent() == null ? "这条评论被你删除了的" : helpreplyEntity.getContent();
-            } else if(atUserEntity.getSid() != null && atUserEntity.getSid() > 0){
+            } else if (atUserEntity.getSid() != null && atUserEntity.getSid() > 0) {
                 IRecordSayEntity sayEntity = null;
-                try{
+                try {
                     sayEntity = streamDao.findTweetBy(atUserEntity.getSid());
-                }catch (EmptyResultDataAccessException e){
-                    logger.error("//////"+e.getMessage());
+                } catch (EmptyResultDataAccessException e) {
+                    logger.error("//////" + e.getMessage());
                 }
-                if(sayEntity != null){
+                if (sayEntity != null) {
                     if ("0".equals(sayEntity.getSayType())) {
                         info = "这条记录@了你";
                     } else if ("1".equals(sayEntity.getSayType())) {
@@ -262,27 +262,27 @@ public class WordService extends RecordService {
     private UserWordResult fetchComments(int uid, int pageIndex, int pageSize) {
         List<IMsgCommentEntity> msgCommentEntities = commentDao.fetchAllCommentsBy(uid, pageIndex, pageSize);
         List<Active> activeList = new ArrayList<Active>();
-        for(IMsgCommentEntity msgCommentEntity:msgCommentEntities){
+        for (IMsgCommentEntity msgCommentEntity : msgCommentEntities) {
             IUserLoginEntity user = userDao.findUserById(msgCommentEntity.getRid());
-            String nickname = user.getNickname() == null ?  "匿名用户" : user.getNickname();
+            String nickname = user.getNickname() == null ? "匿名用户" : user.getNickname();
             String content = null;
             String info = null;
             String contentDetail = null;
-            if(msgCommentEntity.getCid() != null){
+            if (msgCommentEntity.getCid() != null) {
                 IRecordCommentEntity commentEntity = commentDao.fetchCommentBy(msgCommentEntity.getCid());
                 content = commentEntity.getContent() == null ? "这条评论被你删除了的" : commentEntity.getContent();
                 info = "回复了你的评论: ";
-            }else {
+            } else {
                 IRecordSayEntity sayEntity = streamDao.findTweetBy(msgCommentEntity.getSid());
                 content = sayEntity.getContent() == null ? "内容被你删除了的" : sayEntity.getContent();
                 info = "评论了你：";
             }
-            if(msgCommentEntity.getNcid() != null){
+            if (msgCommentEntity.getNcid() != null) {
                 IRecordCommentEntity commentEntityDetail = commentDao.fetchCommentBy(msgCommentEntity.getNcid());
-                contentDetail = commentEntityDetail.getContent() == null ? "评论又被"+nickname+"删除了":commentEntityDetail.getContent();
+                contentDetail = commentEntityDetail.getContent() == null ? "评论又被" + nickname + "删除了" : commentEntityDetail.getContent();
             }
 
-            ObjectReply or =  new ObjectReply("我", content);
+            ObjectReply or = new ObjectReply("我", content);
             Active active = new Active.Builder()
                     .sid(msgCommentEntity.getSid())
                     .avatar(convertToAvatarUrl(user.getIconUrl(), user.getUid()))
@@ -340,12 +340,12 @@ public class WordService extends RecordService {
         List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();
         for (IMsgActiveEntity active : actives) {
             MessageResult.Message msgs = new MessageResult.Message();
-                    msgs.id = active.getId();
-                    msgs.author = "(" + active.getTotal() + ")";
-                    msgs.commentCount = Integer.valueOf(active.getDeliver());
-                    msgs.pubDate = convertToDate(active.getTime());
-                    msgs.title = " " + active.getReason();
-                    msgs.inout = "min".equals(active.getWay()) ? "-" + active.getChange() : "+" + active.getChange();
+            msgs.id = active.getId();
+            msgs.author = "(" + active.getTotal() + ")";
+            msgs.commentCount = Integer.valueOf(active.getDeliver());
+            msgs.pubDate = convertToDate(active.getTime());
+            msgs.title = " " + active.getReason();
+            msgs.inout = "min".equals(active.getWay()) ? "-" + active.getChange() : "+" + active.getChange();
             list.add(msgs);
         }
         Notice notice = new Notice.Builder()
@@ -387,31 +387,29 @@ public class WordService extends RecordService {
 
         for (ITalkContentEntity talk : oneWayTalks) {
 
-            logger.debug("-talk.getId()="+ talk.getId() +" talk.getUid()="+talk.getUid()+" talk.getTouid()="+talk.getTouid()
-                    +" talk.getContent()"+talk.getContent()+" talk.getChatNum()"+talk.getChatNum() +" talk.getTime()"+talk.getTime());
+            logger.debug("-talk.getId()=" + talk.getId() + " talk.getUid()=" + talk.getUid() + " talk.getTouid()=" + talk.getTouid()
+                    + " talk.getContent()" + talk.getContent() + " talk.getChatNum()" + talk.getChatNum() + " talk.getTime()" + talk.getTime());
             IUserLoginEntity fromUser = usersMap.get(talk.getUid());
-            logger.debug(" fromUser: "+fromUser);
+            logger.debug(" fromUser: " + fromUser);
             String fromIcon = fromUser == null ? "" : fromUser.getIconUrl();
 
             IUserLoginEntity friend = usersMap.get(talk.getUid());
-            logger.debug(" friend: "+friend);
-            String friendName = friend == null ?"":friend.getNickname();
+            logger.debug(" friend: " + friend);
+            String friendName = friend == null ? "" : friend.getNickname();
 
             int friendID = talk.getTouid() == uid ? talk.getUid() : talk.getTouid();
 
 
-
-            ChatResult.Chat c1 = new ChatResult.Chat.Builder()
-                    .id(talk.getId())
-                    .portrait(convertToAvatarUrl(fromIcon, talk.getUid()))
-                    .friendid(friendID)
-                    .friendname(usersMap.get(friendID).getNickname())
-                    .sender(friendName)
-                    .senderid(talk.getUid() == null ? 0 : talk.getUid())
-                    .content(talk.getContent())
-                    .messageCount(talk.getChatNum() == null ? 0 : talk.getChatNum())
-                    .pubDate(convertToDate(talk.getTime()))
-                    .build();
+            ChatResult.Chat c1 = new ChatResult.Chat();
+            c1.id = talk.getId();
+            c1.portrait = convertToAvatarUrl(fromIcon, talk.getUid() == null ? 10000 : talk.getUid());
+            c1.friendid = friendID;
+            c1.friendname = usersMap.get(friendID) == null ? "" : usersMap.get(friendID).getNickname();
+            c1.sender = friendName;
+            c1.senderid = talk.getUid() == null ? 0 : talk.getUid();
+            c1.content = talk.getContent();
+            c1.messageCount = talk.getChatNum() == null ? 0 : talk.getChatNum();
+            c1.pubDate = convertToDate(talk.getTime());
             chats.add(c1);
 
         }
@@ -426,21 +424,21 @@ public class WordService extends RecordService {
 
         ChatResult.Chats chatList = new ChatResult.Chats(chats);
 
-        chatResult.setMessageCount(oneWayTalks.size());
-        chatResult.setMessages(chatList);
-        chatResult.setNotice(notice);
-        chatResult.setPagesize(pageSize);
+        chatResult.messageCount = oneWayTalks.size();
+        chatResult.messages = chatList;
+        chatResult.notice = notice;
+        chatResult.pagesize = pageSize;
         return chatResult;  //To change body of created methods use File | Settings | File Templates.
     }
 
     private Collection<ITalkContentEntity> normalizeToOneWay(List<ITalkContentEntity> talks) {
         Map<String, ITalkContentEntity> talkMap = new HashMap<String, ITalkContentEntity>();
-        ValueComparator bvc =  new ValueComparator(talkMap);
-        TreeMap<String,ITalkContentEntity> sortedMap = new TreeMap<String,ITalkContentEntity>(bvc);
+        ValueComparator bvc = new ValueComparator(talkMap);
+        TreeMap<String, ITalkContentEntity> sortedMap = new TreeMap<String, ITalkContentEntity>(bvc);
         for (ITalkContentEntity talk : talks) {
             String key = talk.getUid() + "-" + talk.getTouid();
-            if (talkMap.keySet().contains(talk.getTouid() + "-" +talk.getUid())) {
-                ITalkContentEntity originTalk = talkMap.get(talk.getTouid() + "-" +talk.getUid());
+            if (talkMap.keySet().contains(talk.getTouid() + "-" + talk.getUid())) {
+                ITalkContentEntity originTalk = talkMap.get(talk.getTouid() + "-" + talk.getUid());
                 originTalk.setChatNum(originTalk.getChatNum() + talk.getChatNum());
                 continue;
             }
@@ -462,7 +460,7 @@ public class WordService extends RecordService {
                     .authorid(commentEntity.getUid())
                     .avatar(convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid()))
                     .by(0)
-                    .id(commentEntity.getSid() == null ? -1 :  commentEntity.getSid())//would be chats if -1
+                    .id(commentEntity.getSid() == null ? -1 : commentEntity.getSid())//would be chats if -1
                     .build();
             comments.add(comment);
         }
@@ -485,6 +483,7 @@ public class WordService extends RecordService {
     class ValueComparator implements Comparator<String> {
 
         Map<String, ITalkContentEntity> base;
+
         public ValueComparator(Map<String, ITalkContentEntity> base) {
             this.base = base;
         }
@@ -500,11 +499,11 @@ public class WordService extends RecordService {
     }
 
 
-    public String replace(String src, String patternStr, String replacement){
+    public String replace(String src, String patternStr, String replacement) {
         StringBuffer target = new StringBuffer();
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(src);
-        while(matcher.find()){
+        while (matcher.find()) {
             matcher.appendReplacement(target, replacement);
         }
         matcher.appendTail(target);

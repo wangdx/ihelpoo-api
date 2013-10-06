@@ -16,63 +16,22 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ChatResult {
     @XmlElement
-    int pagesize;
+    public int pagesize;
     @XmlElement
-    int messageCount;
-
-    @XmlElement
-    Chats messages;
+    public int messageCount;
 
     @XmlElement
-    Notice notice;
+    public Chats messages;
 
-
-    public int getPagesize() {
-        return pagesize;
-    }
-
-    public void setPagesize(int pagesize) {
-        this.pagesize = pagesize;
-    }
-
-    public int getMessageCount() {
-        return messageCount;
-    }
-
-    public void setMessageCount(int messageCount) {
-        this.messageCount = messageCount;
-    }
-
-    public Chats getMessages() {
-        return messages;
-    }
-
-    public void setMessages(Chats messages) {
-        this.messages = messages;
-    }
-
-    public Notice getNotice() {
-        return notice;
-    }
-
-    public void setNotice(Notice notice) {
-        this.notice = notice;
-    }
+    @XmlElement
+    public Notice notice;
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Chats {
         @XmlElement
-        List<Chat> message;
+        public List<Chat> message;
 
         public Chats(List<Chat> message) {
-            this.message = message;
-        }
-
-        public List<Chat> getMessage() {
-            return message;
-        }
-
-        public void setMessage(List<Chat> message) {
             this.message = message;
         }
     }
@@ -80,173 +39,22 @@ public class ChatResult {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Chat {
         @XmlElement
-        int id;
+        public int id;
         @XmlElement
-        String portrait;
+        public String portrait;
         @XmlElement
-        int friendid;
+        public int friendid;
         @XmlElement
-        String friendname;
+        public String friendname;
         @XmlElement
-        String sender;
+        public String sender;
         @XmlElement
-        int senderid;
+        public int senderid;
         @XmlElement
-        String content;
+        public String content;
         @XmlElement
-        int messageCount;
+        public int messageCount;
         @XmlElement
-        String pubDate;
-
-        private Chat() {
-        }
-
-        public Chat(Builder builder) {
-            this.content = builder.content;
-            this.friendid = builder.friendid;
-            this.friendname = builder.friendname;
-            this.id = builder.id;
-            this.messageCount = builder.messageCount;
-            this.portrait = builder.portrait;
-            this.pubDate = builder.pubDate;
-            this.sender = builder.sender;
-            this.senderid=builder.senderid;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getPortrait() {
-            return portrait;
-        }
-
-        public void setPortrait(String portrait) {
-            this.portrait = portrait;
-        }
-
-        public int getFriendid() {
-            return friendid;
-        }
-
-        public void setFriendid(int friendid) {
-            this.friendid = friendid;
-        }
-
-        public String getFriendname() {
-            return friendname;
-        }
-
-        public void setFriendname(String friendname) {
-            this.friendname = friendname;
-        }
-
-        public String getSender() {
-            return sender;
-        }
-
-        public void setSender(String sender) {
-            this.sender = sender;
-        }
-
-        public int getSenderid() {
-            return senderid;
-        }
-
-        public void setSenderid(int senderid) {
-            this.senderid = senderid;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public int getMessageCount() {
-            return messageCount;
-        }
-
-        public void setMessageCount(int messageCount) {
-            this.messageCount = messageCount;
-        }
-
-        public String getPubDate() {
-            return pubDate;
-        }
-
-        public void setPubDate(String pubDate) {
-            this.pubDate = pubDate;
-        }
-
-        public static class Builder {
-            public Chat build() {
-                return new Chat(this);
-            }
-
-            int id;
-            String portrait;
-            int friendid;
-            String friendname;
-            String sender;
-            int senderid;
-            String content;
-            int messageCount;
-            String pubDate;
-
-            public Builder portrait(String portrait) {
-                this.portrait = portrait;
-                return this;
-            }
-
-            public Builder friendname(String friendname) {
-                this.friendname = friendname;
-                return this;
-            }
-
-            public Builder sender(String sender) {
-                this.sender = sender;
-                return this;
-            }
-
-            public Builder content(String content) {
-                this.content = content;
-                return this;
-            }
-
-            public Builder pubDate(String pubDate) {
-                this.pubDate = pubDate;
-                return this;
-            }
-
-            public Builder senderid(int senderid) {
-                this.senderid = senderid;
-                return this;
-            }
-
-            public Builder id(int id) {
-                this.id = id;
-                return this;
-            }
-
-            public Builder friendid(int friendid) {
-                this.friendid = friendid;
-                return this;
-            }
-
-            public Builder messageCount(int messageCount) {
-                this.messageCount = messageCount;
-                return this;
-            }
-
-        }
-
-
+        public String pubDate;
     }
 }
