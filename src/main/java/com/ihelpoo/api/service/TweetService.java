@@ -115,6 +115,7 @@ public class TweetService extends RecordService {
         tweet.author = tweetDetailEntity.getAuthor();
         tweet.authorid = tweetDetailEntity.getUid();
         tweet.plusByMe = 0;
+        tweet.plusCount = tweetDetailEntity.getPlusCo();
         TweetDetailResult tdr = new TweetDetailResult(tweet, notice);
         return tdr;
     }

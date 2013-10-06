@@ -62,6 +62,8 @@ public class TweetResult {
         @XmlElement
         public int spreadCount;
         @XmlElement
+        public int plusCount;
+        @XmlElement
         public String academy;
         @XmlElement
         public String authorType;

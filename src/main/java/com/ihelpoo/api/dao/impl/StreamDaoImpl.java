@@ -217,7 +217,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
     @Override
     public VTweetDetailEntity findTweetDetailBy(int sid) {
-        String sql = "select sid,i_record_say.uid,i_user_login.icon_url,online,comment_co,diffusion_co,`from` `by`,content,`time`,active,sex,birthday,i_op_specialty.`name` academy, `type` author_type,enteryear enter_year,nickname author\n" +
+        String sql = "select sid,i_record_say.uid,i_user_login.icon_url,online,comment_co,diffusion_co,plus_co,`from` `by`,content,`time`,active,sex,birthday,i_op_specialty.`name` academy, `type` author_type,enteryear enter_year,nickname author\n" +
                 " from i_record_say " +
                 " join i_user_login on i_record_say.uid=i_user_login.uid " +
                 " join i_user_info on i_record_say.uid=i_user_info.uid " +

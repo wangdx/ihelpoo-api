@@ -20,6 +20,9 @@ public class VTweetDetailEntity {
     private String enterYear;
     private String author;
     private String iconUrl;
+    private int plusCo;
+    private Integer type;
+    private String enteryear;
 
     public int getSid() {
         return sid;
@@ -193,5 +196,29 @@ public class VTweetDetailEntity {
 
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
+    }
+
+    public int getPlusCo() {
+        return plusCo;
+    }
+
+    public void setPlusCo(int plusCo) {
+        this.plusCo = plusCo;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getEnteryear() {
+        return enteryear;
+    }
+
+    public void setEnteryear(String enteryear) {
+        this.enteryear = enteryear;
     }
 }
