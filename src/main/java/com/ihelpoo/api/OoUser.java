@@ -14,10 +14,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ihelpoo users
@@ -88,6 +85,65 @@ public class OoUser {
 
         }
         return filePath;
+    }
+
+
+
+    @RequestMapping(value = "/active.xml", method = RequestMethod.GET, produces = "application/xml")
+    @ResponseBody
+    public MessageResult stream(@RequestParam(value = "pageIndex", required = false) int pageIndex,
+                                @RequestParam(value = "pageSize", required = false) int pageSize,
+                                @RequestParam(value = "catalog", required = false) int catalog,
+                                @RequestParam(value = "uid", required = false) int uid,
+                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+
+//        return wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
+
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+        List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();
+
+//        wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
+
+        MessageResult.Message m1 = new MessageResult.Message();
+        m1.author = "蔡耀华";
+        m1.commentCount = 2;
+        m1.id = 1;
+        m1.pubDate = "2013-09-06 08:02:44";
+        m1.title =  "赞了你发布的";
+        m1.url = "http://www.google.com";
+        m1.inout = "";
+
+        MessageResult.Message m2 = new MessageResult.Message();
+        m2.author = "蔡耀华";
+        m2.commentCount = 2;
+        m2.id = 1;
+        m2.pubDate = "2013-09-06 08:02:44";
+        m2.title =  "赞了你发布的";
+        m2.url = "http://www.google.com";
+        m2.inout = "";
+
+        MessageResult.Message m3 = new MessageResult.Message();
+        m3.author = "蔡耀华";
+        m3.commentCount = 2;
+        m3.id = 1;
+        m3.pubDate = "2013-09-06 08:02:44";
+        m3.title =  "赞了你发布的";
+        m3.url = "http://www.google.com";
+        m3.inout = "";
+        list.add(m1);
+        list.add(m2);
+        list.add(m3);
+        MessageResult.Messages newslist = new MessageResult.Messages(list);
+        MessageResult mr = new MessageResult();
+        mr.pagesize = 20;
+        mr.notice = notice;
+        mr.newslist = newslist;
+        return mr;
     }
 
     @RequestMapping(value = "/fos.json", method = RequestMethod.GET, produces = "application/json")

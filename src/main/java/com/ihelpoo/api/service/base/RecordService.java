@@ -85,6 +85,9 @@ public class RecordService {
     }
 
     protected String convertToGossip(Integer sex, String birthday) {
+        if(birthday == null){
+            return "未知";
+        }
         String gossip = "";
         if (empty(birthday)) {
             gossip += "";
