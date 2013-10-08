@@ -79,3 +79,10 @@ join i_op_academy d on d.id=b.academy_op
 join i_op_specialty e on e.id=b.specialty_op)
 ;
 
+
+create view v_login_record as(
+select
+sid,i_user_login.uid,say_type,content,image,url,comment_co,diffusion_co,hit_co,`time`,`from`,last_comment_ti,nickname,sex,birthday,enteryear,`type`,online,active,icon_url
+from i_record_say
+left join i_user_login on i_record_say.uid = i_user_login.uid
+);

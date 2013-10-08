@@ -1,7 +1,11 @@
 package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.UserDao;
+import com.ihelpoo.api.model.MessageResult;
+import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
+import com.ihelpoo.api.model.entity.VLoginRecordEntity;
+import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.UpYun;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +15,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author: dongxu.wang@acm.org
  */
 @Service
-public class UserService {
+public class UserService extends RecordService {
     @Autowired
     UserDao userDao;
     private int imgId;
@@ -36,9 +42,9 @@ public class UserService {
 
     @Transactional
     public void updateRecord(int uid, String newImageName, int schoolId) {
-        long t = System.currentTimeMillis()/1000;
+        long t = System.currentTimeMillis() / 1000;
         userDao.updateAvatar(uid, 1, newImageName);
-        int imgId = userDao.saveOutimg(uid, t, Constant.IMG_STORAGE_ROOT  + "/useralbum/" + uid + "/" + newImageName + ".jpg");
+        int imgId = userDao.saveOutimg(uid, t, Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + newImageName + ".jpg");
         int sayId = userDao.addSay(uid, 2, "我刚刚换了新头像噢 :)", imgId, t, "动态", schoolId);
         int dynId = userDao.addDynamic(sayId, "changeicon");
     }
@@ -83,5 +89,34 @@ public class UserService {
 
         }
         return newImageName;
+    }
+
+    public MessageResult fetchActivesBy(int uid, int pageIndex, int pageSize) {
+        List<VLoginRecordEntity> entities = userDao.findAllActivesBy(uid, pageIndex, pageSize);
+        List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();
+        for (VLoginRecordEntity entity : entities) {
+            MessageResult.Message message = new MessageResult.Message();
+            message.author = entity.getNickname();
+            message.commentCount = entity.getCommentCo() == null ? 0 : entity.getCommentCo();
+            message.id = entity.getSid();
+            message.pubDate = convertToDate(entity.getTime());
+            message.title = entity.getContent();
+            message.url = entity.getUrl();
+            message.inout = "";
+            list.add(message);
+        }
+
+        Notice notice = new Notice.Builder()
+                .talk(0)
+                .system(0)
+                .comment(0)
+                .at(0)
+                .build();
+        MessageResult.Messages newslist = new MessageResult.Messages(list);
+        MessageResult mr = new MessageResult();
+        mr.pagesize = 20;
+        mr.notice = notice;
+        mr.newslist = newslist;
+        return mr;
     }
 }

@@ -2,10 +2,7 @@ package com.ihelpoo.api.dao;
 
 import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.model.UserList;
-import com.ihelpoo.api.model.entity.IUserLoginEntity;
-import com.ihelpoo.api.model.entity.IUserPriorityEntity;
-import com.ihelpoo.api.model.entity.IUserStatusEntity;
-import com.ihelpoo.api.model.entity.VUserDetailEntity;
+import com.ihelpoo.api.model.entity.*;
 
 import java.util.List;
 import java.util.Set;
@@ -59,4 +56,6 @@ public interface UserDao {
     List<IUserPriorityEntity> findAllPrioritiesByUid(int uid);
 
     List<IUserPriorityEntity> findFollowersBy(int uid);
+
+    List<VLoginRecordEntity> findAllActivesBy(int uid, int pageIndex, int pageSize);
 }

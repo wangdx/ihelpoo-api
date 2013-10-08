@@ -4,6 +4,7 @@ import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.*;
 import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.base.Result;
+import com.ihelpoo.api.model.entity.VLoginRecordEntity;
 import com.ihelpoo.api.service.UserService;
 import com.ihelpoo.common.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,51 +83,7 @@ public class OoUser {
 
 //        return wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
 
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
-        List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();
-
-//        wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
-
-        MessageResult.Message m1 = new MessageResult.Message();
-        m1.author = "蔡耀华";
-        m1.commentCount = 2;
-        m1.id = 1;
-        m1.pubDate = "2013-09-06 08:02:44";
-        m1.title =  "赞了你发布的";
-        m1.url = "http://www.google.com";
-        m1.inout = "";
-
-        MessageResult.Message m2 = new MessageResult.Message();
-        m2.author = "蔡耀华";
-        m2.commentCount = 2;
-        m2.id = 1;
-        m2.pubDate = "2013-09-06 08:02:44";
-        m2.title =  "赞了你发布的";
-        m2.url = "http://www.google.com";
-        m2.inout = "";
-
-        MessageResult.Message m3 = new MessageResult.Message();
-        m3.author = "蔡耀华";
-        m3.commentCount = 2;
-        m3.id = 1;
-        m3.pubDate = "2013-09-06 08:02:44";
-        m3.title =  "赞了你发布的";
-        m3.url = "http://www.google.com";
-        m3.inout = "";
-        list.add(m1);
-        list.add(m2);
-        list.add(m3);
-        MessageResult.Messages newslist = new MessageResult.Messages(list);
-        MessageResult mr = new MessageResult();
-        mr.pagesize = 20;
-        mr.notice = notice;
-        mr.newslist = newslist;
-        return mr;
+        return userService.fetchActivesBy(uid, pageIndex, pageSize);
     }
 
     @RequestMapping(value = "/fos.json", method = RequestMethod.GET, produces = "application/json")

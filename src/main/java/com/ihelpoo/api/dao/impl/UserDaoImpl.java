@@ -3,10 +3,7 @@ package com.ihelpoo.api.dao.impl;
 import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.UserList;
-import com.ihelpoo.api.model.entity.IUserLoginEntity;
-import com.ihelpoo.api.model.entity.IUserPriorityEntity;
-import com.ihelpoo.api.model.entity.IUserStatusEntity;
-import com.ihelpoo.api.model.entity.VUserDetailEntity;
+import com.ihelpoo.api.model.entity.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -277,6 +274,15 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     public List<IUserPriorityEntity> findFollowersBy(int uid) {
         String sql = " SELECT * FROM i_user_priority WHERE pid=? ";
         return getJdbcTemplate().query(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
+    }
+
+    @Override
+    public List<VLoginRecordEntity> findAllActivesBy(int uid, int pageIndex, int pageSize) {
+        final String sql = " select sid,i_user_login.uid,say_type,content,image,url,comment_co,diffusion_co,hit_co,`time`,`from`,last_comment_ti,nickname,sex,birthday,enteryear,`type`,online,active,icon_url from i_record_say\n" +
+                " left join i_user_login on i_record_say.uid = i_user_login.uid\n" +
+                " where i_user_login.uid=?\n" +
+                " order by i_record_say.time DESC ";
+        return getJdbcTemplate().query(sql, new Object[]{uid}, new BeanPropertyRowMapper<VLoginRecordEntity>(VLoginRecordEntity.class));
     }
 
 
