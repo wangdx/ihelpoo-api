@@ -64,7 +64,7 @@ public class TweetService extends RecordService {
         for (VTweetStreamEntity tweetEntity : tweetEntities) {
             String firstImgUrl = convertToImageUrl(tweetEntity.getSid());
             TweetResult.Tweet tweet = new TweetResult.Tweet();
-            tweet.academy = "[" + tweetEntity.getName() + "]";
+            tweet.academy = StringUtils.isEmpty(tweetEntity.getName()) ? "" : "[" + tweetEntity.getName() + "]";
             tweet.rank = convertToRank(tweetEntity.getActive());
             tweet.onlineState = convertToOnlineState(tweetEntity.getOnline());
             tweet.portrait = convertToAvatarUrl(tweetEntity.getIconUrl(), tweetEntity.getUid());
