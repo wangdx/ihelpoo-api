@@ -32,9 +32,6 @@ public class StreamService {
     @Autowired
     UserDao userDao;
 
-    @Autowired
-    UserPriorityDao userPriorityDao;
-
     public UserWordResult pullUserActiveBy(int uid, String hisname, int hisuid, int pageIndex, int pageSize) {
         VUserDetailEntity userDetailEntity = userDao.findUserDetailById(hisuid);
         List<IRecordSayEntity> recordSayEntities = streamDao.findTweetsBy(hisuid, pageIndex, pageSize);
@@ -101,7 +98,7 @@ public class StreamService {
     }
 
     public StreamResult pullBy(int uid, int catalog, int schoolId, int pageIndex, int pageSize) {
-        List<IUserPriorityEntity> priorityEntities = userPriorityDao.findAllPrioritiesByUid(uid);
+        List<IUserPriorityEntity> priorityEntities = userDao.findAllPrioritiesByUid(uid);
         StringBuilder pids = new StringBuilder();
         StringBuilder sids = new StringBuilder();
         if (!priorityEntities.isEmpty()) {
@@ -288,9 +285,9 @@ public class StreamService {
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
         if (!empty(iconUrl)) {
-            return Constant.IMG_STORAGE_ROOT + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
         } else {
-            return Constant.IMG_STORAGE_ROOT + "useralbum/default_avatar.jpg!app";
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
         }
     }
 

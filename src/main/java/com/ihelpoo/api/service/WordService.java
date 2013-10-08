@@ -453,15 +453,15 @@ public class WordService extends RecordService {
         int allCount = commentEntities.size();
         List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
         for (VTweetCommentEntity commentEntity : commentEntities) {
-            TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
-                    .content(commentEntity.getContent())
-                    .date(convertToDate(commentEntity.getTime()))
-                    .author(commentEntity.getNickname())
-                    .authorid(commentEntity.getUid())
-                    .avatar(convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid()))
-                    .by(0)
-                    .id(commentEntity.getSid() == null ? -1 : commentEntity.getSid())//would be chats if -1
-                    .build();
+            TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
+            comment.content = commentEntity.getContent();
+            comment.pubDate = convertToDate(commentEntity.getTime());
+            comment.author = commentEntity.getNickname();
+            comment.authorid = commentEntity.getUid();
+            comment.portrait =
+                    convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid());
+            comment.id = commentEntity.getSid() == null ? -1 : commentEntity.getSid();
+            comment.appclient = 0;
             comments.add(comment);
         }
         Notice notice = new Notice.Builder()
@@ -473,10 +473,10 @@ public class WordService extends RecordService {
 
         TweetCommentResult commentResult = new TweetCommentResult();
         TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
-        commentResult.setAllCount(allCount);
-        commentResult.setPagesize(pageSize);
-        commentResult.setComments(commentWrapper);
-        commentResult.setNotice(notice);
+        commentResult.allCount = allCount;
+        commentResult.pagesize = pageSize;
+        commentResult.comments = commentWrapper;
+        commentResult.notice = notice;
         return commentResult;
     }
 

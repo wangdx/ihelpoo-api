@@ -6,15 +6,12 @@ import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.service.UserService;
 import com.ihelpoo.common.Constant;
-import com.ihelpoo.common.util.UpYun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -60,7 +57,7 @@ public class OoUser {
 
 
         long t = System.currentTimeMillis() / 1000L;
-        String newImageName = uploadFile(uid, (MultipartHttpServletRequest) request, t);
+        String newImageName = userService.uploadFile(uid, (MultipartHttpServletRequest) request, t);
         userService.updateRecord(uid, newImageName, 1);// TODO get schoolId from userCookie
 
         GenericResult result = new GenericResult();
@@ -73,50 +70,6 @@ public class OoUser {
         result.setNotice(new Notice());
         return result;
     }
-
-
-    private String uploadFile(int uid, MultipartHttpServletRequest request, long t) {
-        MultipartFile multipartFile = request.getFile("portrait");
-        if (multipartFile == null) {
-            return "";
-        }
-        String imageOldName = multipartFile.getOriginalFilename();
-        String newImageName = "icon" + uid + t;
-        String imagePath = "/useralbum/" + uid + "/" + newImageName;
-        String suffix = imageOldName.substring(imageOldName.lastIndexOf('.'));
-        String mFilePath = imagePath + "_m" + suffix;
-        String sFilePath = imagePath + "_s" + suffix;
-        String lFilePath = imagePath + suffix;
-
-        Map<String, String> lParams = new HashMap<String, String>();
-        Map<String, String> mParams = new HashMap<String, String>();
-        Map<String, String> sParams = new HashMap<String, String>();
-
-        // 设置缩略图类型，必须搭配缩略图参数值（KEY_VALUE）使用，否则无效
-        lParams.put(UpYun.PARAMS.KEY_X_GMKERL_TYPE.getValue(), UpYun.PARAMS.VALUE_FIX_BOTH.getValue());
-        // 设置缩略图参数值，必须搭配缩略图类型（KEY_TYPE）使用，否则无效
-        lParams.put(UpYun.PARAMS.KEY_X_GMKERL_VALUE.getValue(), "500x375");
-        // 设置缩略图的质量，默认 95
-        lParams.put(UpYun.PARAMS.KEY_X_GMKERL_QUALITY.getValue(), "95");
-
-        mParams.put(UpYun.PARAMS.KEY_X_GMKERL_TYPE.getValue(), UpYun.PARAMS.VALUE_FIX_BOTH.getValue());
-        mParams.put(UpYun.PARAMS.KEY_X_GMKERL_VALUE.getValue(), "180x135");
-
-
-        sParams.put(UpYun.PARAMS.KEY_X_GMKERL_TYPE.getValue(), UpYun.PARAMS.VALUE_FIX_BOTH.getValue());
-        sParams.put(UpYun.PARAMS.KEY_X_GMKERL_VALUE.getValue(), "68x51");
-
-        UpYun upyun = new UpYun("ihelpoo", "api", "Ihelpoo.com");
-        try {
-            upyun.writeFile(lFilePath, multipartFile.getBytes(), true, lParams);
-            upyun.writeFile(mFilePath, multipartFile.getBytes(), true, mParams);
-            upyun.writeFile(sFilePath, multipartFile.getBytes(), true, sParams);
-        } catch (IOException e) {
-
-        }
-        return newImageName;
-    }
-
 
 
     @RequestMapping(value = "/active.xml", method = RequestMethod.GET, produces = "application/xml")

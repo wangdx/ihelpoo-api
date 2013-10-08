@@ -3,6 +3,7 @@ package com.ihelpoo.api.dao;
 import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
+import com.ihelpoo.api.model.entity.IUserPriorityEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
 import com.ihelpoo.api.model.entity.VUserDetailEntity;
 
@@ -29,7 +30,7 @@ public interface UserDao {
 
     int updateActive(int uid, int newUserActive);
 
-    int saveMsgActive(int uid, int total, int change, String reason);
+    int saveMsgActive(String way, int uid, int total, int change, String reason);
 
     int updateStatus(int uid, int activeFlag, int clear);
 
@@ -37,7 +38,7 @@ public interface UserDao {
 
     int saveOutimg(int uid, long t, String filePath);
 
-    int saveSay(int uid, long t, String msg, String imageIds, String reward, String by, int schoolId);
+    int saveSay(int uid, long t, String msg, String imageIds, Integer reward, String by, int schoolId);
 
     VUserDetailEntity findUserDetailById(int uid);
 
@@ -48,4 +49,14 @@ public interface UserDao {
     int addSay(int uid, int sayType, String body, int imgId, long t, String from, int schoolId);
 
     int addDynamic(int dynId, String changeicon);
+
+    int findSizeOfAlbum(int uid);
+
+    int addImageToAlbum(int uid, int schoolId, String s, long size, long t);
+
+    int updateStatus(int uid, int schoolId);
+
+    List<IUserPriorityEntity> findAllPrioritiesByUid(int uid);
+
+    List<IUserPriorityEntity> findFollowersBy(int uid);
 }

@@ -4,6 +4,7 @@ import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
+import com.ihelpoo.api.model.entity.IUserPriorityEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
 import com.ihelpoo.api.model.entity.VUserDetailEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -52,24 +53,33 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int saveSay(final int uid, final long t, final String msg, final String imageIds, final String reward, final String by, final int schoolId) {
-        final String sql = "insert into i_record_say (uid, say_type, content, image, url, authority, `time`, last_comment_ti, `from`, school_id) values(?,'0',?,?,'','0',?,?,?,?)";
+    public int saveSay(final int uid, final long t, final String msg, final String imageIds, final Integer reward, final String by, final int schoolId) {
+        final String sql = "insert into i_record_say (uid, say_type, content, image, url, authority, `time`, last_comment_ti, `from`, school_id) values(?,?,?,?,'','0',?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                 PreparedStatement ps =
                         connection.prepareStatement(sql, new String[]{"sid"});
                 ps.setInt(1, uid);
-                ps.setString(2, msg);
-                ps.setString(3, imageIds);
-                ps.setInt(4, (int)t);
-                ps.setInt(5, (int)t);
-                ps.setString(6, by);
-                ps.setInt(7, schoolId);
+                ps.setString(2, getSayType(reward));
+                ps.setString(3, msg);
+                ps.setString(4, imageIds);
+                ps.setInt(5, (int) t);
+                ps.setInt(6, (int) t);
+                ps.setString(7, by);
+                ps.setInt(8, schoolId);
                 return ps;
             }
         }, keyHolder);
         return keyHolder.getKey().intValue();
+    }
+
+    private String getSayType(Integer reward) {
+        return isHelp(reward) ? "1" : "0";
+    }
+
+    private boolean isHelp(Integer reward) {
+        return reward != null && reward >= 0;
     }
 
     @Override
@@ -135,6 +145,37 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
         return keyHolder.getKey().intValue();
     }
 
+    @Override
+    public int findSizeOfAlbum(int uid) {
+        final String sql = " SELECT sum(size) FROM i_user_album WHERE uid=? ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, uid);
+    }
+
+    @Override
+    public int addImageToAlbum(final int uid, final int type, final String imgUrl, final long size, final long t) {
+        final String sql = " INSERT INTO i_user_album (uid, `type`, url, `size`, `time`, foreignid) VALUES(?,?,?,?,?, 0) ";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps =
+                        connection.prepareStatement(sql, new String[]{"id"});
+                ps.setInt(1, uid);
+                ps.setString(2, type + "");
+                ps.setString(3, imgUrl);
+                ps.setLong(4, size);
+                ps.setLong(5, t);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public int updateStatus(int uid, int activeSLimit) {
+        final String sql = " UPDATE i_user_status SET active_s_limit=?  WHERE uid=? ";
+        return getJdbcTemplate().update(sql, activeSLimit, uid);
+    }
+
 
     @Override
     public UserList getUserList(int grade) {
@@ -182,15 +223,13 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     @Override
     public IUserLoginEntity findUserById(int uid) {
         String sql = " SELECT * FROM i_user_login WHERE uid=? ";
-        Object[] params = new Object[]{uid};
-        return getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
     }
 
     @Override
     public IUserStatusEntity findUserStatusById(int uid) {
-        String sql = " SELECT * FROM i_user_status WHERE uid=? ";
-        Object[] params = new Object[]{uid};
-        return getJdbcTemplate().queryForObject(sql, params, new BeanPropertyRowMapper<IUserStatusEntity>(IUserStatusEntity.class));
+        final String sql = " SELECT * FROM i_user_status WHERE uid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserStatusEntity>(IUserStatusEntity.class));
     }
 
     @Override
@@ -212,9 +251,9 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int saveMsgActive(int uid, int total, int change, String reason) {
-        String sql = " INSERT INTO i_msg_active(way, `time`, deliver, uid, total, `change`, reason) VALUES('add', unix_timestamp(), '0', ?,?,?,?) ";
-        return getJdbcTemplate().update(sql, new Object[]{uid, total, change, reason});
+    public int saveMsgActive(String way, int uid, int total, int change, String reason) {
+        String sql = " INSERT INTO i_msg_active(way, `time`, deliver, uid, total, `change`, reason) VALUES(?, unix_timestamp(), '0', ?,?,?,?) ";
+        return getJdbcTemplate().update(sql, new Object[]{way, uid, total, change, reason});
     }
 
     @Override
@@ -225,6 +264,19 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
         }
         final String sql = " UPDATE i_user_status SET active_flag=? " + otherFields + " WHERE uid=? ";
         return getJdbcTemplate().update(sql, activeFlag, uid);
+    }
+
+
+    @Override
+    public List<IUserPriorityEntity> findAllPrioritiesByUid(int uid) {
+        String sql = " SELECT * FROM i_user_priority WHERE uid=? ";
+        return getJdbcTemplate().query(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
+    }
+
+    @Override
+    public List<IUserPriorityEntity> findFollowersBy(int uid) {
+        String sql = " SELECT * FROM i_user_priority WHERE pid=? ";
+        return getJdbcTemplate().query(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
     }
 
 

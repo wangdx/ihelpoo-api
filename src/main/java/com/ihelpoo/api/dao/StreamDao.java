@@ -2,6 +2,7 @@ package com.ihelpoo.api.dao;
 
 import com.ihelpoo.api.model.TweetCommentPushResult;
 import com.ihelpoo.api.model.entity.*;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
 
@@ -31,4 +32,12 @@ public interface StreamDao {
     VTweetDetailEntity findTweetDetailBy(int sid);
 
     IRecordHelpreplyEntity findHelpBy(Integer hid);
+
+    List<IRecordSayEntity> findTweetsWithin(int uid, long twelveHours);
+
+    int findCountOfSaysWithin(int uid, long twelveHours);
+
+    IRecordSayEntity findLastTweetBy(int uid);
+
+    int saveHelpData(int sayId, int reward);
 }

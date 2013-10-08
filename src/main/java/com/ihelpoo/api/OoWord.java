@@ -80,12 +80,12 @@ public class OoWord {
         result.setErrorMessage("留言发表成功");
 
         TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
-        comment.setId(997502);
-        comment.setAuthorid(12419);
-        comment.setAuthor("echow");
-        comment.setContent("测试");
-        comment.setPortrait("http://static.oschina.net/uploads/user/457/915579_50.jpeg");
-        comment.setPubDate("2013-09-25 11:47:54");
+//        comment.setId(997502);
+//        comment.setAuthorid(12419);
+//        comment.setAuthor("echow");
+//        comment.setContent("测试");
+//        comment.setPortrait("http://static.oschina.net/uploads/user/457/915579_50.jpeg");
+//        comment.setPubDate("2013-09-25 11:47:54");
         doChatResult.result = result;
         doChatResult.comment = comment;
         doChatResult.notice = new Notice();
@@ -101,22 +101,6 @@ public class OoWord {
                                @RequestParam(value = "receiver", required = false) Integer receiver,
                                @RequestParam(value = "uid", required = false) Integer uid,
                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        DoChatResult doChatResult = new DoChatResult();
-        Result result = new Result();
-        result.setErrorCode("1");
-        result.setErrorMessage("留言发表成功");
-
-        TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
-        comment.setId(997502);
-        comment.setAuthorid(12419);
-        comment.setAuthor("echow");
-        comment.setContent("测试");
-        comment.setPortrait("http://static.oschina.net/uploads/user/457/915579_50.jpeg");
-        comment.setPubDate("2013-09-25 11:47:54");
-        doChatResult.result = result;
-        doChatResult.comment = comment;
-        doChatResult.notice = new Notice();
-
-        return doChatResult;
+        return doChat(content, receiver, uid, userCookie);
     }
 }

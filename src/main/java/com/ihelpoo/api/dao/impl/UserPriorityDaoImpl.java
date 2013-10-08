@@ -14,7 +14,6 @@ public class UserPriorityDaoImpl extends JdbcDaoSupport implements UserPriorityD
     @Override
     public List<IUserPriorityEntity> findAllPrioritiesByUid(int uid) {
         String sql = " SELECT * FROM i_user_priority WHERE uid=? ";
-        Object[] params = new Object[]{uid};
-        return getJdbcTemplate().query(sql, params, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
+        return getJdbcTemplate().query(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
     }
 }

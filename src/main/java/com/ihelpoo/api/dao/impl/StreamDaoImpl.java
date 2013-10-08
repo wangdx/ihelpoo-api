@@ -35,7 +35,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     @Override
     public List<IRecordSayEntity> findTweetsBy(int uid, int pageIndex, int pageSize) {
         String sql = " SELECT * from i_record_say where uid=? order by last_comment_ti DESC limit ? offset ?  ";
-        return getJdbcTemplate().query(sql, new Object[]{uid, pageSize, pageIndex * pageSize},  new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
+        return getJdbcTemplate().query(sql, new Object[]{uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
     }
 
     @Override
@@ -43,13 +43,13 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         int recentThreeMonth = (int) (System.currentTimeMillis() / 1000L) - 24 * 3600 * 90;
         StringBuilder sql = new StringBuilder(" select i_record_say.sid,i_user_login.uid,say_type,content,image,url,i_user_login.school,comment_co,diffusion_co,hit_co,plus_co,i_record_say.time,`from`,last_comment_ti,school_id,nickname,sex,birthday,enteryear,type,online,active,icon_url,i_user_info.specialty_op,i_op_specialty.name,i_op_specialty.academy,i_school_info.id,i_school_info.school as schoolname,i_school_info.domain,i_school_info.domain_main\n" +
                 " from i_record_say \n" +
-                " join i_user_login ON i_record_say.uid = i_user_login.uid\n" +
-                " join i_user_info on i_record_say.uid=i_user_info.uid\n" +
-                " join i_op_specialty on i_user_info.specialty_op=i_op_specialty.id " +
-                " join i_school_info ON i_user_login.school = i_school_info.id " +
+                " left join i_user_login ON i_record_say.uid = i_user_login.uid\n" +
+                " left join i_user_info on i_record_say.uid=i_user_info.uid\n" +
+                " left join i_op_specialty on i_user_info.specialty_op=i_op_specialty.id " +
+                " left join i_school_info ON i_user_login.school = i_school_info.id " +
                 " where say_type != '9' ");
         if (sids.length() > 0) {
-            sql.append(" and i_record_say.uid IN (").append(sids).append(") ");
+            sql.append(" and i_record_say.uid NOT IN (").append(sids).append(") ");
         }
         if (catalog == CATALOG_MINE && pids.length() > 0) {
             sql.append(" and i_record_say.uid IN (").append(pids).append(") ");
@@ -160,7 +160,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
             }
             sql2 += " where sid=? ";
             recordSayEntity = getJdbcTemplate().queryForObject("select * from i_record_say where sid=? ", new Object[]{id}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
-            getJdbcTemplate().update(sql2, new Object[]{recordSayEntity.getCommentCo() == null ? 1 :recordSayEntity.getCommentCo() + 1, recordSayEntity.getSid()});
+            getJdbcTemplate().update(sql2, new Object[]{recordSayEntity.getCommentCo() == null ? 1 : recordSayEntity.getCommentCo() + 1, recordSayEntity.getSid()});
         }
 
         IUserStatusEntity userStatusEntity = getJdbcTemplate().queryForObject(" select * from i_user_status where uid=? ", new Object[]{uid}, new BeanPropertyRowMapper<IUserStatusEntity>(IUserStatusEntity.class));
@@ -201,14 +201,14 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
                 .comment(0)
                 .at(0)
                 .build();
-        TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
-                .id(id)
-                .authorid(uid)
-                .avatar(convertToAvatarUrl(userLoginEntity.getIconUrl(), uid))
-                .author(userLoginEntity.getNickname())
-                .content(content)
-                .date((new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date(System.currentTimeMillis())))
-                .build();
+        TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
+        comment.content = content;
+        comment.pubDate = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date(System.currentTimeMillis()));
+        comment.author = userLoginEntity.getNickname();
+        comment.authorid = uid;
+        comment.portrait = convertToAvatarUrl(userLoginEntity.getIconUrl(), uid);
+        comment.id = id;
+        comment.appclient = 0;
 
         TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, comment, notice);
 
@@ -230,6 +230,44 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     public IRecordHelpreplyEntity findHelpBy(Integer hid) {
         String sql = " SELECT * from i_record_helpreply where id=? ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{hid}, new BeanPropertyRowMapper<IRecordHelpreplyEntity>(IRecordHelpreplyEntity.class));
+    }
+
+    @Override
+    public List<IRecordSayEntity> findTweetsWithin(int uid, long time) {
+        final String sql = " SELECT * FROM i_record_say WHERE uid=? AND `time`>? AND (say_type = 0 OR say_type = 1) ORDER BY `time` DESC ";
+        return getJdbcTemplate().query(sql, new Object[]{uid, time}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
+    }
+
+    @Override
+    public int findCountOfSaysWithin(int uid, long twelveHours) {
+        final String sql = " SELECT COUNT(*) FROM i_record_say WHERE uid=? AND `time`>? AND (say_type = 0 OR say_type = 1) ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, uid, twelveHours);
+    }
+
+    @Override
+    public IRecordSayEntity findLastTweetBy(int uid) {
+        final String sql = " SELECT * FROM i_record_say WHERE uid=? ORDER BY `time` DESC LIMIT 1 ";
+        try {
+            return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public int saveHelpData(final int sayId, final int reward) {
+        final String sql = " INSERT INTO i_record_help (sid, reward_coins, status) VALUES(?,?,?) ";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"hid"});
+                ps.setInt(1, sayId);
+                ps.setInt(2, reward);
+                ps.setString(3, "1");
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
     }
 
     private int fetchUserActive(IUserLoginEntity userLoginEntity) {
