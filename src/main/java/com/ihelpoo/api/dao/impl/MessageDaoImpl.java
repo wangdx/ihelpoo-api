@@ -15,7 +15,7 @@ import java.util.*;
 public class MessageDaoImpl extends NamedParameterJdbcDaoSupport implements MessageDao {
     @Override
     public List<VMsgLoginEntity> findNoticesByIds(String ids, int pageIndex, int pageSize) {
-        String sql = " SELECT * FROM i_msg_notice JOIN i_user_login ON source_id = uid WHERE notice_id IN (" + ids + ") order by create_time DESC LIMIT ? OFFSET ?  ";
+        String sql = " SELECT * FROM i_msg_notice LEFT JOIN i_user_login ON source_id = uid WHERE notice_id IN (" + ids + ") order by create_time DESC LIMIT ? OFFSET ?  ";
         return getJdbcTemplate().query(sql, new Object[]{pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VMsgLoginEntity>(VMsgLoginEntity.class));
     }
 

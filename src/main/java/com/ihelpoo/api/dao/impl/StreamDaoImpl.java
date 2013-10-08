@@ -78,7 +78,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     @Override
     public List<VTweetSpreadEntity> findUserSpreadsBy(int sid) {
         String sql = " select id,i_user_login.uid,i_record_diffusion.sid,i_record_diffusion.time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_diffusion\n" +
-                "join i_user_login on i_record_diffusion.uid=i_user_login.uid\n" +
+                "left join i_user_login on i_record_diffusion.uid=i_user_login.uid\n" +
                 "where sid = ?\n" +
                 "order by i_record_diffusion.time DESC ";
         return getJdbcTemplate().query(sql, new Object[]{sid}, new BeanPropertyRowMapper<VTweetSpreadEntity>(VTweetSpreadEntity.class));
@@ -128,7 +128,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     @Override
     public List<VTweetCommentEntity> findAllCommentsBy(int sid, int pageIndex, int pageSize) {
         String sql = "select cid,i_user_login.uid,sid,toid,content,image,diffusion_co,time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_comment\n" +
-                "join i_user_login on i_record_comment.uid=i_user_login.uid\n" +
+                "left join i_user_login on i_record_comment.uid=i_user_login.uid\n" +
                 "where sid=?\n" +
                 "order by cid DESC\n" +
                 "limit ? offset ? ";
@@ -219,9 +219,9 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     public VTweetDetailEntity findTweetDetailBy(int sid) {
         String sql = "select sid,i_record_say.uid,i_user_login.icon_url,online,comment_co,diffusion_co,plus_co,`from` `by`,content,`time`,active,sex,birthday,i_op_specialty.`name` academy, `type` author_type,enteryear enter_year,nickname author\n" +
                 " from i_record_say " +
-                " join i_user_login on i_record_say.uid=i_user_login.uid " +
-                " join i_user_info on i_record_say.uid=i_user_info.uid " +
-                " join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id " +
+                " left join i_user_login on i_record_say.uid=i_user_login.uid " +
+                " left join i_user_info on i_record_say.uid=i_user_info.uid " +
+                " left join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id " +
                 " where sid=? ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{sid}, new BeanPropertyRowMapper<VTweetDetailEntity>(VTweetDetailEntity.class));
     }

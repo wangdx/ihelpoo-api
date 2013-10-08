@@ -29,7 +29,7 @@ public class CommentDaoImpl extends NamedParameterJdbcDaoSupport implements Comm
 
     @Override
     public List<VAtUserEntity> fetchAllAtBy(int uid, int pageIndex, int pageSize) {
-        String sql = "SELECT id,touid,fromuid,sid,cid,hid,aid,`time`,deliver,uid,nickname,icon_url FROM i_msg_at JOIN i_user_login ON i_msg_at.fromuid = i_user_login.uid where touid=? ORDER BY `time` DESC LIMIT ? OFFSET ? ";
+        String sql = "SELECT id,touid,fromuid,sid,cid,hid,aid,`time`,deliver,uid,nickname,icon_url FROM i_msg_at LEFT JOIN i_user_login ON i_msg_at.fromuid = i_user_login.uid where touid=? ORDER BY `time` DESC LIMIT ? OFFSET ? ";
         return getJdbcTemplate().query(sql, new Object[]{uid,  pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VAtUserEntity>(VAtUserEntity.class));
     }
 }
