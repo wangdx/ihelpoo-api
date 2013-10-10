@@ -168,17 +168,17 @@ public class WordService extends RecordService {
         List<VAtUserEntity> atUserEntities = commentDao.fetchAllAtBy(uid, pageIndex, pageSize);
         List<Active> activeList = new ArrayList<Active>();
         for (VAtUserEntity atUserEntity : atUserEntities) {
-            String content = "";
+//            String content = "";
             String info = "";
             String contentDetail = "";
             if (atUserEntity.getCid() != null && atUserEntity.getCid() > 0) {
                 info = "这条评论@了你";
-                IRecordCommentEntity commentEntity = commentDao.fetchCommentBy(atUserEntity.getCid());
-                content = commentEntity.getContent() == null ? "这条评论被你删除了的" : commentEntity.getContent();
+//                IRecordCommentEntity commentEntity = commentDao.fetchCommentBy(atUserEntity.getCid());
+//                content = commentEntity.getContent() == null ? "这条评论被你删除了的" : commentEntity.getContent();
             } else if (atUserEntity.getHid() != null && atUserEntity.getHid() > 0) {
                 info = "这条帮助回复@了你";
-                IRecordHelpreplyEntity helpreplyEntity = streamDao.findHelpBy(atUserEntity.getHid());
-                content = helpreplyEntity.getContent() == null ? "这条评论被你删除了的" : helpreplyEntity.getContent();
+//                IRecordHelpreplyEntity helpreplyEntity = streamDao.findHelpBy(atUserEntity.getHid());
+//                content = helpreplyEntity.getContent() == null ? "这条评论被你删除了的" : helpreplyEntity.getContent();
             } else if (atUserEntity.getSid() != null && atUserEntity.getSid() > 0) {
                 IRecordSayEntity sayEntity = null;
                 try {
