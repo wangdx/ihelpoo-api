@@ -28,7 +28,7 @@ public class TweetCommentResult {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Comments {
         @XmlElement
-        List<Comment> comment;
+        public List<Comment> comment;
 
         public Comments(List<Comment> comment) {
             this.comment = comment;

@@ -21,5 +21,5 @@ public interface MessageDao {
 
     List<ITalkContentEntity> findRecentChatsBy(int uid, int pageIndex, int pageSize);
 
-    List<VTweetCommentEntity> findAllChatsBy(Integer id, Integer pageIndex, Integer pageSize);
+    List<VTweetCommentEntity> findAllChatsBy(Integer uid, Integer id, Integer pageIndex, Integer pageSize);
 }

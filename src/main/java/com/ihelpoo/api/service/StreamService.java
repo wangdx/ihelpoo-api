@@ -38,18 +38,18 @@ public class StreamService {
 
         long t = System.currentTimeMillis();
 
-        UserWordResult.User user = new UserWordResult.User.Builder()
-                .avatar(convertToAvatarUrl(userDetailEntity.getIconUrl(), hisuid))
-                .academy(userDetailEntity.getAcademyName())
-                .foer(String.valueOf(userDetailEntity.getFans()))
-                .foing(String.valueOf(userDetailEntity.getFollow()))
-                .gossip(convertToGossip(userDetailEntity.getSex(), userDetailEntity.getBirthday()))
-                .major(userDetailEntity.getMajorName())
-                .nickname(userDetailEntity.getNickname())
-                .rank(convertToRank(userDetailEntity.getActive()))
-                .type(convertToType(userDetailEntity.getType(), userDetailEntity.getEnteryear()))
-                .uid(hisuid)
-                .build();
+        UserWordResult.User user = new UserWordResult.User();
+        user.portrait = convertToAvatarUrl(userDetailEntity.getIconUrl(), hisuid);
+        user.from = userDetailEntity.getAcademyName();
+        user.latestonline = String.valueOf(userDetailEntity.getFans());
+        user.relation = String.valueOf(userDetailEntity.getFollow());
+        user.gender = convertToGossip(userDetailEntity.getSex(), userDetailEntity.getBirthday());
+        user.devplatform = userDetailEntity.getMajorName();
+        user.name = userDetailEntity.getNickname();
+        user.expertise = convertToRank(userDetailEntity.getActive());
+        user.jointime = convertToType(userDetailEntity.getType(), userDetailEntity.getEnteryear());
+        user.uid = hisuid;
+
         Notice notice = new Notice.Builder()
                 .talk(0)
                 .system(0)
@@ -59,7 +59,7 @@ public class StreamService {
         int pagesize = 20;
         Actives actives = new Actives();
         List<Active> activeList = new ArrayList<Active>();
-        for(IRecordSayEntity recordSayEntity: recordSayEntities){
+        for (IRecordSayEntity recordSayEntity : recordSayEntities) {
             Active active = new Active.Builder()
                     .sid(recordSayEntity.getSid())
                     .avatar(convertToAvatarUrl(userDetailEntity.getIconUrl(), hisuid))
@@ -89,11 +89,10 @@ public class StreamService {
 
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
-        uar.setNotice(notice);
-        uar.setPagesize(20);
-        uar.setActives(actives);
-        uar.setUser(user);
-
+        uar.actives = actives;
+        uar.notice = notice;
+        uar.pagesize = 20;
+        uar.user = user;
         return uar;
     }
 
@@ -338,9 +337,12 @@ public class StreamService {
         if (empty(birthday)) {
             gossip += "";
         }
-        String[] $birthstring = birthday.split("-");
-        String $birthmonth = $birthstring[1];
-        String $birthday = $birthstring[2];
+        if(birthday == null || !birthday.contains("-")){
+            return "未知";
+        }
+        String[] birthstring = birthday.split("-");
+        String $birthmonth = birthstring[1];
+        String $birthday = birthstring[2];
         if (Integer.parseInt($birthday) < 10) {
             $birthday = "0" + $birthday;
         }

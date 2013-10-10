@@ -31,6 +31,9 @@ public class MailSendingJob {
             String to = jedis.rpop(MAIL_QUEUE_TO);
             String subject = jedis.rpop(MAIL_QUEUE_SUBJECT);
             String body = jedis.rpop(MAIL_QUEUE_BODY);
+            if(to == null || subject == null || body == null){
+                continue;
+            }
             message.setTo(to);
             message.setSubject(subject);
             message.setBody(body);

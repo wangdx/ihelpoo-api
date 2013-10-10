@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -140,6 +139,7 @@ public class OoTweet {
     public TweetCommentResult comments(@RequestParam(value = "pageIndex", required = false) Integer pageIndex,
                                        @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                        @RequestParam(value = "catalog", required = false) Integer catalog,
+                                       @RequestParam(value = "uid", required = false) Integer uid,
                                        @RequestParam(value = "id", required = false) Integer id,
                                        @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         if (id == null) {
@@ -151,7 +151,7 @@ public class OoTweet {
 
 
         if (catalog == 4) {//chat
-            return wordService.pullChatsBy(id, pageIndex, pageSize);
+            return wordService.pullChatsBy(uid, id, pageIndex, pageSize);
         }
 
         return tweetService.pullCommentsBy(id, pageIndex, pageSize);
@@ -162,9 +162,10 @@ public class OoTweet {
     public TweetCommentResult commentsJSON(@RequestParam(value = "pageIndex", required = false) Integer pageIndex,
                                            @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                            @RequestParam(value = "catalog", required = false) Integer catalog,
+                                           @RequestParam(value = "uid", required = false) Integer uid,
                                            @RequestParam(value = "id", required = false) Integer id,
                                            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return comments(pageIndex, pageSize, catalog, id, userCookie);
+        return comments(pageIndex, pageSize, catalog, uid, id, userCookie);
 
     }
 

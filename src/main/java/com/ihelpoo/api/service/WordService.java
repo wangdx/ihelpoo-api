@@ -86,18 +86,6 @@ public class WordService extends RecordService {
         List<VMsgLoginEntity> msgLoginEntities = messageDao.findNoticesByIds(msgIdsStr, pageIndex, pageSize);
 
         Actives actives = new Actives();
-        UserWordResult.User user = new UserWordResult.User.Builder()
-                .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t=" + System.currentTimeMillis())
-                .academy("文学与传媒学院")
-                .foer("12")
-                .foing("21")
-                .gossip("狮子女")
-                .major("汉语言文学")
-                .nickname("孤独不苦")
-                .rank("6")
-                .type("大四")
-                .uid(123456)
-                .build();
         List<Active> activeList = new ArrayList<Active>();
         for (VMsgLoginEntity msg : msgLoginEntities) {
             String view = "";
@@ -158,11 +146,10 @@ public class WordService extends RecordService {
         }
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
-        uar.setNotice(notice);
-        uar.setPagesize(20);
-        uar.setActives(actives);
-//        uar.setUser(user);
 
+        uar.notice = notice;
+        uar.pagesize = 20;
+        uar.actives = actives;
         jedis.disconnect();
 
         return uar;
@@ -233,18 +220,6 @@ public class WordService extends RecordService {
 
         }
         Actives actives = new Actives();
-        UserWordResult.User user = new UserWordResult.User.Builder()
-                .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t=" + System.currentTimeMillis())
-                .academy("文学与传媒学院")
-                .foer("12")
-                .foing("21")
-                .gossip("狮子女")
-                .major("汉语言文学")
-                .nickname("孤独不苦")
-                .rank("6")
-                .type("大四")
-                .uid(123456)
-                .build();
         Notice notice = new Notice.Builder()
                 .talk(0)
                 .system(0)
@@ -253,9 +228,9 @@ public class WordService extends RecordService {
                 .build();
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
-        uar.setNotice(notice);
-        uar.setPagesize(20);
-        uar.setActives(actives);
+        uar.notice = notice;
+        uar.pagesize = 20;
+        uar.actives = actives;
         return uar;
     }
 
@@ -307,18 +282,6 @@ public class WordService extends RecordService {
 
         }
         Actives actives = new Actives();
-        UserWordResult.User user = new UserWordResult.User.Builder()
-                .avatar("http://static.oschina.net/uploads/user/0/12_100.jpg?t=" + System.currentTimeMillis())
-                .academy("文学与传媒学院")
-                .foer("12")
-                .foing("21")
-                .gossip("狮子女")
-                .major("汉语言文学")
-                .nickname("孤独不苦")
-                .rank("6")
-                .type("大四")
-                .uid(123456)
-                .build();
         Notice notice = new Notice.Builder()
                 .talk(0)
                 .system(0)
@@ -327,9 +290,9 @@ public class WordService extends RecordService {
                 .build();
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
-        uar.setNotice(notice);
-        uar.setPagesize(20);
-        uar.setActives(actives);
+        uar.notice = notice;
+        uar.pagesize = 20;
+        uar.actives = actives;
         return uar;
     }
 
@@ -448,8 +411,8 @@ public class WordService extends RecordService {
         return sortedMap.values();  //To change body of created methods use File | Settings | File Templates.
     }
 
-    public TweetCommentResult pullChatsBy(Integer id, Integer pageIndex, Integer pageSize) {
-        List<VTweetCommentEntity> commentEntities = messageDao.findAllChatsBy(id, pageIndex, pageSize);
+    public TweetCommentResult pullChatsBy(Integer uid, Integer id, Integer pageIndex, Integer pageSize) {
+        List<VTweetCommentEntity> commentEntities = messageDao.findAllChatsBy(uid, id, pageIndex, pageSize);
         int allCount = commentEntities.size();
         List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
         for (VTweetCommentEntity commentEntity : commentEntities) {
