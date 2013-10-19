@@ -1,6 +1,7 @@
 package com.ihelpoo.mail;
 
 
+import com.ihelpoo.common.Constant;
 import com.ihelpoo.mail.MailService.Message;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -20,8 +21,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 final class MailSender {
-
-    public static final String REDIS_HOST = "localhost";
 
     public static final String MAILGUN_COUNTER = "Mail:Mailgun:counter";
     public static final int MAILGUN_QUOTA = 200;// per day (86400000 seconds)
@@ -106,7 +105,7 @@ final class MailSender {
     }
 
     private void incrDuring24Hours() {
-        Jedis jedis = new Jedis(REDIS_HOST);
+        Jedis jedis = new Jedis(Constant.REDIS_HOST);
         Map<String, String> all = jedis.hgetAll(MAILGUN_COUNTER);
         if (notEverBeenSet(all)) {
             jedis.hincrBy(MAILGUN_COUNTER, String.valueOf(System.currentTimeMillis()), 1L);
@@ -132,7 +131,7 @@ final class MailSender {
     }
 
     private boolean overQuotaOfMailgun() {
-        Jedis jedis = new Jedis(REDIS_HOST);
+        Jedis jedis = new Jedis(Constant.REDIS_HOST);
         boolean result = false;
         Map<String, String> all = jedis.hgetAll(MAILGUN_COUNTER);
         if (notEverBeenSet(all)) {

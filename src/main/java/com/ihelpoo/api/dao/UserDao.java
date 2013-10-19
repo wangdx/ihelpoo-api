@@ -58,4 +58,8 @@ public interface UserDao {
     List<IUserPriorityEntity> findFollowersBy(int uid);
 
     List<VLoginRecordEntity> findAllActivesBy(int uid, int pageIndex, int pageSize);
+
+    int saveUser(String mobile, String pwd, String nickname, Integer school, String skin);
+
+    List<ISchoolInfoEntity> fetchAllSchools();
 }

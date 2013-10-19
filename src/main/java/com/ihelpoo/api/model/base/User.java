@@ -1,5 +1,7 @@
 package com.ihelpoo.api.model.base;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -8,6 +10,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author: dongxu.wang@acm.org
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class User {
     @XmlElement
     private int uid;

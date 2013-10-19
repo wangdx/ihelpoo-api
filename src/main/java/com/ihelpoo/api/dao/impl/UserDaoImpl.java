@@ -285,6 +285,36 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
         return getJdbcTemplate().query(sql, new Object[]{uid}, new BeanPropertyRowMapper<VLoginRecordEntity>(VLoginRecordEntity.class));
     }
 
+    @Override
+    public int saveUser(final String mobile, final String encryptedPwd, final String nickname, final Integer school, final String skin) {
+        final String sql = " INSERT INTO i_user_login (email, password, nickname, school, skin) VALUES(?,?,?,?,?) ";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps =
+                        connection.prepareStatement(sql, new String[]{"id"});
+                ps.setString(1, mobile);
+                ps.setString(2, encryptedPwd);
+                ps.setString(3, nickname);
+                ps.setInt(4, school);
+                ps.setString(5, skin);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public List<ISchoolInfoEntity> fetchAllSchools() {
+        String sql = " SELECT * FROM i_school_info ORDER BY initial ";
+        return getJdbcTemplate().query(sql, new BeanPropertyRowMapper<ISchoolInfoEntity>(ISchoolInfoEntity.class));
+    }
+
+    private IUserLoginEntity findUserByNickname(String nickname) {
+        final String sql = " SELECT * from i_user_login where nickname=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{nickname}, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
+    }
+
 
     public static void main(String[] args) {
 
