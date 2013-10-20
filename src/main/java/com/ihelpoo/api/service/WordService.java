@@ -1,17 +1,16 @@
 package com.ihelpoo.api.service;
 
-import com.ihelpoo.api.model.TweetCommentResult;
+import com.google.code.hs4j.HSClient;
+import com.google.code.hs4j.IndexSession;
+import com.google.code.hs4j.ModifyStatement;
+import com.google.code.hs4j.exception.HandlerSocketException;
+import com.google.code.hs4j.impl.HSClientImpl;
+import com.ihelpoo.api.model.*;
+import com.ihelpoo.api.model.base.*;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.CommentDao;
 import com.ihelpoo.api.dao.MessageDao;
 import com.ihelpoo.api.dao.UserDao;
-import com.ihelpoo.api.model.ChatResult;
-import com.ihelpoo.api.model.MessageResult;
-import com.ihelpoo.api.model.UserWordResult;
-import com.ihelpoo.api.model.base.Active;
-import com.ihelpoo.api.model.base.Actives;
-import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.base.ObjectReply;
 import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.service.base.RecordService;
 import org.slf4j.Logger;
@@ -22,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +42,7 @@ public class WordService extends RecordService {
     public static final String R_SYSTEM = "SY:";
     public static final String R_Notice_Message_Template = "Notice:Message:Template";
     public static final String R_Notice_Message_Link = "Notice:Message:Link";
+    public static final Pair<String, Integer> HS_WR = new Pair<String, Integer>("10.6.1.208", 9999);
 
     @Autowired
     MessageDao messageDao;
@@ -441,6 +443,104 @@ public class WordService extends RecordService {
         commentResult.comments = commentWrapper;
         commentResult.notice = notice;
         return commentResult;
+    }
+
+    public DoChatResult doChat(Integer uid, Integer receiver, String content) {
+
+        final Date now = new Date();
+        int time = (int) (now.getTime() / 1000L);
+
+        store(String.valueOf(receiver), String.valueOf(uid), content, "", time);
+        IUserLoginEntity user = userDao.findUserById(uid);
+
+        DoChatResult doChatResult = new DoChatResult();
+        Result result = new Result();
+        result.setErrorCode("1");
+        result.setErrorMessage("留言发表成功");
+        TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
+        comment.id = 0;
+        comment.authorid = uid;
+        comment.author = user.getNickname();
+        comment.content = content;
+        comment.portrait = convertToAvatarUrl(user.getIconUrl(), user.getUid());
+        comment.pubDate = convertToDate(time);
+        doChatResult.result = result;
+        doChatResult.comment = comment;
+        doChatResult.notice = new Notice();
+
+        return doChatResult;
+    }
+
+
+    static class Pair<L, R> {
+
+        private final L left;
+        private final R right;
+
+        public Pair(L left, R right) {
+            this.left = left;
+            this.right = right;
+        }
+
+        public L getLeft() {
+            return left;
+        }
+
+        public R getRight() {
+            return right;
+        }
+
+        @Override
+        public int hashCode() {
+            return left.hashCode() ^ right.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null) return false;
+            if (!(o instanceof Pair)) return false;
+            Pair pairo = (Pair) o;
+            return this.left.equals(pairo.getLeft()) &&
+                    this.right.equals(pairo.getRight());
+        }
+
+    }
+
+
+    private void store(String to, String from, String chat, String image, int time) {
+        HSClient wr = null;
+        try {
+
+            String db = "ihelpoo";
+            String table = "i_talk_content";
+
+            wr = new HSClientImpl(HS_WR.getLeft(), HS_WR.getRight(), 2);
+            IndexSession sessionChat = wr.openIndexSession(db, table,
+                    "PRIMARY", new String[]{"uid", "touid", "content", "image", "time", "deliver", "del"});
+            ModifyStatement stmt = sessionChat.createStatement();
+
+            stmt.setInt(1, Integer.parseInt(from));
+            stmt.setInt(2, Integer.parseInt(to));
+            stmt.setString(3, chat);
+            stmt.setString(4, image);
+            stmt.setInt(5, (int) time);
+//            stmt.setString(6, value != null && value.equals(from) ? "1" : "0");//TODO should be delivered if they are talking, namely, touid is online
+            stmt.setString(6, "0");
+            stmt.setInt(7, 0);
+            boolean result = stmt.insert();
+            System.err.println("store ++++--insert into talk table===" + result);
+        } catch (InterruptedException e) {
+        } catch (TimeoutException e) {
+        } catch (HandlerSocketException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                wr.shutdown();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     class ValueComparator implements Comparator<String> {
