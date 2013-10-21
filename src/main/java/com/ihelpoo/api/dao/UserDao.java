@@ -59,7 +59,11 @@ public interface UserDao {
 
     List<VLoginRecordEntity> findAllActivesBy(int uid, int pageIndex, int pageSize);
 
-    int saveUser(String mobile, String pwd, String nickname, Integer school, String skin);
+    int saveUser(String mobile, String pwd, String nickname, Integer school, String skin, Integer lastLoginTime);
 
     List<ISchoolInfoEntity> fetchAllSchools();
+
+    IUserLoginEntity saveUser(String mobile, String encrypt, String nickname, Integer school, Integer time);
+
+    int saveStatus(int uid, int recordLimit);
 }

@@ -1,5 +1,8 @@
 package com.ihelpoo.api.model.entity;
 
+/**
+ * @author: echowdx@gmail.com
+ */
 public class IUserLoginEntity {
     private int uid;
     private Integer status;
@@ -22,7 +25,7 @@ public class IUserLoginEntity {
     private String iconFl;
     private String iconUrl;
     private String skin;
-    private String school;
+    private Integer school;
 
     public int getUid() {
         return uid;
@@ -192,11 +195,11 @@ public class IUserLoginEntity {
         this.skin = skin;
     }
 
-    public String getSchool() {
+    public Integer getSchool() {
         return school;
     }
 
-    public void setSchool(String school) {
+    public void setSchool(Integer school) {
         this.school = school;
     }
 

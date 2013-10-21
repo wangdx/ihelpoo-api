@@ -42,22 +42,40 @@ public class SMSRegister {
 
     @RequestMapping(value = "/mobileRegister.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public GenericResult registerXML(@RequestParam(value = "code") String code,
-                                     @RequestParam(value = "mobile") String mobile,
-                                     @RequestParam(value = "pwd") String pwd,
-                                     @RequestParam(value = "schoolId") Integer schoolId) {
-        return registerService.register(code, mobile, pwd, schoolId);
+    public GenericResult registerXML(
+            @RequestParam(value = "code") String code,
+            @RequestParam(value = "mobile") String mobile,
+            @RequestParam(value = "pwd") String pwd,
+            @RequestParam(value = "schoolId") Integer schoolId,
+            @RequestParam(value = "ip") String ip,
+            @RequestParam(value = "deviceType") String deviceType
+    ) {
+        return registerService.register(code, mobile, pwd, schoolId, ip, deviceType);
     }
 
     @RequestMapping(value = "/mobileRegister.json", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public GenericResult registerJSON(@RequestParam(value = "code") String code, @RequestParam(value = "mobile") String mobile, @RequestParam(value = "pwd") String pwd, @RequestParam(value = "schoolId") Integer schoolId) {
-        return registerXML(code, mobile, pwd, schoolId);
+    public GenericResult registerJSON(
+            @RequestParam(value = "code") String code,
+            @RequestParam(value = "mobile") String mobile,
+            @RequestParam(value = "pwd") String pwd,
+            @RequestParam(value = "schoolId") Integer schoolId,
+            @RequestParam(value = "ip") String ip,
+            @RequestParam(value = "deviceType") String deviceType
+    ) {
+        return registerXML(code, mobile, pwd, schoolId, ip, deviceType);
     }
 
     @RequestMapping(value = "/mobileRegister", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public GenericResult register(@RequestParam(value = "code") String code, @RequestParam(value = "mobile") String mobile, @RequestParam(value = "pwd") String pwd, @RequestParam(value = "schoolId") Integer schoolId) {
-        return registerXML(code, mobile, pwd, schoolId);
+    public GenericResult register(
+            @RequestParam(value = "code") String code,
+            @RequestParam(value = "mobile") String mobile,
+            @RequestParam(value = "pwd") String pwd,
+            @RequestParam(value = "schoolId") Integer schoolId,
+            @RequestParam(value = "ip") String ip,
+            @RequestParam(value = "deviceType") String deviceType
+    ) {
+        return registerXML(code, mobile, pwd, schoolId, ip, deviceType);
     }
 }

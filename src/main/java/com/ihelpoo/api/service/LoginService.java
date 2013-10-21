@@ -152,7 +152,7 @@ public class LoginService {
                 userDao.updateLogin(uid, newUserActive, 1);
                 userDao.updateStatus(uid, activeFlag, 0);
             } else {
-                userDao.updateLogin(uid, newUserActive, userLoginEntity.getLoginDaysCo());
+                userDao.updateLogin(uid, newUserActive, userLoginEntity.getLoginDaysCo() == null ? 1 : userLoginEntity.getLoginDaysCo());
                 userDao.updateStatus(uid, activeFlag, 1);
             }
 
@@ -203,7 +203,7 @@ public class LoginService {
         user.setUid(userLoginEntity.getUid());
 
         user.setSchoolId(userLoginEntity.getSchool());
-        user.setLocation(userLoginEntity.getSchool());
+        user.setLocation(String.valueOf(userLoginEntity.getSchool()));
         user.setName(userLoginEntity.getNickname());
         user.setScore((userLoginEntity.getCoins() == null || "".equals(userLoginEntity.getCoins())) ? 0 : Integer.parseInt(userLoginEntity.getCoins()));
         Notice notice = new Notice.Builder().build();

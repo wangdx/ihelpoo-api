@@ -61,6 +61,7 @@ public class OoTweet {
 
 
         try {
+            //TODO school
             tweetService.pubTweet(uid, t, msg, reward, imgPath, "android", 1);
         } catch (Exception e) {
             GenericResult genericResult = new GenericResult();

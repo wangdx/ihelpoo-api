@@ -17,7 +17,7 @@ public class User {
     @XmlElement
     private String location;
     @XmlElement
-    private String schoolId;
+    private Integer schoolId;
     @XmlElement
     private String name;
     @XmlElement
@@ -45,11 +45,11 @@ public class User {
         this.location = location;
     }
 
-    public String getSchoolId() {
+    public Integer getSchoolId() {
         return schoolId;
     }
 
-    public void setSchoolId(String schoolId) {
+    public void setSchoolId(Integer schoolId) {
         this.schoolId = schoolId;
     }
 

@@ -40,7 +40,7 @@ public class LoginDaoImpl extends JdbcDaoSupport implements LoginDao {
         }
         User user = new User();
         user.setUid(userLoginEntity.getUid());
-        user.setLocation(userLoginEntity.getSchool());
+        user.setLocation(String.valueOf(userLoginEntity.getSchool()));
         user.setName(userLoginEntity.getNickname());
         user.setScore((userLoginEntity.getCoins() == null || "".equals(userLoginEntity.getCoins())) ? 0 : Integer.parseInt(userLoginEntity.getCoins()));
         Notice notice = new Notice();

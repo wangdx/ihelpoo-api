@@ -5,6 +5,7 @@ import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.SMSCodeResult;
 import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.model.base.User;
+import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.ID;
 import com.ihelpoo.common.util.MD5;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -32,6 +34,12 @@ public class RegisterService {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    LoginService loginService;
+
+    @Autowired
+    TweetService tweetService;
 
     /**
      * 获取短信验证码，24小时内有效
@@ -92,8 +100,14 @@ public class RegisterService {
         return codeResult;
     }
 
-    public GenericResult register(String code, String mobile, String pwd, Integer school) {
+
+    //TODO other things besides register
+    @Transactional
+    public GenericResult register(String code, String mobile, String pwd, Integer school, String ip, String deviceType) {
         logger.info("sms register...");
+
+        ip = ip == null ? "0.0.0.0" : ip;
+        deviceType = deviceType == null ? "圈圈App" : deviceType;
 
         GenericResult genericResult = new GenericResult();
         Result result = new Result();
@@ -124,14 +138,20 @@ public class RegisterService {
         }
         jedis.disconnect();
 
+        int t = (int) (System.currentTimeMillis() / 1000L);
         final String nickname = "oih_" + ID.INSTANCE.next();
-        int uid = userDao.saveUser(mobile, new MD5().encrypt(pwd), nickname, school, "");
+        IUserLoginEntity userLoginEntity = userDao.saveUser(mobile, new MD5().encrypt(pwd), nickname, school, t);
+        userDao.saveStatus(userLoginEntity.getUid(), 6);
+
+        tweetService.pubTweet(userLoginEntity.getUid(),t, "我刚刚加入了我帮圈圈:)", null, null, deviceType, school);
+
+        loginService.syncUserStatus(userLoginEntity, "1", ip);
         result.setErrorCode("1");
         result.setErrorMessage("注册成功");
         User user = new User();
-        user.setUid(uid);
+        user.setUid(userLoginEntity.getUid());
         user.setName(nickname);
-        user.setSchoolId(String.valueOf(school));
+        user.setSchoolId(school);
         genericResult.setUser(user);
         genericResult.setResult(result);
         return genericResult;

@@ -175,6 +175,13 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
 
     @Override
+    public int saveStatus(int uid, int recordLimit) {
+        final String sql = " INSERT INTO i_user_status (uid,record_limit,acquire_seconds,acquire_times) VALUES(?,?,0,0) ";
+        return getJdbcTemplate().update(sql, uid, recordLimit);
+    }
+
+
+    @Override
     public UserList getUserList(int grade) {
         UserList userList = new UserList();
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -286,8 +293,8 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int saveUser(final String mobile, final String encryptedPwd, final String nickname, final Integer school, final String skin) {
-        final String sql = " INSERT INTO i_user_login (email, password, nickname, school, skin) VALUES(?,?,?,?,?) ";
+    public int saveUser(final String mobile, final String encryptedPwd, final String nickname, final Integer school, final String skin, final Integer registerTime) {
+        final String sql = " INSERT INTO i_user_login (email, password, nickname, school, skin, logintime, lastlogintime) VALUES(?,?,?,?,?,?,?) ";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -298,6 +305,8 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 ps.setString(3, nickname);
                 ps.setInt(4, school);
                 ps.setString(5, skin);
+                ps.setInt(6, registerTime);
+                ps.setInt(7, registerTime);
                 return ps;
             }
         }, keyHolder);
@@ -308,6 +317,21 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     public List<ISchoolInfoEntity> fetchAllSchools() {
         String sql = " SELECT * FROM i_school_info where id!=35 ORDER BY initial ";// exclude test school by id!=35
         return getJdbcTemplate().query(sql, new BeanPropertyRowMapper<ISchoolInfoEntity>(ISchoolInfoEntity.class));
+    }
+
+    @Override
+    public IUserLoginEntity saveUser(String mobile, String encrypt, String nickname, Integer school, Integer registerTime) {
+        int uid = saveUser(mobile, encrypt, nickname, school, "", registerTime);
+        IUserLoginEntity userLoginEntity = new IUserLoginEntity();
+        userLoginEntity.setUid(uid);
+        userLoginEntity.setEmail(mobile);
+        userLoginEntity.setPassword(encrypt);
+        userLoginEntity.setNickname(nickname);
+        userLoginEntity.setSkin("");
+        userLoginEntity.setSchool(school);
+        userLoginEntity.setLogintime(registerTime);
+        userLoginEntity.setLastlogintime(registerTime);
+        return userLoginEntity;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private IUserLoginEntity findUserByNickname(String nickname) {
