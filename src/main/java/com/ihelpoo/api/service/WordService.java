@@ -13,6 +13,12 @@ import com.ihelpoo.api.dao.MessageDao;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.service.base.RecordService;
+import org.cometd.bayeux.client.ClientSession;
+import org.cometd.client.BayeuxClient;
+import org.cometd.client.transport.ClientTransport;
+import org.cometd.client.transport.LongPollingTransport;
+import org.eclipse.jetty.client.ContentExchange;
+import org.eclipse.jetty.client.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -444,13 +450,45 @@ public class WordService extends RecordService {
         commentResult.notice = notice;
         return commentResult;
     }
+    private static final int TIMEOUT = 120 * 1000;
 
-    public DoChatResult doChat(Integer uid, Integer receiver, String content) {
+
+
+    //TODO we need to refactor here, since it would be very slow to establish cometd connection every time.
+    public DoChatResult doChat(Integer uid, Integer receiver, String content) throws Exception {
+
+        // Set up a Jetty HTTP client to use with CometD
+        HttpClient httpClient = new HttpClient();
+        httpClient.setConnectTimeout(TIMEOUT);
+        httpClient.setTimeout(TIMEOUT);
+        httpClient.start();
+
+
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put(ClientTransport.TIMEOUT_OPTION, TIMEOUT);
+
+        // Adds the OAuth header in LongPollingTransport
+        LongPollingTransport transport = new LongPollingTransport(options, httpClient);
+
+        BayeuxClient client = new BayeuxClient("http://comet.ihelpoo.cn/c1/cometd", transport);
+        client.handshake();
+        waitForHandshake(client, 60 * 1000, 1000);
+
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("room", "/chat/p2p");
+        data.put("from", uid);
+        data.put("to", receiver);
+        data.put("chat", content);
+        data.put("status", "");
+        data.put("image", "");
+        client.getChannel("/service/p2ps").publish(data);
+        client.disconnect();
 
         final Date now = new Date();
         int time = (int) (now.getTime() / 1000L);
-
-        store(String.valueOf(receiver), String.valueOf(uid), content, "", time);
+//
+//        store(String.valueOf(receiver), String.valueOf(uid), content, "", time);
         IUserLoginEntity user = userDao.findUserById(uid);
 
         DoChatResult doChatResult = new DoChatResult();
@@ -471,6 +509,22 @@ public class WordService extends RecordService {
         return doChatResult;
     }
 
+
+    private void waitForHandshake(ClientSession client,
+                                         long timeoutInMilliseconds, long intervalInMilliseconds) {
+        long start = System.currentTimeMillis();
+        long end = start + timeoutInMilliseconds;
+        while (System.currentTimeMillis() < end) {
+            if (client.isHandshook())
+                return;
+            try {
+                Thread.sleep(intervalInMilliseconds);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        throw new IllegalStateException("Client did not handshake with server");
+    }
 
     static class Pair<L, R> {
 

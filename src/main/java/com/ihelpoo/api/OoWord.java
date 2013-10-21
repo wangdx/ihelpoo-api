@@ -73,7 +73,12 @@ public class OoWord {
                                @RequestParam(value = "uid", required = false) Integer uid,
                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
 
-        return wordService.doChat(uid, receiver, content);
+        try {
+            return wordService.doChat(uid, receiver, content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
