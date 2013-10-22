@@ -1,14 +1,11 @@
 package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.StreamDao;
+import com.ihelpoo.api.model.*;
 import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.common.AppUtil;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.UserDao;
-import com.ihelpoo.api.model.TweetCommentPushResult;
-import com.ihelpoo.api.model.TweetCommentResult;
-import com.ihelpoo.api.model.TweetDetailResult;
-import com.ihelpoo.api.model.TweetResult;
 import com.ihelpoo.api.model.base.Notice;
 import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.service.base.RecordService;
@@ -346,4 +343,25 @@ public class TweetService extends RecordService {
         }
         return albumSize;
     }
+
+    @Transactional
+    public GenericResult deleteTweet(Integer uid, Integer sid) {
+        GenericResult genericResult = new GenericResult();
+        Result result = new Result();
+        try{
+            streamDao.deleteTweet(uid, sid);
+        } catch (Exception e){
+            result.setErrorCode("0");
+            result.setErrorMessage(e.getMessage());
+            genericResult.setResult(result);
+            genericResult.setNotice(new Notice());
+            return genericResult;
+        }
+        result.setErrorCode("1");
+        result.setErrorMessage("操作成功");
+        genericResult.setResult(result);
+        genericResult.setNotice(new Notice());
+        return genericResult;
+    }
+
 }

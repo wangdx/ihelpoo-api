@@ -40,4 +40,6 @@ public interface StreamDao {
     IRecordSayEntity findLastTweetBy(int uid);
 
     int saveHelpData(int sayId, int reward);
+
+    int deleteTweet(Integer uid, Integer sid);
 }

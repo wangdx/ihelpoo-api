@@ -51,7 +51,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         if (sids.length() > 0) {
             sql.append(" and i_record_say.uid NOT IN (").append(sids).append(") ");
         }
-        if (catalog == CATALOG_MINE && pids.length() > 0) {
+        if (catalog == CATALOG_MINE && pids.length() > 0) {// 如果没有圈人，则会显示所有
             sql.append(" and i_record_say.uid IN (").append(pids).append(") ");
         } else if (CATALOG_HELP == catalog) {
             sql.append(" and i_record_say.school_id = ").append(schoolId).append(" and say_type = '1' ");
@@ -67,6 +67,12 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     public IRecordSayEntity findTweetBy(int sid) {//FIXME if help, will throw exception
         String sql = " select * from i_record_say where sid=? and say_type in (0,2,9) ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{sid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
+    }
+
+
+    public IRecordSayEntity findOneTweetBy(int sid, int uid) {
+        String sql = " select * from i_record_say where sid=? and uid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{sid, uid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
     }
 
     @Override
@@ -268,6 +274,29 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
             }
         }, keyHolder);
         return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public int deleteTweet(Integer uid, Integer sid) {
+        IRecordSayEntity sayEntity = findOneTweetBy(sid, uid);
+        final String sqlSay = " DELETE FROM i_record_say WHERE sid=? AND uid=? ";
+        final String sqlHelp = " DELETE FROM i_record_help WHERE sid=? ";
+        final String sqlHelpReply = " DELETE FROM i_record_helpreply WHERE sid=? ";
+        final String sqlComment = " DELETE FROM i_record_comment WHERE sid=? ";
+        final String sqlDiffusion = " DELETE FROM i_record_diffusion WHERE sid=? ";
+
+        int affectedSay = getJdbcTemplate().update(sqlSay, new Object[]{sid, uid});
+        Object[] sidParam = {sid};
+        if(affectedSay > 0){
+            if ("1".equals(sayEntity.getSayType())) {
+                getJdbcTemplate().update(sqlHelp, sidParam);
+                getJdbcTemplate().update(sqlHelpReply, sidParam);
+            } else {
+                getJdbcTemplate().update(sqlComment, sidParam);
+            }
+        }
+        getJdbcTemplate().update(sqlDiffusion, sidParam);
+        return affectedSay;
     }
 
     private int fetchUserActive(IUserLoginEntity userLoginEntity) {

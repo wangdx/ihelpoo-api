@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author: dongxu.wang@acm.org
@@ -35,41 +37,52 @@ public class OoTweet {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
+    //TODO add school by user cookies
     @RequestMapping(value = "/pubTweet.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
     public GenericResult tweetPub(
             @RequestParam(value = "uid", required = false) Integer uid,
             @RequestParam(value = "msg", required = false) String msg,
             @RequestParam(value = "reward", required = false) Integer reward,
-            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String ooidCookie,
+            @CookieValue(value = Constant.SELECTED_SCHOOL, required = false) Integer selectedSchool,
             HttpServletRequest request) {
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile multipartFile = multipartRequest.getFile("img");
+        String userAgent = request.getHeader("User-Agent");
+        String deviceType = "圈圈App";
+        if (userAgent != null && userAgent.length() > 0 && userAgent.contains("/")) {
+            String[] agentArr = userAgent.split("/");
+            deviceType = agentArr[agentArr.length - 2];
+        }
+
+
         long t = System.currentTimeMillis() / 1000L;
         String imgPath = null;
-        if (multipartFile != null) {
-            try {
-                imgPath = tweetService.uploadImage(uid, multipartRequest, t);
-            } catch (AppException e) {
-                GenericResult genericResult = new GenericResult();
-                genericResult.setResult(new Result(FAILURE, e.getMessage()));
-                logger.error("upload image failed, ", e);
-                return genericResult;
+
+        if(request instanceof MultipartHttpServletRequest){
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            MultipartFile multipartFile = multipartRequest.getFile("img");
+            if (multipartFile != null) {
+                try {
+                    imgPath = tweetService.uploadImage(uid, multipartRequest, t);
+                } catch (AppException e) {
+                    GenericResult genericResult = new GenericResult();
+                    genericResult.setResult(new Result(FAILURE, e.getMessage()));
+                    logger.error("upload image failed, ", e);
+                    return genericResult;
+                }
             }
         }
 
 
-
         try {
             //TODO school
-            tweetService.pubTweet(uid, t, msg, reward, imgPath, "android", 1);
+            tweetService.pubTweet(uid, t, msg, reward, imgPath, deviceType, selectedSchool);
         } catch (Exception e) {
             GenericResult genericResult = new GenericResult();
             genericResult.setResult(new Result(FAILURE, e.getMessage()));
             logger.error("upload image failed, ", e);
             return genericResult;
         }
-
 
 
         GenericResult genericResult = new GenericResult();
@@ -85,9 +98,10 @@ public class OoTweet {
             @RequestParam(value = "uid", required = false) int uid,
             @RequestParam(value = "msg", required = false) String msg,
             @RequestParam(value = "reward", required = false) Integer reward,
-            HttpServletRequest request,
-            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return tweetPub(uid, msg, reward, userCookie, request);
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String ooidCookie,
+            @CookieValue(value = Constant.SELECTED_SCHOOL, required = false) Integer selectedSchool,
+            HttpServletRequest request) {
+        return tweetPub(uid, msg, reward, ooidCookie, selectedSchool, request);
     }
 
     @RequestMapping(value = "/tweets.xml", method = RequestMethod.GET, produces = "application/xml")
@@ -97,8 +111,10 @@ public class OoTweet {
                               @RequestParam(value = "catalog", required = false) int catalog,
                               @RequestParam(value = "uid", required = false) int uid,
                               @RequestParam(value = "schoolId", required = false) int schoolId,
-                              @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        //TODO credential verification by cookie
+                              @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie,
+                              HttpServletResponse response) {
+        Cookie schoolCookie = new Cookie(Constant.SELECTED_SCHOOL, String.valueOf(schoolId));
+        response.addCookie(schoolCookie);
         return tweetService.pullBy(uid, catalog, schoolId, pageIndex, pageSize);
     }
 
@@ -109,8 +125,9 @@ public class OoTweet {
                                   @RequestParam(value = "catalog", required = false) int catalog,
                                   @RequestParam(value = "uid", required = false) int uid,
                                   @RequestParam(value = "schoolId", required = false) int schoolId,
-                                  @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return stream(pageIndex, pageSize, catalog, uid, schoolId, userCookie);
+                                  @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie,
+                                  HttpServletResponse response) {
+        return stream(pageIndex, pageSize, catalog, uid, schoolId, userCookie, response);
     }
 
     @RequestMapping(value = "/tweets/{id}.xml", method = RequestMethod.GET, produces = "application/xml")
@@ -247,5 +264,32 @@ public class OoTweet {
         return commentReply(content, uid, authorid, replyid, catalog, id, userCookie);
     }
 
+
+    @RequestMapping(value = "/delTweet.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult deleteTweetXML(
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @RequestParam(value = "sid", required = false) Integer sid,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String ooidCookie) {
+        return tweetService.deleteTweet(uid, sid);
+    }
+
+    @RequestMapping(value = "/delTweet", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult deleteTweet(
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @RequestParam(value = "sid", required = false) Integer sid,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String ooidCookie) {
+        return deleteTweetXML(uid, sid, ooidCookie);
+    }
+
+    @RequestMapping(value = "/delTweet.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult deleteTweetJSON(
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @RequestParam(value = "sid", required = false) Integer sid,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String ooidCookie) {
+        return deleteTweetXML(uid, sid, ooidCookie);
+    }
 
 }
