@@ -2,9 +2,8 @@ package com.ihelpoo.api;
 
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.*;
-import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.base.Result;
-import com.ihelpoo.api.model.entity.VLoginRecordEntity;
+import com.ihelpoo.api.model.obj.Notice;
+import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.service.UserService;
 import com.ihelpoo.common.Constant;
 import org.springframework.beans.factory.annotation.Autowired;

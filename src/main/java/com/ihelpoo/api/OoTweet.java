@@ -2,8 +2,8 @@ package com.ihelpoo.api;
 
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.model.*;
-import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.base.Result;
+import com.ihelpoo.api.model.obj.Notice;
+import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.service.TweetService;
 import com.ihelpoo.api.service.WordService;
 import com.ihelpoo.exception.AppException;

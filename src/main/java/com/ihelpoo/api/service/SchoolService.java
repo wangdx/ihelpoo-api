@@ -2,7 +2,7 @@ package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.SchoolResult;
-import com.ihelpoo.api.model.base.Result;
+import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.ISchoolInfoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

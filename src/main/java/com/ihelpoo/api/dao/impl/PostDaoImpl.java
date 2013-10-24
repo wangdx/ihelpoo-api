@@ -2,7 +2,7 @@ package com.ihelpoo.api.dao.impl;
 
 import com.ihelpoo.api.dao.PostDao;
 import com.ihelpoo.api.model.PostList;
-import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.entity.VUserPostEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;

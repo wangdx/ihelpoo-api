@@ -3,9 +3,10 @@ package com.ihelpoo.api.service;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.SMSCodeResult;
-import com.ihelpoo.api.model.base.Result;
-import com.ihelpoo.api.model.base.User;
+import com.ihelpoo.api.model.common.User;
+import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
+import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.ID;
 import com.ihelpoo.common.util.MD5;
@@ -23,12 +24,12 @@ import redis.clients.jedis.Jedis;
  * @author: echowdx@gmail.com
  */
 @Service
-public class RegisterService {
+public class RegisterService extends RecordService{
 
     private static final String MOB_REGISTER = "Register:";
     private static final String REGISTER_COUNT = ":CountDuringDay";
     private static final String REGISTER_CODE = ":Code";
-    public static final int ONE_DAY = 3600*24;
+    public static final int ONE_DAY = 3600 * 24;
     public static final int QUOTA_SMS = 202;
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -43,6 +44,7 @@ public class RegisterService {
 
     /**
      * 获取短信验证码，24小时内有效
+     *
      * @param mobile
      * @return
      */
@@ -60,7 +62,7 @@ public class RegisterService {
         } catch (EmptyResultDataAccessException e) {
         } catch (Exception e) {
             result.setErrorCode("0");
-            result.setErrorMessage("系统错误，注册失败："+ e.getMessage());
+            result.setErrorMessage("系统错误，注册失败：" + e.getMessage());
             codeResult.result = result;
             return codeResult;
         }
@@ -121,14 +123,14 @@ public class RegisterService {
             // empty, continue to register
         } catch (Exception e) {
             result.setErrorCode("0");
-            result.setErrorMessage("系统错误，注册失败："+ e.getMessage());
+            result.setErrorMessage("系统错误，注册失败：" + e.getMessage());
             genericResult.setResult(result);
             return genericResult;
         }
 
         Jedis jedis = new Jedis(Constant.REDIS_HOST);
         String codeInRedis = jedis.get(MOB_REGISTER + mobile + REGISTER_CODE);
-        if(codeInRedis != null && codeInRedis.equals(code)){
+        if (codeInRedis != null && codeInRedis.equals(code)) {
             // correct, continue
         } else {
             result.setErrorCode("-4");
@@ -143,15 +145,16 @@ public class RegisterService {
         IUserLoginEntity userLoginEntity = userDao.saveUser(mobile, new MD5().encrypt(pwd), nickname, school, t);
         userDao.saveStatus(userLoginEntity.getUid(), 6);
 
-        tweetService.pubTweet(userLoginEntity.getUid(),t, "我刚刚加入了我帮圈圈:)", null, null, deviceType, school);
+        tweetService.pubTweet(userLoginEntity.getUid(), t, "我刚刚加入了我帮圈圈:)", null, null, deviceType, school);
 
         loginService.syncUserStatus(userLoginEntity, "1", ip);
         result.setErrorCode("1");
         result.setErrorMessage("注册成功");
         User user = new User();
-        user.setUid(userLoginEntity.getUid());
-        user.setName(nickname);
-        user.setSchoolId(school);
+        user.uid = userLoginEntity.getUid();
+        user.nickname = nickname;
+        user.school_id = String.valueOf(school);
+        user.avatar_url = convertToAvatarUrl("", userLoginEntity.getUid()) ;
         genericResult.setUser(user);
         genericResult.setResult(result);
         return genericResult;

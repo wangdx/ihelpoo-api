@@ -1,6 +1,6 @@
 package com.ihelpoo.api.model;
 
-import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.common.Constant;
 
 import javax.xml.bind.annotation.XmlAccessType;

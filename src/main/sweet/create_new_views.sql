@@ -67,18 +67,46 @@ join i_user_login on i_msg_at.fromuid = i_user_login.uid
 );
 
 
-create view v_user_detail as(
-select a.uid, a. status, a. email, a.password, a.nickname, a.sex, a.birthday, a.enteryear, a.type, a.priority, a.ip, a.logintime,
-a.creat_ti, a.login_days_co, a.online, a.coins, a.active, a.icon_fl, a.icon_url, a.skin,
-b.introduction, b.introduction_re, b.realname, b.mobile, b.qq, b.weibo, b.fans, b.follow,
-c.school, c.domain, d.name as academy_name, e.name as major_name
- from i_user_login a
-join i_user_info b on a.uid=b.uid
-join i_school_info c on a.school=c.id
-join i_op_academy d on d.id=b.academy_op
-join i_op_specialty e on e.id=b.specialty_op)
+create view v_user_detail as
+    (select
+        a.uid as uid,
+        a.nickname as nickname,
+        a.sex as gender,
+        a.email as email,
+        a.status as email_verified,
+        a.birthday as birthday,
+        a.enteryear as enrol_time,
+        a.type as user_type,
+        a.ip as ip_addr,
+        a.logintime as login_time,
+        a.lastlogintime as last_login,
+        a.creat_ti as create_time,
+        a.login_days_co as login_days,
+        a.online as online_status,
+        a.active as active_credits,
+        a.icon_fl as avatar_type,
+        a.icon_url as avatar_url,
+        a.skin as web_theme,
+        b.introduction as self_intro,
+        b.realname as real_name,
+        b.fans as followers_count,
+        b.follow as friends_count,
+        c.school as school_name,
+        c.id as school_id,
+        c.domain as school_domain,
+        d.name as academy_name,
+        e.name as major_name
+    from
+        i_user_login a
+            join
+        i_user_info b ON a.uid = b.uid
+            join
+        i_school_info c ON a.school = c.id
+            join
+        i_op_academy d ON d.id = b.academy_op
+            join
+        i_op_specialty e ON e.id = b.specialty_op)
 ;
-
 
 create view v_login_record as(
 select
@@ -86,3 +114,4 @@ sid,i_user_login.uid,say_type,content,image,url,comment_co,diffusion_co,hit_co,`
 from i_record_say
 left join i_user_login on i_record_say.uid = i_user_login.uid
 );
+

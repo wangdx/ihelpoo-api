@@ -5,35 +5,30 @@ package com.ihelpoo.api.model.entity;
  */
 public class VUserDetailEntity {
     private int uid;
-    private Integer status;
-    private String email;
-    private String password;
     private String nickname;
-    private Integer sex;
+    private Integer gender;
+    private String email;
+    private Integer emailVerified;
     private String birthday;
-    private String enteryear;
-    private Integer type;
-    private Integer priority;
-    private String ip;
-    private Integer logintime;
-    private Integer creatTi;
-    private Integer loginDaysCo;
-    private String online;
-    private String coins;
-    private Integer active;
-    private String iconFl;
-    private String iconUrl;
-    private String skin;
-    private String introduction;
-    private Integer introductionRe;
-    private String realname;
-    private String mobile;
-    private String qq;
-    private String weibo;
-    private Integer fans;
-    private Integer follow;
-    private String school;
-    private String domain;
+    private String enrolTime;
+    private Integer userType;
+    private String ipAddr;
+    private Integer loginTime;
+    private Integer lastLogin;
+    private Integer createTime;
+    private Integer loginDays;
+    private String onlineStatus;
+    private Integer activeCredits;
+    private String avatarType;
+    private String avatarUrl;
+    private String webTheme;
+    private String selfIntro;
+    private String realName;
+    private Integer followersCount;
+    private Integer friendsCount;
+    private String schoolName;
+    private int schoolId;
+    private String schoolDomain;
     private String academyName;
     private String majorName;
 
@@ -45,12 +40,20 @@ public class VUserDetailEntity {
         this.uid = uid;
     }
 
-    public Integer getStatus() {
-        return status;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
     }
 
     public String getEmail() {
@@ -61,28 +64,12 @@ public class VUserDetailEntity {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public Integer getEmailVerified() {
+        return emailVerified;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public Integer getSex() {
-        return sex;
-    }
-
-    public void setSex(Integer sex) {
-        this.sex = sex;
+    public void setEmailVerified(Integer emailVerified) {
+        this.emailVerified = emailVerified;
     }
 
     public String getBirthday() {
@@ -93,188 +80,156 @@ public class VUserDetailEntity {
         this.birthday = birthday;
     }
 
-    public String getEnteryear() {
-        return enteryear;
+    public String getEnrolTime() {
+        return enrolTime;
     }
 
-    public void setEnteryear(String enteryear) {
-        this.enteryear = enteryear;
+    public void setEnrolTime(String enrolTime) {
+        this.enrolTime = enrolTime;
     }
 
-    public Integer getType() {
-        return type;
+    public Integer getUserType() {
+        return userType;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setUserType(Integer userType) {
+        this.userType = userType;
     }
 
-    public Integer getPriority() {
-        return priority;
+    public String getIpAddr() {
+        return ipAddr;
     }
 
-    public void setPriority(Integer priority) {
-        this.priority = priority;
+    public void setIpAddr(String ipAddr) {
+        this.ipAddr = ipAddr;
     }
 
-    public String getIp() {
-        return ip;
+    public Integer getLoginTime() {
+        return loginTime;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setLoginTime(Integer loginTime) {
+        this.loginTime = loginTime;
     }
 
-    public Integer getLogintime() {
-        return logintime;
+    public Integer getLastLogin() {
+        return lastLogin;
     }
 
-    public void setLogintime(Integer logintime) {
-        this.logintime = logintime;
+    public void setLastLogin(Integer lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
-    public Integer getCreatTi() {
-        return creatTi;
+    public Integer getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatTi(Integer creatTi) {
-        this.creatTi = creatTi;
+    public void setCreateTime(Integer createTime) {
+        this.createTime = createTime;
     }
 
-    public Integer getLoginDaysCo() {
-        return loginDaysCo;
+    public Integer getLoginDays() {
+        return loginDays;
     }
 
-    public void setLoginDaysCo(Integer loginDaysCo) {
-        this.loginDaysCo = loginDaysCo;
+    public void setLoginDays(Integer loginDays) {
+        this.loginDays = loginDays;
     }
 
-    public String getOnline() {
-        return online;
+    public String getOnlineStatus() {
+        return onlineStatus;
     }
 
-    public void setOnline(String online) {
-        this.online = online;
+    public void setOnlineStatus(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
     }
 
-    public String getCoins() {
-        return coins;
+    public Integer getActiveCredits() {
+        return activeCredits;
     }
 
-    public void setCoins(String coins) {
-        this.coins = coins;
+    public void setActiveCredits(Integer activeCredits) {
+        this.activeCredits = activeCredits;
     }
 
-    public Integer getActive() {
-        return active;
+    public String getAvatarType() {
+        return avatarType;
     }
 
-    public void setActive(Integer active) {
-        this.active = active;
+    public void setAvatarType(String avatarType) {
+        this.avatarType = avatarType;
     }
 
-    public String getIconFl() {
-        return iconFl;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setIconFl(String iconFl) {
-        this.iconFl = iconFl;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
-    public String getIconUrl() {
-        return iconUrl;
+    public String getWebTheme() {
+        return webTheme;
     }
 
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
+    public void setWebTheme(String webTheme) {
+        this.webTheme = webTheme;
     }
 
-    public String getSkin() {
-        return skin;
+    public String getSelfIntro() {
+        return selfIntro;
     }
 
-    public void setSkin(String skin) {
-        this.skin = skin;
+    public void setSelfIntro(String selfIntro) {
+        this.selfIntro = selfIntro;
     }
 
-    public String getIntroduction() {
-        return introduction;
+    public String getRealName() {
+        return realName;
     }
 
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
-    public Integer getIntroductionRe() {
-        return introductionRe;
+    public Integer getFollowersCount() {
+        return followersCount;
     }
 
-    public void setIntroductionRe(Integer introductionRe) {
-        this.introductionRe = introductionRe;
+    public void setFollowersCount(Integer followersCount) {
+        this.followersCount = followersCount;
     }
 
-    public String getRealname() {
-        return realname;
+    public Integer getFriendsCount() {
+        return friendsCount;
     }
 
-    public void setRealname(String realname) {
-        this.realname = realname;
+    public void setFriendsCount(Integer friendsCount) {
+        this.friendsCount = friendsCount;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getSchoolName() {
+        return schoolName;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
     }
 
-    public String getQq() {
-        return qq;
+    public int getSchoolId() {
+        return schoolId;
     }
 
-    public void setQq(String qq) {
-        this.qq = qq;
+    public void setSchoolId(int schoolId) {
+        this.schoolId = schoolId;
     }
 
-    public String getWeibo() {
-        return weibo;
+    public String getSchoolDomain() {
+        return schoolDomain;
     }
 
-    public void setWeibo(String weibo) {
-        this.weibo = weibo;
-    }
-
-    public Integer getFans() {
-        return fans;
-    }
-
-    public void setFans(Integer fans) {
-        this.fans = fans;
-    }
-
-    public Integer getFollow() {
-        return follow;
-    }
-
-    public void setFollow(Integer follow) {
-        this.follow = follow;
-    }
-
-    public String getSchool() {
-        return school;
-    }
-
-    public void setSchool(String school) {
-        this.school = school;
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setSchoolDomain(String schoolDomain) {
+        this.schoolDomain = schoolDomain;
     }
 
     public String getAcademyName() {
@@ -300,39 +255,36 @@ public class VUserDetailEntity {
 
         VUserDetailEntity that = (VUserDetailEntity) o;
 
+        if (schoolId != that.schoolId) return false;
         if (uid != that.uid) return false;
         if (academyName != null ? !academyName.equals(that.academyName) : that.academyName != null) return false;
-        if (active != null ? !active.equals(that.active) : that.active != null) return false;
-        if (birthday != null ? !birthday.equals(that.birthday) : that.birthday != null) return false;
-        if (coins != null ? !coins.equals(that.coins) : that.coins != null) return false;
-        if (creatTi != null ? !creatTi.equals(that.creatTi) : that.creatTi != null) return false;
-        if (domain != null ? !domain.equals(that.domain) : that.domain != null) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (enteryear != null ? !enteryear.equals(that.enteryear) : that.enteryear != null) return false;
-        if (fans != null ? !fans.equals(that.fans) : that.fans != null) return false;
-        if (follow != null ? !follow.equals(that.follow) : that.follow != null) return false;
-        if (iconFl != null ? !iconFl.equals(that.iconFl) : that.iconFl != null) return false;
-        if (iconUrl != null ? !iconUrl.equals(that.iconUrl) : that.iconUrl != null) return false;
-        if (introduction != null ? !introduction.equals(that.introduction) : that.introduction != null) return false;
-        if (introductionRe != null ? !introductionRe.equals(that.introductionRe) : that.introductionRe != null)
+        if (activeCredits != null ? !activeCredits.equals(that.activeCredits) : that.activeCredits != null)
             return false;
-        if (ip != null ? !ip.equals(that.ip) : that.ip != null) return false;
-        if (loginDaysCo != null ? !loginDaysCo.equals(that.loginDaysCo) : that.loginDaysCo != null) return false;
-        if (logintime != null ? !logintime.equals(that.logintime) : that.logintime != null) return false;
+        if (avatarType != null ? !avatarType.equals(that.avatarType) : that.avatarType != null) return false;
+        if (avatarUrl != null ? !avatarUrl.equals(that.avatarUrl) : that.avatarUrl != null) return false;
+        if (birthday != null ? !birthday.equals(that.birthday) : that.birthday != null) return false;
+        if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (emailVerified != null ? !emailVerified.equals(that.emailVerified) : that.emailVerified != null)
+            return false;
+        if (enrolTime != null ? !enrolTime.equals(that.enrolTime) : that.enrolTime != null) return false;
+        if (followersCount != null ? !followersCount.equals(that.followersCount) : that.followersCount != null)
+            return false;
+        if (friendsCount != null ? !friendsCount.equals(that.friendsCount) : that.friendsCount != null) return false;
+        if (gender != null ? !gender.equals(that.gender) : that.gender != null) return false;
+        if (ipAddr != null ? !ipAddr.equals(that.ipAddr) : that.ipAddr != null) return false;
+        if (lastLogin != null ? !lastLogin.equals(that.lastLogin) : that.lastLogin != null) return false;
+        if (loginDays != null ? !loginDays.equals(that.loginDays) : that.loginDays != null) return false;
+        if (loginTime != null ? !loginTime.equals(that.loginTime) : that.loginTime != null) return false;
         if (majorName != null ? !majorName.equals(that.majorName) : that.majorName != null) return false;
-        if (mobile != null ? !mobile.equals(that.mobile) : that.mobile != null) return false;
         if (nickname != null ? !nickname.equals(that.nickname) : that.nickname != null) return false;
-        if (online != null ? !online.equals(that.online) : that.online != null) return false;
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
-        if (priority != null ? !priority.equals(that.priority) : that.priority != null) return false;
-        if (qq != null ? !qq.equals(that.qq) : that.qq != null) return false;
-        if (realname != null ? !realname.equals(that.realname) : that.realname != null) return false;
-        if (school != null ? !school.equals(that.school) : that.school != null) return false;
-        if (sex != null ? !sex.equals(that.sex) : that.sex != null) return false;
-        if (skin != null ? !skin.equals(that.skin) : that.skin != null) return false;
-        if (status != null ? !status.equals(that.status) : that.status != null) return false;
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
-        if (weibo != null ? !weibo.equals(that.weibo) : that.weibo != null) return false;
+        if (onlineStatus != null ? !onlineStatus.equals(that.onlineStatus) : that.onlineStatus != null) return false;
+        if (realName != null ? !realName.equals(that.realName) : that.realName != null) return false;
+        if (schoolDomain != null ? !schoolDomain.equals(that.schoolDomain) : that.schoolDomain != null) return false;
+        if (schoolName != null ? !schoolName.equals(that.schoolName) : that.schoolName != null) return false;
+        if (selfIntro != null ? !selfIntro.equals(that.selfIntro) : that.selfIntro != null) return false;
+        if (userType != null ? !userType.equals(that.userType) : that.userType != null) return false;
+        if (webTheme != null ? !webTheme.equals(that.webTheme) : that.webTheme != null) return false;
 
         return true;
     }
@@ -340,35 +292,30 @@ public class VUserDetailEntity {
     @Override
     public int hashCode() {
         int result = uid;
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (nickname != null ? nickname.hashCode() : 0);
-        result = 31 * result + (sex != null ? sex.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (emailVerified != null ? emailVerified.hashCode() : 0);
         result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
-        result = 31 * result + (enteryear != null ? enteryear.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (ip != null ? ip.hashCode() : 0);
-        result = 31 * result + (logintime != null ? logintime.hashCode() : 0);
-        result = 31 * result + (creatTi != null ? creatTi.hashCode() : 0);
-        result = 31 * result + (loginDaysCo != null ? loginDaysCo.hashCode() : 0);
-        result = 31 * result + (online != null ? online.hashCode() : 0);
-        result = 31 * result + (coins != null ? coins.hashCode() : 0);
-        result = 31 * result + (active != null ? active.hashCode() : 0);
-        result = 31 * result + (iconFl != null ? iconFl.hashCode() : 0);
-        result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
-        result = 31 * result + (skin != null ? skin.hashCode() : 0);
-        result = 31 * result + (introduction != null ? introduction.hashCode() : 0);
-        result = 31 * result + (introductionRe != null ? introductionRe.hashCode() : 0);
-        result = 31 * result + (realname != null ? realname.hashCode() : 0);
-        result = 31 * result + (mobile != null ? mobile.hashCode() : 0);
-        result = 31 * result + (qq != null ? qq.hashCode() : 0);
-        result = 31 * result + (weibo != null ? weibo.hashCode() : 0);
-        result = 31 * result + (fans != null ? fans.hashCode() : 0);
-        result = 31 * result + (follow != null ? follow.hashCode() : 0);
-        result = 31 * result + (school != null ? school.hashCode() : 0);
-        result = 31 * result + (domain != null ? domain.hashCode() : 0);
+        result = 31 * result + (enrolTime != null ? enrolTime.hashCode() : 0);
+        result = 31 * result + (userType != null ? userType.hashCode() : 0);
+        result = 31 * result + (ipAddr != null ? ipAddr.hashCode() : 0);
+        result = 31 * result + (loginTime != null ? loginTime.hashCode() : 0);
+        result = 31 * result + (lastLogin != null ? lastLogin.hashCode() : 0);
+        result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
+        result = 31 * result + (loginDays != null ? loginDays.hashCode() : 0);
+        result = 31 * result + (onlineStatus != null ? onlineStatus.hashCode() : 0);
+        result = 31 * result + (activeCredits != null ? activeCredits.hashCode() : 0);
+        result = 31 * result + (avatarType != null ? avatarType.hashCode() : 0);
+        result = 31 * result + (avatarUrl != null ? avatarUrl.hashCode() : 0);
+        result = 31 * result + (webTheme != null ? webTheme.hashCode() : 0);
+        result = 31 * result + (selfIntro != null ? selfIntro.hashCode() : 0);
+        result = 31 * result + (realName != null ? realName.hashCode() : 0);
+        result = 31 * result + (followersCount != null ? followersCount.hashCode() : 0);
+        result = 31 * result + (friendsCount != null ? friendsCount.hashCode() : 0);
+        result = 31 * result + (schoolName != null ? schoolName.hashCode() : 0);
+        result = 31 * result + schoolId;
+        result = 31 * result + (schoolDomain != null ? schoolDomain.hashCode() : 0);
         result = 31 * result + (academyName != null ? academyName.hashCode() : 0);
         result = 31 * result + (majorName != null ? majorName.hashCode() : 0);
         return result;

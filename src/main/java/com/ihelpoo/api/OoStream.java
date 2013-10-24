@@ -46,35 +46,41 @@ public class OoStream {
     @RequestMapping(value = "/userActive.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
     public UserWordResult userInfoXML(
-            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "his_uid", required = false) Integer hisUid,
+            @RequestParam(value = "his_name", required = false) String hisName,
             @RequestParam(value = "uid", required = false) Integer uid,
+            @RequestParam(value = "page_index", required = false) Integer pageIndex,
+            @RequestParam(value = "page_size", required = false) Integer pageSize,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
     ) {
-        return streamService.pullUserActiveBy(uid, pageIndex, pageSize);
+        return streamService.pullUserActiveBy(hisUid, hisName, uid, pageIndex, pageSize);
     }
 
 
     @RequestMapping(value = "/userActive.json", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public UserWordResult userInfoJSON(
-            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "his_uid", required = false) Integer hisUid,
+            @RequestParam(value = "his_name", required = false) String hisName,
             @RequestParam(value = "uid", required = false) Integer uid,
+            @RequestParam(value = "page_index", required = false) Integer pageIndex,
+            @RequestParam(value = "page_size", required = false) Integer pageSize,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
     ) {
-        return userInfoXML(pageIndex, pageSize, uid, userCookie);
+        return userInfoXML(hisUid, hisName, uid, pageIndex, pageSize, userCookie);
     }
 
     @RequestMapping(value = "/userActive", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public UserWordResult userInfo(
-            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "his_uid", required = false) Integer hisUid,
+            @RequestParam(value = "his_name", required = false) String hisName,
             @RequestParam(value = "uid", required = false) Integer uid,
+            @RequestParam(value = "page_index", required = false) Integer pageIndex,
+            @RequestParam(value = "page_size", required = false) Integer pageSize,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
     ) {
-        return userInfoXML(pageIndex, pageSize, uid, userCookie);
+        return userInfoXML(hisUid, hisName, uid, pageIndex, pageSize, userCookie);
     }
 
 }

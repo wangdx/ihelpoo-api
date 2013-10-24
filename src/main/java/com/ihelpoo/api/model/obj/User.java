@@ -1,4 +1,4 @@
-package com.ihelpoo.api.model.base;
+package com.ihelpoo.api.model.obj;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 

@@ -1,8 +1,10 @@
 package com.ihelpoo.api.model;
 
+import com.ihelpoo.api.model.common.User;
 import com.ihelpoo.common.Constant;
-import com.ihelpoo.api.model.base.Actives;
-import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.obj.Actives;
+import com.ihelpoo.api.model.obj.Notice;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = Constant.IHELPOO_XML_ROOT)
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UserWordResult {
     @XmlElement
     public int pagesize;
@@ -24,29 +27,5 @@ public class UserWordResult {
     public Actives actives;
     @XmlElement
     public Notice notice;
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    public static class User {
-        @XmlElement
-        public String name;
-        @XmlElement
-        public int uid;
-        @XmlElement
-        public String portrait;
-        @XmlElement
-        public String jointime;
-        @XmlElement
-        public String gender;
-        @XmlElement
-        public String from;
-        @XmlElement
-        public String devplatform;
-        @XmlElement
-        public String expertise;
-        @XmlElement
-        public String relation;
-        @XmlElement
-        public String latestonline;
-    }
 
 }

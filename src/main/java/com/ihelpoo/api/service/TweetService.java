@@ -2,11 +2,11 @@ package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.model.*;
-import com.ihelpoo.api.model.base.Result;
+import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.common.AppUtil;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.UserDao;
-import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.util.UpYun;

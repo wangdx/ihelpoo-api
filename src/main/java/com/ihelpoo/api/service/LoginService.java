@@ -2,11 +2,12 @@ package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.GenericResult;
-import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.base.Result;
-import com.ihelpoo.api.model.base.User;
+import com.ihelpoo.api.model.common.User;
+import com.ihelpoo.api.model.obj.Notice;
+import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
+import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -200,12 +201,10 @@ public class LoginService {
     private GenericResult succeedToLogin(IUserLoginEntity userLoginEntity) {
         GenericResult genericResult = new GenericResult();
         User user = new User();
-        user.setUid(userLoginEntity.getUid());
-
-        user.setSchoolId(userLoginEntity.getSchool());
-        user.setLocation(String.valueOf(userLoginEntity.getSchool()));
-        user.setName(userLoginEntity.getNickname());
-        user.setScore((userLoginEntity.getCoins() == null || "".equals(userLoginEntity.getCoins())) ? 0 : Integer.parseInt(userLoginEntity.getCoins()));
+        user.uid = userLoginEntity.getUid();
+        user.school_id = String.valueOf(userLoginEntity.getSchool());
+        user.nickname = userLoginEntity.getNickname();
+        user.avatar_url = convertToAvatarUrl(userLoginEntity.getIconUrl(), userLoginEntity.getUid());
         Notice notice = new Notice.Builder().build();
         genericResult.setUser(user);
         genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
@@ -213,6 +212,17 @@ public class LoginService {
         return genericResult;
     }
 
+    protected String convertToAvatarUrl(String iconUrl, int uid) {
+        if (!empty(iconUrl)) {
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+        } else {
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
+        }
+    }
+
+    protected boolean empty(String iconUrl) {
+        return iconUrl == null || iconUrl.length() <= 0;
+    }
     public static void main(String[] args) {
         System.out.println("你好");
     }

@@ -1,9 +1,6 @@
 package com.ihelpoo.api;
 
 import com.ihelpoo.api.model.DoChatResult;
-import com.ihelpoo.api.model.TweetCommentResult;
-import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.model.ChatResult;
 import com.ihelpoo.api.model.UserWordResult;

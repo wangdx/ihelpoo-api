@@ -4,15 +4,16 @@ import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.StreamResult;
 import com.ihelpoo.api.model.UserWordResult;
-import com.ihelpoo.api.model.base.Active;
-import com.ihelpoo.api.model.base.Actives;
-import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.entity.VUserDetailEntity;
+import com.ihelpoo.api.model.obj.Active;
+import com.ihelpoo.api.model.obj.Actives;
+import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.entity.IRecordSayEntity;
 import com.ihelpoo.api.model.entity.IUserPriorityEntity;
 import com.ihelpoo.api.model.entity.VTweetStreamEntity;
-import com.ihelpoo.api.model.entity.VUserDetailEntity;
 import com.ihelpoo.common.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,26 +32,59 @@ public class StreamService {
     @Autowired
     UserDao userDao;
 
-    public UserWordResult pullUserActiveBy(Integer uid, Integer pageIndex, Integer pageSize) {
+    //TODO use hisName to find
+    public UserWordResult pullUserActiveBy(Integer hisUid, String hisName, Integer uid, Integer pageIndex, Integer pageSize) {
         pageIndex = pageIndex == null ? Constant.DEFAULT_PAGE_INDEX : pageIndex;
         pageSize = pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize;
 
-        VUserDetailEntity userDetailEntity = userDao.findUserDetailById(uid);
-        List<IRecordSayEntity> recordSayEntities = streamDao.findTweetsBy(uid, pageIndex, pageSize);
+        VUserDetailEntity userDetailEntity = userDao.findUserDetailById(hisUid);
 
-        long t = System.currentTimeMillis();
 
-        UserWordResult.User user = new UserWordResult.User();
-        user.portrait = convertToAvatarUrl(userDetailEntity.getIconUrl(), uid);
-        user.from = userDetailEntity.getAcademyName();
-        user.latestonline = String.valueOf(userDetailEntity.getFans());
-        user.relation = String.valueOf(userDetailEntity.getFollow());
-        user.gender = convertToGossip(userDetailEntity.getSex(), userDetailEntity.getBirthday());
-        user.devplatform = userDetailEntity.getMajorName();
-        user.name = userDetailEntity.getNickname();
-        user.expertise = convertToRank(userDetailEntity.getActive());
-        user.jointime = convertToType(userDetailEntity.getType(), userDetailEntity.getEnteryear());
-        user.uid = uid;
+        List<IRecordSayEntity> recordSayEntities = streamDao.findTweetsBy(hisUid, pageIndex, pageSize);
+
+
+
+        VUserDetailEntity entity = userDao.findUserDetailById(hisUid);
+        com.ihelpoo.api.model.common.User user = new com.ihelpoo.api.model.common.User();
+        user.academy_name =  entity.getAcademyName();
+        user.active_credits = entity.getActiveCredits();
+        user.birthday = entity.getBirthday();
+        user.create_time = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date((long) (entity.getCreateTime() * 1000)));
+        user.school_domain = entity.getSchoolDomain();
+        user.enrol_time = entity.getEnrolTime();
+        user.followers_count = entity.getFollowersCount();
+        user.friends_count = entity.getFriendsCount();
+        user.avatar_type = entity.getAvatarType();
+        user.avatar_url = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid());
+        user.self_intro = entity.getSelfIntro();
+        user.login_time = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date((long) (entity.getLoginTime() * 1000)));
+        user.login_days = entity.getLoginDays();
+        user.major_name = entity.getMajorName();
+        user.nickname = entity.getNickname();
+        user.online_status = entity.getOnlineStatus();
+        user.real_name = entity.getRealName();
+        user.school_id = String.valueOf(entity.getSchoolId());
+        user.school_name = entity.getSchoolName();
+        user.gender = entity.getGender();
+        user.web_theme = entity.getWebTheme();
+        user.email_verified = entity.getEmailVerified();
+        user.user_type = entity.getUserType();
+        user.uid = entity.getUid();
+        user.level =  convertToLevel(userDetailEntity.getActiveCredits());
+        user.relation = convertToRelation(uid, hisUid);
+
+
+//        UserWordResult.User user = new UserWordResult.User();
+//        user.portrait = convertToAvatarUrl(userDetailEntity.getAvatarUrl(), hisUid);
+//        user.from = userDetailEntity.getAcademyName();
+//        user.latestonline = String.valueOf(userDetailEntity.getFollowersCount());
+//        user.relation = String.valueOf(userDetailEntity.getFriendsCount());
+//        user.gender = convertToGossip(userDetailEntity.getGender(), userDetailEntity.getBirthday());
+//        user.devplatform = userDetailEntity.getMajorName();
+//        user.name = userDetailEntity.getNickname();
+//        user.expertise = convertToRank(userDetailEntity.getActiveCredits());
+//        user.jointime = convertToType(userDetailEntity.getUserType(), userDetailEntity.getEnrolTime());
+//        user.uid = hisUid;
 
         Notice notice = new Notice.Builder()
                 .talk(0)
@@ -58,15 +92,14 @@ public class StreamService {
                 .comment(0)
                 .at(0)
                 .build();
-        int pagesize = 20;
         Actives actives = new Actives();
         List<Active> activeList = new ArrayList<Active>();
         for (IRecordSayEntity recordSayEntity : recordSayEntities) {
             Active active = new Active();
             active.sid = recordSayEntity.getSid();
-            active.iconUrl = convertToAvatarUrl(userDetailEntity.getIconUrl(), uid);
+            active.iconUrl = convertToAvatarUrl(userDetailEntity.getAvatarUrl(), hisUid);
             active.nickname = userDetailEntity.getNickname();
-            active.uid = uid;
+            active.uid = hisUid;
             active.catalog = 4;
             active.objecttype = 3;
             active.objectcatalog = 0;
@@ -83,9 +116,9 @@ public class StreamService {
             active.image = convertToImageUrl(recordSayEntity.getImage());
 
             active.academy = userDetailEntity.getAcademyName();
-            active.authorType = convertToType(userDetailEntity.getType(), userDetailEntity.getEnteryear());
-            active.rank = convertToRank(userDetailEntity.getActive());
-            active.authorGossip = convertToGossip(userDetailEntity.getSex(), userDetailEntity.getBirthday());
+            active.authorType = convertToType(userDetailEntity.getUserType(), userDetailEntity.getEnrolTime());
+            active.rank = convertToRank(userDetailEntity.getActiveCredits());
+            active.authorGossip = convertToGossip(userDetailEntity.getGender(), userDetailEntity.getBirthday());
             active.diffusionCo = recordSayEntity.getDiffusionCo() == null ? 0 : recordSayEntity.getDiffusionCo();
             active.online = 0;
             activeList.add(active);
@@ -95,9 +128,38 @@ public class StreamService {
         UserWordResult uar = new UserWordResult();
         uar.actives = actives;
         uar.notice = notice;
-        uar.pagesize = 20;
+        uar.pagesize = recordSayEntities.size();
         uar.user = user;
         return uar;
+    }
+
+    // 0 没圈没屏蔽，1：圈， 2：屏蔽 3: 自己
+    private int convertToRelation(Integer uid, Integer hisUid) {
+        if(uid.equals(hisUid)){
+            return 3;
+        }
+        int relation = 0;
+        boolean friend = false, shield = false;
+        try{
+            userDao.findPrioritiesBy(uid, hisUid);
+            friend = true;
+        }catch (EmptyResultDataAccessException e){
+        }
+        try{
+            userDao.findShieldBy(uid, hisUid);
+            shield = true;
+        }catch (EmptyResultDataAccessException e){
+        }
+        if(!friend && !shield){
+            relation = 0;
+        } else if(friend && !shield){
+            relation = 1;
+        } else if(shield && !friend){
+            relation = 2;
+        } else {
+            relation = Integer.MAX_VALUE;
+        }
+        return relation;
     }
 
     public StreamResult pullBy(int uid, int catalog, int schoolId, int pageIndex, int pageSize) {
@@ -415,6 +477,10 @@ public class StreamService {
         } else {
             return "10";
         }
+    }
+
+    private int convertToLevel(Integer activeCredits){
+        return Integer.parseInt(convertToRank(activeCredits));
     }
 
 }

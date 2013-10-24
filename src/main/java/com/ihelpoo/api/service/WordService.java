@@ -6,7 +6,7 @@ import com.google.code.hs4j.ModifyStatement;
 import com.google.code.hs4j.exception.HandlerSocketException;
 import com.google.code.hs4j.impl.HSClientImpl;
 import com.ihelpoo.api.model.*;
-import com.ihelpoo.api.model.base.*;
+import com.ihelpoo.api.model.obj.*;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.CommentDao;
 import com.ihelpoo.api.dao.MessageDao;

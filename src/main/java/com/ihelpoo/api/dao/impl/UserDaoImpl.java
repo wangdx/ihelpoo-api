@@ -82,15 +82,39 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public VUserDetailEntity findUserDetailById(int uid) {
-        String sql = " select a.uid, a. status, a. email, a.password, a.nickname, a.sex, a.birthday, a.enteryear, a.type, a.priority, a.ip, a.logintime,\n" +
-                "a.creat_ti, a.login_days_co, a.online, a.coins, a.active, a.icon_fl, a.icon_url, a.skin, \n" +
-                "b.introduction, b.introduction_re, b.realname, b.mobile, b.qq, b.weibo, b.fans, b.follow,  \n" +
-                "c.school, c.domain, d.name as academy_name, e.name as major_name\n" +
-                "from i_user_login a\n" +
-                "left join i_user_info b on a.uid=b.uid\n" +
-                "left join i_school_info c on a.school=c.id\n" +
-                "left join i_op_academy d on d.id=b.academy_op\n" +
-                "left join i_op_specialty e on e.id=b.specialty_op where a.uid=? ";
+        String sql = "select a.uid as uid,\n" +
+                "        a.nickname as nickname,\n" +
+                "        a.sex as gender,\n" +
+                "        a.email as email,\n" +
+                "        a.status as email_verified,\n" +
+                "        a.birthday as birthday,\n" +
+                "        a.enteryear as enrol_time,\n" +
+                "        a.type as user_type,\n" +
+                "        a.ip as ip_addr,\n" +
+                "        a.logintime as login_time,\n" +
+                "        a.lastlogintime as last_login,\n" +
+                "        a.creat_ti as create_time,\n" +
+                "        a.login_days_co as login_days,\n" +
+                "        a.online as online_status,\n" +
+                "        a.active as active_credits,\n" +
+                "        a.icon_fl as avatar_type,\n" +
+                "        a.icon_url as avatar_url,\n" +
+                "        a.skin as web_theme,\n" +
+                "        b.introduction as self_intro,\n" +
+                "        b.realname as real_name,\n" +
+                "        b.fans as followers_count,\n" +
+                "        b.follow as friends_count,\n" +
+                "        c.school as school_name,\n" +
+                "        c.id as school_id,\n" +
+                "        c.domain as school_domain,\n" +
+                "        d.name as academy_name,\n" +
+                "        e.name as major_name\n" +
+                "    from i_user_login a\n" +
+                "            join i_user_info b ON a.uid = b.uid\n" +
+                "            join i_school_info c ON a.school = c.id\n" +
+                "            join i_op_academy d ON d.id = b.academy_op\n" +
+                "            join i_op_specialty e ON e.id = b.specialty_op\n" +
+                "\twhere a.uid=?";
         return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<VUserDetailEntity>(VUserDetailEntity.class));
     }
 
