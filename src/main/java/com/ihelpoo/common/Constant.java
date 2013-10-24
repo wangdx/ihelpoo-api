@@ -15,4 +15,6 @@ public interface Constant {
     Pair<String, Integer> HS_WR = new Pair<String, Integer>("10.6.1.208", 9999);
     Pair<String, Integer> HS_R = new Pair<String, Integer>("10.6.5.68", 9998);
     String REDIS_HOST = "localhost";
+    int DEFAULT_PAGE_SIZE = 20;
+    int DEFAULT_PAGE_INDEX = 0;
 }

@@ -2,7 +2,6 @@ package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.dao.UserDao;
-import com.ihelpoo.api.dao.UserPriorityDao;
 import com.ihelpoo.api.model.StreamResult;
 import com.ihelpoo.api.model.UserWordResult;
 import com.ihelpoo.api.model.base.Active;
@@ -32,14 +31,17 @@ public class StreamService {
     @Autowired
     UserDao userDao;
 
-    public UserWordResult pullUserActiveBy(int uid, String hisname, int hisuid, int pageIndex, int pageSize) {
-        VUserDetailEntity userDetailEntity = userDao.findUserDetailById(hisuid);
-        List<IRecordSayEntity> recordSayEntities = streamDao.findTweetsBy(hisuid, pageIndex, pageSize);
+    public UserWordResult pullUserActiveBy(Integer uid, Integer pageIndex, Integer pageSize) {
+        pageIndex = pageIndex == null ? Constant.DEFAULT_PAGE_INDEX : pageIndex;
+        pageSize = pageSize == null ? Constant.DEFAULT_PAGE_SIZE : pageSize;
+
+        VUserDetailEntity userDetailEntity = userDao.findUserDetailById(uid);
+        List<IRecordSayEntity> recordSayEntities = streamDao.findTweetsBy(uid, pageIndex, pageSize);
 
         long t = System.currentTimeMillis();
 
         UserWordResult.User user = new UserWordResult.User();
-        user.portrait = convertToAvatarUrl(userDetailEntity.getIconUrl(), hisuid);
+        user.portrait = convertToAvatarUrl(userDetailEntity.getIconUrl(), uid);
         user.from = userDetailEntity.getAcademyName();
         user.latestonline = String.valueOf(userDetailEntity.getFans());
         user.relation = String.valueOf(userDetailEntity.getFollow());
@@ -48,7 +50,7 @@ public class StreamService {
         user.name = userDetailEntity.getNickname();
         user.expertise = convertToRank(userDetailEntity.getActive());
         user.jointime = convertToType(userDetailEntity.getType(), userDetailEntity.getEnteryear());
-        user.uid = hisuid;
+        user.uid = uid;
 
         Notice notice = new Notice.Builder()
                 .talk(0)
@@ -60,30 +62,32 @@ public class StreamService {
         Actives actives = new Actives();
         List<Active> activeList = new ArrayList<Active>();
         for (IRecordSayEntity recordSayEntity : recordSayEntities) {
-            Active active = new Active.Builder()
-                    .sid(recordSayEntity.getSid())
-                    .avatar(convertToAvatarUrl(userDetailEntity.getIconUrl(), hisuid))
-                    .name(userDetailEntity.getNickname())
-                    .uid(hisuid)
-                    .catalog(4)
-                    .setObjecttype(3)
-                    .setObjectcatalog(0)
-                    .setObjecttitle("孤独")
-                    .by(3)
-                    .setUrl("")
-                    .setObjectID(136727)
-                    .content(recordSayEntity.getContent())
-                    .commentCount(recordSayEntity.getCommentCo() == null ? 0 : recordSayEntity.getCommentCo())
-                    .date((new java.text.SimpleDateFormat(
-                            "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (recordSayEntity.getTime().floatValue() * 1000))))
-                    .image(convertToImageUrl(recordSayEntity.getImage()))
-                    .academy(userDetailEntity.getAcademyName())
-                    .type(convertToType(userDetailEntity.getType(), userDetailEntity.getEnteryear()))
-                    .rank(convertToRank(userDetailEntity.getActive()))
-                    .gossip(convertToGossip(userDetailEntity.getSex(), userDetailEntity.getBirthday()))
-                    .diffusionCount(recordSayEntity.getDiffusionCo() == null ? 0 : recordSayEntity.getDiffusionCo())
-                    .online(0)
-                    .build();
+            Active active = new Active();
+            active.sid = recordSayEntity.getSid();
+            active.iconUrl = convertToAvatarUrl(userDetailEntity.getIconUrl(), uid);
+            active.nickname = userDetailEntity.getNickname();
+            active.uid = uid;
+            active.catalog = 4;
+            active.objecttype = 3;
+            active.objectcatalog = 0;
+            active.objecttitle = "孤独";
+            active.from = 3;
+            active.url = "";
+            active.objectID = 136727;
+
+            active.content = recordSayEntity.getContent();
+
+            active.commentCo = recordSayEntity.getCommentCo() == null ? 0 : recordSayEntity.getCommentCo();
+            active.time = (new java.text.SimpleDateFormat(
+                    "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (recordSayEntity.getTime().floatValue() * 1000)));
+            active.image = convertToImageUrl(recordSayEntity.getImage());
+
+            active.academy = userDetailEntity.getAcademyName();
+            active.authorType = convertToType(userDetailEntity.getType(), userDetailEntity.getEnteryear());
+            active.rank = convertToRank(userDetailEntity.getActive());
+            active.authorGossip = convertToGossip(userDetailEntity.getSex(), userDetailEntity.getBirthday());
+            active.diffusionCo = recordSayEntity.getDiffusionCo() == null ? 0 : recordSayEntity.getDiffusionCo();
+            active.online = 0;
             activeList.add(active);
         }
 
@@ -117,25 +121,24 @@ public class StreamService {
         List<VTweetStreamEntity> tweets = streamDao.findAllTweetsBy(catalog, pids, sids, schoolId, pageIndex, pageSize);
         List<Active> actives = new ArrayList<Active>();
         for (VTweetStreamEntity tweet : tweets) {
-            Active active = new Active.Builder()
-                    .academy("[" + tweet.getName() + "]")
-                    .rank(convertToRank(tweet.getActive()))
-                    .online(tweet.getOnline() == null ? 0 : Integer.parseInt(tweet.getOnline().trim()))
-                    .avatar(convertToAvatarUrl(tweet.getIconUrl(), tweet.getUid()))
-                    .by(convertToBy(tweet.getFrom()))
-                    .catalog(4)//my space in android
-                    .commentCount(tweet.getCommentCo() == null ? 0 : tweet.getCommentCo())
-                    .content(tweet.getContent())
-                    .date((new java.text.SimpleDateFormat(
-                            "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (tweet.getTime().floatValue() * 1000))))
-                    .diffusionCount(tweet.getDiffusionCo() == null ? 0 : tweet.getDiffusionCo())
-                    .gossip(convertToGossip(tweet.getSex(), tweet.getBirthday()))
-                    .image(convertToImageUrl(tweet.getImage()))
-                    .name(tweet.getNickname())
-                    .sid(tweet.getSid())
-                    .type(convertToType(tweet.getType(), tweet.getEnteryear()))
-                    .uid(tweet.getUid())
-                    .build();
+            Active active = new Active();
+            active.academy = "[" + tweet.getName() + "]";
+            active.rank = convertToRank(tweet.getActive());
+            active.online = tweet.getOnline() == null ? 0 : Integer.parseInt(tweet.getOnline().trim());
+            active.iconUrl = convertToAvatarUrl(tweet.getIconUrl(), tweet.getUid());
+            active.from = convertToBy(tweet.getFrom());
+            active.catalog = 4;                     //my space in android
+            active.commentCo = tweet.getCommentCo() == null ? 0 : tweet.getCommentCo();
+            active.content = tweet.getContent();
+            active.time = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date((long) (tweet.getTime().floatValue() * 1000)));
+            active.diffusionCo = tweet.getDiffusionCo() == null ? 0 : tweet.getDiffusionCo();
+            active.authorGossip = convertToGossip(tweet.getSex(), tweet.getBirthday());
+            active.image = convertToImageUrl(tweet.getImage());
+            active.nickname = tweet.getNickname();
+            active.sid = tweet.getSid();
+            active.authorType = convertToType(tweet.getType(), tweet.getEnteryear());
+            active.uid = tweet.getUid();
+
             actives.add(active);
         }
         Notice notice = new Notice.Builder()
@@ -337,7 +340,7 @@ public class StreamService {
         if (empty(birthday)) {
             gossip += "";
         }
-        if(birthday == null || !birthday.contains("-")){
+        if (birthday == null || !birthday.contains("-")) {
             return "未知";
         }
         String[] birthstring = birthday.split("-");

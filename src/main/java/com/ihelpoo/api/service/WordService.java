@@ -17,7 +17,6 @@ import org.cometd.bayeux.client.ClientSession;
 import org.cometd.client.BayeuxClient;
 import org.cometd.client.transport.ClientTransport;
 import org.cometd.client.transport.LongPollingTransport;
-import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,8 +62,9 @@ public class WordService extends RecordService {
 
         switch (catalog) {
             case 2:
+                return fetchAt(uid, pageIndex, pageSize);
             case 3:
-                return fetchComment(uid, schoolId, pageIndex, pageSize, catalog);
+                return fetchComment(uid, pageIndex, pageSize, catalog);
             default:
                 break;
         }
@@ -132,24 +132,24 @@ public class WordService extends RecordService {
             }
 
 
-            Active active = new Active.Builder()
-                    .sid(msg.getDetailId())
-                    .avatar(convertToAvatarUrl(msg.getIconUrl(), msg.getUid()))
-                    .name(msg.getNickname())
-                    .uid(msg.getUid())
-                    .catalog(3)
-                    .setObjecttype(3)
-                    .setObjectcatalog(0)
-                    .setObjecttitle("孤独")
-                    .by(3)
-                    .setUrl("")
-                    .setObjectID(sid)
-                    .content(content)
-                    .commentCount(0)
-                    .date(convertToDate(msg.getCreatTi()))
-                    .online(Integer.parseInt(msg.getOnline()))
-                    .setObjectreply(or)
-                    .build();
+            Active active = new Active();
+            active.sid = msg.getDetailId();
+            active.iconUrl = convertToAvatarUrl(msg.getIconUrl(), msg.getUid());
+            active.nickname = msg.getNickname();
+            active.uid = msg.getUid();
+            active.catalog = 3;
+            active.objecttype = 3;
+            active.objectcatalog = 0;
+            active.objecttitle = "";
+            active.from = 3;
+            active.url = "";
+            active.objectID = sid;
+            active.content = content;
+            active.commentCo = 0;
+            active.time = convertToDate(msg.getCreatTi());
+            active.online = Integer.parseInt(msg.getOnline());
+            active.objectreply = or;
+
             activeList.add(active);
         }
         actives.setActive(activeList);
@@ -164,15 +164,15 @@ public class WordService extends RecordService {
     }
 
 
-    private UserWordResult fetchComment(int uid, int schoolId, int pageIndex, int pageSize, int catalog) {
+    private UserWordResult fetchComment(int uid, int pageIndex, int pageSize, int catalog) {
         if (catalog == 2) {//AT_ME
-            return fetchAt(uid, schoolId, pageIndex, pageSize);
+            return fetchAt(uid, pageIndex, pageSize);
         } else {
             return fetchComments(uid, pageIndex, pageSize);
         }
     }
 
-    private UserWordResult fetchAt(int uid, int schoolId, int pageIndex, int pageSize) {
+    private UserWordResult fetchAt(int uid, int pageIndex, int pageSize) {
         List<VAtUserEntity> atUserEntities = commentDao.fetchAllAtBy(uid, pageIndex, pageSize);
         List<Active> activeList = new ArrayList<Active>();
         for (VAtUserEntity atUserEntity : atUserEntities) {
@@ -206,24 +206,24 @@ public class WordService extends RecordService {
             }
 
 
-            Active active = new Active.Builder()
-                    .sid(atUserEntity.getSid())
-                    .avatar(convertToAvatarUrl(atUserEntity.getIconUrl(), atUserEntity.getUid()))
-                    .name(atUserEntity.getNickname())
-                    .uid(atUserEntity.getUid())
-                    .catalog(3)
-                    .setObjecttype(3)
-                    .setObjectcatalog(0)
-                    .setObjecttitle("孤独")
-                    .academy(info)
-                    .by(3)
-                    .setUrl("")
-                    .setObjectID(atUserEntity.getCid() == null ? atUserEntity.getSid() : atUserEntity.getCid())
-                    .content(contentDetail)
-                    .commentCount(0)
-                    .date(convertToDate(atUserEntity.getTime()))
-                    .online(0)
-                    .build();
+            Active active = new Active();
+            active.sid = atUserEntity.getSid();
+            active.iconUrl = convertToAvatarUrl(atUserEntity.getIconUrl(), atUserEntity.getUid());
+            active.nickname = atUserEntity.getNickname();
+            active.uid = atUserEntity.getUid();
+            active.catalog = 3;
+            active.objecttype = 3;
+            active.objectcatalog = 0;
+            active.objecttitle = "";
+            active.academy = info;
+            active.from = 3;
+            active.url = "";
+            active.objectID = atUserEntity.getCid() == null ? atUserEntity.getSid() : atUserEntity.getCid();
+            active.content = contentDetail;
+            active.commentCo = 0;
+            active.time = convertToDate(atUserEntity.getTime());
+            active.online = 0;
+
             activeList.add(active);
 
         }
@@ -266,26 +266,27 @@ public class WordService extends RecordService {
             }
 
             ObjectReply or = new ObjectReply("我", content);
-            Active active = new Active.Builder()
-                    .sid(msgCommentEntity.getSid())
-                    .avatar(convertToAvatarUrl(user.getIconUrl(), user.getUid()))
-                    .name(user.getNickname())
-                    .uid(user.getUid())
-                    .catalog(3)
-                    .setObjecttype(3)
-                    .setObjectcatalog(0)
-                    .setObjecttitle("孤独")
-                    .setObjectreply(or)
-                    .academy(info)
-                    .by(3)
-                    .setUrl("")
-                    .setObjectID(msgCommentEntity.getCid() == null ? msgCommentEntity.getSid() : msgCommentEntity.getCid())
-                    .content(contentDetail)
-                    .commentCount(0)
-                    .date(convertToDate(msgCommentEntity.getTime()))
-                    .online(Integer.parseInt(user.getOnline()))
-                    .setObjectreply(or)
-                    .build();
+            Active active = new Active();
+
+            active.sid = msgCommentEntity.getSid();
+            active.iconUrl = convertToAvatarUrl(user.getIconUrl(), user.getUid());
+            active.nickname = user.getNickname();
+
+            active.uid = user.getUid();
+            active.catalog = 3;
+            active.objecttype = 3;
+            active.objectcatalog = 0;
+            active.objecttitle = "";
+            active.objectreply = or;
+            active.academy = info;
+            active.from = 3;
+            active.url = "";
+            active.objectID = msgCommentEntity.getCid() == null ? msgCommentEntity.getSid() : msgCommentEntity.getCid();
+            active.content = contentDetail;
+            active.commentCo = 0;
+            active.time = convertToDate(msgCommentEntity.getTime());
+            active.online = Integer.parseInt(user.getOnline());
+
             activeList.add(active);
 
         }
@@ -450,8 +451,8 @@ public class WordService extends RecordService {
         commentResult.notice = notice;
         return commentResult;
     }
-    private static final int TIMEOUT = 120 * 1000;
 
+    private static final int TIMEOUT = 120 * 1000;
 
 
     //TODO we need to refactor here, since it would be very slow to establish cometd connection every time.
@@ -511,7 +512,7 @@ public class WordService extends RecordService {
 
 
     private void waitForHandshake(ClientSession client,
-                                         long timeoutInMilliseconds, long intervalInMilliseconds) {
+                                  long timeoutInMilliseconds, long intervalInMilliseconds) {
         long start = System.currentTimeMillis();
         long end = start + timeoutInMilliseconds;
         while (System.currentTimeMillis() < end) {

@@ -1,14 +1,17 @@
 package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.UserDao;
+import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.MessageResult;
 import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.base.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.VLoginRecordEntity;
 import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.UpYun;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +28,7 @@ import java.util.Map;
  */
 @Service
 public class UserService extends RecordService {
+    public static final int TO_FOLLOW = 0;
     @Autowired
     UserDao userDao;
     private int imgId;
@@ -118,5 +122,92 @@ public class UserService extends RecordService {
         mr.notice = notice;
         mr.newslist = newslist;
         return mr;
+    }
+
+    @Transactional
+    public GenericResult updateRelation(int hisuid, int uid, int relation) {
+        GenericResult genericResult = new GenericResult();
+        genericResult.setNotice(new Notice());
+        Result result = new Result();
+        genericResult.setResult(result);
+        result.setErrorCode("0");
+
+        switch (relation) {
+            case 0:
+                return unfollow(hisuid, uid, genericResult, result);
+            case 1:
+                return follow(hisuid, uid, genericResult, result);
+            default:
+                result.setErrorMessage("updateRelation参数relation错误");
+                return genericResult;
+        }
+    }
+
+    private GenericResult follow(int hisuid, int uid, GenericResult genericResult, Result result) {
+        if (hisuid == uid) {
+            result.setErrorMessage("自己不能圈自己");
+            return genericResult;
+        }
+
+        try {
+            userDao.findPrioritiesBy(uid, hisuid);
+            result.setErrorMessage("你已经圈了Ta");
+            return genericResult;
+        } catch (EmptyResultDataAccessException e) {
+        }
+
+        try {
+            userDao.findShieldBy(uid, hisuid);
+            result.setErrorMessage("你已经屏蔽了Ta，取消屏蔽后才能圈");
+            return genericResult;
+        } catch (EmptyResultDataAccessException e) {
+        }
+
+        IUserLoginEntity loginEntity = null;
+        try {
+            loginEntity = userDao.findUserById(hisuid);
+        } catch (EmptyResultDataAccessException e) {
+            result.setErrorMessage("你要圈的用户不存在");
+            return genericResult;
+        }
+
+        try {
+            userDao.savePriority(uid, hisuid, loginEntity.getType());
+            userDao.updateRelation(uid, hisuid, true);
+            int active = loginEntity.getActive() == null ? 0 : loginEntity.getActive();
+            userDao.updateFollowActive(hisuid, uid, active, "有人圈了你 (每人最多加1次 user:" + uid + ")");
+            userDao.updateActive(hisuid, active + 5);
+        } catch (Exception e) {
+            result.setErrorMessage("系统错误：" + e.getMessage());
+            return genericResult;
+        }
+
+        //TODO notice
+
+        result.setErrorCode("1");
+        result.setErrorMessage("成功圈了Ta");
+        genericResult.setResult(result);
+        return genericResult;
+    }
+
+    private GenericResult unfollow(int hisuid, int uid, GenericResult genericResult, Result result) {
+        try {
+            userDao.findPrioritiesBy(uid, hisuid);
+        } catch (EmptyResultDataAccessException e) {
+            result.setErrorMessage("取消圈失败，您还未圈Ta");
+            return genericResult;
+        }
+
+        try {
+            userDao.deletePriority(uid, hisuid);
+            userDao.updateRelation(uid, hisuid, false);
+        } catch (Exception e) {
+            result.setErrorMessage("系统错误：" + e.getMessage());
+            return genericResult;
+        }
+
+        result.setErrorCode("1");
+        result.setErrorMessage("成功取消圈");
+        return genericResult;
     }
 }

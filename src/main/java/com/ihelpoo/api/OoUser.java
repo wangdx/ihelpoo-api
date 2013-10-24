@@ -32,6 +32,34 @@ public class OoUser {
     @Autowired
     UserService userService;
 
+
+
+    @RequestMapping(value = "/updateRelation.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult followXML(@RequestParam(value = "hisuid", required = false) Integer hisuid,
+                                @RequestParam(value = "uid", required = false) Integer uid,
+                                @RequestParam(value = "relation", required = false) Integer relation,
+                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+        return userService.updateRelation(hisuid, uid, relation);
+    }
+    @RequestMapping(value = "/updateRelation.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult followJSON(@RequestParam(value = "hisuid", required = false) Integer hisuid,
+                                   @RequestParam(value = "uid", required = false) Integer uid,
+                                   @RequestParam(value = "relation", required = false) Integer relation,
+                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+        return followXML(hisuid, uid, relation, userCookie);
+    }
+    @RequestMapping(value = "/updateRelation", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult follow(@RequestParam(value = "hisuid", required = false) Integer hisuid,
+                                   @RequestParam(value = "uid", required = false) Integer uid,
+                                   @RequestParam(value = "relation", required = false) Integer relation,
+                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+        return followXML(hisuid, uid, relation, userCookie);
+    }
+
+
     @RequestMapping(value = "/avatarUpload.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
     public GenericResult avatarUploadXML(

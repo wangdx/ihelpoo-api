@@ -66,4 +66,18 @@ public interface UserDao {
     IUserLoginEntity saveUser(String mobile, String encrypt, String nickname, Integer school, Integer time);
 
     int saveStatus(int uid, int recordLimit);
+
+    IUserPriorityEntity findPrioritiesBy(int uid, int hisuid);
+
+    IUserPriorityEntity findShieldBy(int uid, int hisuid);
+
+    int savePriority(int uid, int hisuid, Integer type);
+
+    IUserInfoEntity findUserInfoBy(int uid);
+
+    int updateRelation(int uid, int hisuid, boolean isFollow);
+
+    int updateFollowActive(int hisuid, int uid, int active, String reason);
+
+    int deletePriority(int uid, int hisuid);
 }

@@ -4,6 +4,7 @@ import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.*;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -178,6 +179,89 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     public int saveStatus(int uid, int recordLimit) {
         final String sql = " INSERT INTO i_user_status (uid,record_limit,acquire_seconds,acquire_times) VALUES(?,?,0,0) ";
         return getJdbcTemplate().update(sql, uid, recordLimit);
+    }
+
+    @Override
+    public IUserPriorityEntity findPrioritiesBy(int uid, int hisuid) {
+        final String sql = " SELECT * FROM i_user_priority WHERE uid=? AND pid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid, hisuid}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
+    }
+
+    @Override
+    public IUserPriorityEntity findShieldBy(int uid, int hisuid) {
+        final String sql = " SELECT * FROM i_user_priority WHERE uid=? AND sid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid, hisuid}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
+    }
+
+    @Override
+    public int savePriority(final int uid, final int hisuid, final Integer type) {
+        final String sql = " INSERT INTO i_user_priority (uid, pid, pid_type,group_id,`time`) VALUES(?,?,?,0,unix_timestamp()) ";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                ps.setInt(1, uid);
+                ps.setInt(2, hisuid);
+                ps.setInt(3, type);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public IUserInfoEntity findUserInfoBy(int uid) {
+        final String sql = " SELECT * FROM i_user_info WHERE uid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserInfoEntity>(IUserInfoEntity.class));
+    }
+
+    @Override
+    public int updateRelation(int uid, int hisuid, boolean isFollow) {
+        if (isFollow) {
+            final String sql1 = " UPDATE i_user_info SET fans = fans + 1 WHERE uid=? ";
+            final String sql2 = " UPDATE i_user_info SET follow = follow + 1 WHERE uid=? ";
+            getJdbcTemplate().update(sql1, hisuid);
+            getJdbcTemplate().update(sql2, uid);
+        } else {
+            final String sql3 = " UPDATE i_user_info SET fans = IF(fans -1 < 0, 0, fans-1) WHERE uid=? ";
+            final String sql4 = " UPDATE i_user_info SET follow = IF(follow -1 < 0, 0, follow-1) WHERE uid=? ";
+            getJdbcTemplate().update(sql3, hisuid);
+            getJdbcTemplate().update(sql4, uid);
+        }
+        return 2;
+    }
+
+
+    @Override
+    public int updateFollowActive(final int hisuid, final int uid, final int active, final String reason) {
+
+        final String sql = " SELECT * from i_msg_active WHERE uid=? AND `reason` LIKE '%" + uid + "%' ";
+        try {
+            getJdbcTemplate().queryForObject(sql, new Object[]{hisuid}, new BeanPropertyRowMapper<IMsgActiveEntity>(IMsgActiveEntity.class));
+        } catch (EmptyResultDataAccessException e) {
+            final String sql2 = " INSERT INTO i_msg_active (uid, total, `change`,way,reason,deliver,`time`) VALUES (?,?,?,?,?,?,unix_timestamp()) ";
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            getJdbcTemplate().update(new PreparedStatementCreator() {
+                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                    PreparedStatement ps = connection.prepareStatement(sql2, new String[]{"id"});
+                    ps.setInt(1, hisuid);
+                    ps.setInt(2, active);
+                    ps.setInt(3, 5);
+                    ps.setString(4, "add");
+                    ps.setString(5, reason);
+                    ps.setString(6, "0");
+                    return ps;
+                }
+            }, keyHolder);
+            return keyHolder.getKey().intValue();
+        }
+        return 0;
+    }
+
+    @Override
+    public int deletePriority(int uid, int hisuid) {
+        final String sql = " DELETE FROM i_user_priority WHERE uid=? AND pid=? ";
+        return getJdbcTemplate().update(sql, new Object[]{uid, hisuid});
     }
 
 
