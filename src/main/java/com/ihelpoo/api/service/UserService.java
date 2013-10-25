@@ -1,10 +1,12 @@
 package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.UserDao;
+import com.ihelpoo.api.model.FriendsResult;
 import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.MessageResult;
 import com.ihelpoo.api.model.UserResult;
 import com.ihelpoo.api.model.common.User;
+import com.ihelpoo.api.model.entity.IUserPriorityEntity;
 import com.ihelpoo.api.model.entity.VUserDetailEntity;
 import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
@@ -21,10 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: dongxu.wang@acm.org
@@ -35,6 +34,10 @@ public class UserService extends RecordService {
     public static final int TO_FOLLOW = 0x01;
     public static final int TO_UNSHIELD = 0x02;
     public static final int TO_SHIELD = 0x03;
+
+    public final static int TYPE_FOLLOWER = 0x00;
+    public final static int TYPE_FRIEND = 0x01;
+
     @Autowired
     UserDao userDao;
     private int imgId;
@@ -260,4 +263,71 @@ public class UserService extends RecordService {
         userResult.notice = new Notice();
         return userResult;
     }
+
+    public FriendsResult getFriends(Integer uid, Integer relation, Integer pageSize, Integer pageIndex) {
+
+        FriendsResult foResult = new FriendsResult();
+        Result result = new Result();
+        result.setErrorCode("0");
+        if (relation == null || (relation > 1 || relation < 0)) {
+            result.setErrorMessage("缺少参数");
+            foResult.result = result;
+            return foResult;
+        }
+
+        return getMyFriends(foResult, getFriendIds(uid, relation, pageIndex, pageSize));
+
+    }
+
+    private Set<Integer> getFriendIds(Integer uid, int relation, Integer pageIndex, Integer pageSize) {
+        Set<Integer> ids = new HashSet<Integer>();
+        switch (relation) {
+            case TYPE_FRIEND:
+                List<IUserPriorityEntity> entities = userDao.findAllPrioritiesByUid(uid, pageIndex, pageSize);
+                for (IUserPriorityEntity priorityEntity : entities) {
+                    ids.add(priorityEntity.getPid());
+                }
+                break;
+            case TYPE_FOLLOWER:
+                entities = userDao.findFollowersBy(uid, pageIndex, pageSize);
+                for (IUserPriorityEntity priorityEntity : entities) {
+                    ids.add(priorityEntity.getUid());
+                }
+                break;
+        }
+        return ids;
+    }
+
+    private FriendsResult getMyFriends(FriendsResult foResult, Set<Integer> ids) {
+
+        FriendsResult.Friends friends = new FriendsResult.Friends();
+        List<User> users = new ArrayList<User>();
+
+        List<IUserLoginEntity> entities = userDao.findUsersBy(ids);
+        for (IUserLoginEntity entity : entities) {
+            User user = new User();
+            user.nickname = entity.getNickname();
+            user.enrol_time = entity.getEnteryear();
+            user.active_credits = entity.getActive() == null ? 0 : entity.getActive();
+            user.level = convertToLevel(entity.getActive());
+            user.gender = entity.getSex();
+            user.avatar_url = convertToAvatarUrl(entity.getIconUrl(), entity.getUid());
+            user.uid = entity.getUid();
+            user.online_status = entity.getOnline();
+            user.school_id = String.valueOf(entity.getSchool());
+            user.uid = entity.getUid();
+            user.user_type = entity.getType();
+            users.add(user);
+        }
+
+        Result result = new Result();
+        result.setErrorCode("1");
+        result.setErrorMessage("成功");
+        friends.friend = users;
+        foResult.friends = friends;
+        foResult.result = result;
+        foResult.notice = new Notice();
+        return foResult;
+    }
+
 }

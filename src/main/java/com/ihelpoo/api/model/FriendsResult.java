@@ -1,7 +1,10 @@
 package com.ihelpoo.api.model;
 
+import com.ihelpoo.api.model.common.User;
 import com.ihelpoo.api.model.obj.Notice;
+import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.common.Constant;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -14,29 +17,19 @@ import java.util.List;
  */
 @XmlRootElement(name = Constant.IHELPOO_XML_ROOT)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class FoResult {
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+public class FriendsResult {
+    @XmlElement
+    public Result result;
 
     @XmlElement
-    public Fos friends;
+    public Friends friends;
 
     @XmlElement
     public Notice notice;
 
-    public static class Fos{
+    public static class Friends {
         @XmlElement
-        public List<Fo> friend;
-    }
-
-    public static class Fo{
-        @XmlElement
-        public String name;
-        @XmlElement
-        public Integer userid;
-        @XmlElement
-        public String portrait;
-        @XmlElement
-        public String expertise;
-        @XmlElement
-        public String gender;
+        public List<User> friend;
     }
 }

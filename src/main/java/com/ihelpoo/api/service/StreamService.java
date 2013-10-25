@@ -158,7 +158,7 @@ public class StreamService extends RecordService {
     }
 
     public StreamResult pullBy(int uid, int catalog, int schoolId, int pageIndex, int pageSize) {
-        List<IUserPriorityEntity> priorityEntities = userDao.findAllPrioritiesByUid(uid);
+        List<IUserPriorityEntity> priorityEntities = userDao.findAllPrioritiesByUid(uid, 0, Integer.MAX_VALUE);
         StringBuilder pids = new StringBuilder();
         StringBuilder sids = new StringBuilder();
         if (!priorityEntities.isEmpty()) {

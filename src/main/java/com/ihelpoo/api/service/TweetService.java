@@ -39,7 +39,7 @@ public class TweetService extends RecordService {
     StreamDao streamDao;
 
     public TweetResult pullBy(int uid, int catalog, int schoolId, int pageIndex, int pageSize) {
-        List<IUserPriorityEntity> priorityEntities = userDao.findAllPrioritiesByUid(uid);
+        List<IUserPriorityEntity> priorityEntities = userDao.findAllPrioritiesByUid(uid, 0, Integer.MAX_VALUE);
         StringBuilder pids = new StringBuilder();
         StringBuilder sids = new StringBuilder();
         if (!priorityEntities.isEmpty()) {
@@ -211,7 +211,7 @@ public class TweetService extends RecordService {
         userDao.updateStatus(uid, statusEntity.getActiveSLimit() + 1);
 
         if (isHelp(reward)) {
-            List<IUserPriorityEntity> priorityEntities = userDao.findFollowersBy(uid);
+            List<IUserPriorityEntity> priorityEntities = userDao.findFollowersBy(uid, 0, Integer.MAX_VALUE);
             for (IUserPriorityEntity priorityEntity : priorityEntities) {
                 AppUtil.saveNotice(uid, priorityEntity.getUid(), "stream/ih-para:needhelp", sayId);
 

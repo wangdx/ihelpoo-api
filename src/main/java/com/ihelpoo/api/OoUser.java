@@ -2,8 +2,6 @@ package com.ihelpoo.api;
 
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.*;
-import com.ihelpoo.api.model.common.User;
-import com.ihelpoo.api.model.entity.VUserDetailEntity;
 import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.service.UserService;
@@ -35,35 +33,36 @@ public class OoUser {
 
 
     /**
-     *
      * @param hisUid
      * @param uid
-     * @param relation 0 取消圈 1 圈
+     * @param relation   0 取消圈 1 圈
      * @param userCookie
      * @return
      */
     @RequestMapping(value = "/updateRelation.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
     public GenericResult followXML(@RequestParam(value = "his_uid", required = false) Integer hisUid,
-                                @RequestParam(value = "uid", required = false) Integer uid,
-                                @RequestParam(value = "relation", required = false) Integer relation,
-                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+                                   @RequestParam(value = "uid", required = false) Integer uid,
+                                   @RequestParam(value = "relation", required = false) Integer relation,
+                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         return userService.updateRelation(hisUid, uid, relation);
     }
+
     @RequestMapping(value = "/updateRelation.json", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public GenericResult followJSON(@RequestParam(value = "his_uid", required = false) Integer hisUid,
-                                   @RequestParam(value = "uid", required = false) Integer uid,
-                                   @RequestParam(value = "relation", required = false) Integer relation,
-                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+                                    @RequestParam(value = "uid", required = false) Integer uid,
+                                    @RequestParam(value = "relation", required = false) Integer relation,
+                                    @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         return followXML(hisUid, uid, relation, userCookie);
     }
+
     @RequestMapping(value = "/updateRelation", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public GenericResult follow(@RequestParam(value = "his_uid", required = false) Integer hisUid,
-                                   @RequestParam(value = "uid", required = false) Integer uid,
-                                   @RequestParam(value = "relation", required = false) Integer relation,
-                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+                                @RequestParam(value = "uid", required = false) Integer uid,
+                                @RequestParam(value = "relation", required = false) Integer relation,
+                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         return followXML(hisUid, uid, relation, userCookie);
     }
 
@@ -77,6 +76,7 @@ public class OoUser {
         return avatarUpload(uid, request, userCookie);
 
     }
+
     @RequestMapping(value = "/avatarUpload.json", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public GenericResult avatarUploadJSON(
@@ -85,6 +85,7 @@ public class OoUser {
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         return avatarUpload(uid, request, userCookie);
     }
+
     @RequestMapping(value = "/avatarUpload", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public GenericResult avatarUpload(
@@ -115,57 +116,48 @@ public class OoUser {
                                 @RequestParam(value = "pageSize", required = false) int pageSize,
                                 @RequestParam(value = "catalog", required = false) int catalog,
                                 @RequestParam(value = "uid", required = false) int uid,
-                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
+                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
 
 //        return wordService.fetchAndDeliverActive(uid, pageIndex, pageSize);
 
         return userService.fetchActivesBy(uid, pageIndex, pageSize);
     }
 
-    @RequestMapping(value = "/fos.json", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/buddies", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public FoResult getFosJSON(
+    public FriendsResult getBuddies(
             @RequestParam(value = "uid") Integer uid,
             @RequestParam(value = "relation") Integer relation,
             @RequestParam(value = "pageSize") Integer pageSize,
             @RequestParam(value = "pageIndex") Integer pageIndex,
-            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return getFos(uid, relation, pageSize, pageIndex, userCookie);
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
+        return getBuddiesXML(uid, relation, pageSize, pageIndex, userCookie);
     }
 
-    @RequestMapping(value = "/fos.xml", method = RequestMethod.GET, produces = "application/xml")
+    @RequestMapping(value = "/buddies.json", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public FoResult getFos(
+    public FriendsResult getBuddiesJSON(
             @RequestParam(value = "uid") Integer uid,
             @RequestParam(value = "relation") Integer relation,
             @RequestParam(value = "pageSize") Integer pageSize,
             @RequestParam(value = "pageIndex") Integer pageIndex,
-            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
+        return getBuddiesXML(uid, relation, pageSize, pageIndex, userCookie);
+    }
 
-        FoResult foResult = new FoResult();
-        foResult.notice = new Notice();
-        FoResult.Fo friend1 = new FoResult.Fo();
-        friend1.name = "friend1";
-        friend1.expertise = "expertise";
-        friend1.gender = "2";
-        friend1.portrait = "http://static.oschina.net/uploads/user/583/1166611_100.jpg?t=1370763973000";
-        friend1.userid = 12419;
+    @RequestMapping(value = "/buddies.xml", method = RequestMethod.GET, produces = "application/xml")
+    @ResponseBody
+    public FriendsResult getBuddiesXML(
+            @RequestParam(value = "uid") Integer uid,
+            @RequestParam(value = "relation") Integer relation,
+            @RequestParam(value = "page_size") Integer pageSize,
+            @RequestParam(value = "page_index") Integer pageIndex,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
 
-        FoResult.Fo friend2 = new FoResult.Fo();
-        friend2.name = "friend2";
-        friend2.expertise = "expertise2";
-        friend2.gender = "1";
-        friend2.portrait = "http://static.oschina.net/uploads/user/583/1166611_100.jpg?t=1370763973000";
-        friend2.userid = 12419;
-
-        FoResult.Fos friends = new FoResult.Fos();
-        friends.friend = new ArrayList<FoResult.Fo>();
-        friends.friend.add(friend1);
-        friends.friend.add(friend2);
-
-
-        foResult.friends = friends;
-        return foResult;
+        return userService.getFriends(uid, relation, pageSize, pageIndex);
 
     }
 

@@ -53,9 +53,9 @@ public interface UserDao {
 
     int updateStatus(int uid, int schoolId);
 
-    List<IUserPriorityEntity> findAllPrioritiesByUid(int uid);
+    List<IUserPriorityEntity> findAllPrioritiesByUid(int uid, Integer pageIndex, Integer pageSize);
 
-    List<IUserPriorityEntity> findFollowersBy(int uid);
+    List<IUserPriorityEntity> findFollowersBy(int uid, Integer pageIndex, Integer pageSize);
 
     List<VLoginRecordEntity> findAllActivesBy(int uid, int pageIndex, int pageSize);
 

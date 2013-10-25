@@ -382,15 +382,15 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
 
     @Override
-    public List<IUserPriorityEntity> findAllPrioritiesByUid(int uid) {
-        String sql = " SELECT * FROM i_user_priority WHERE uid=? ";
-        return getJdbcTemplate().query(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
+    public List<IUserPriorityEntity> findAllPrioritiesByUid(int uid, Integer pageIndex, Integer pageSize) {
+        String sql = " SELECT * FROM i_user_priority WHERE uid=?  ORDER BY `time` DESC limit ? offset ?  ";
+        return getJdbcTemplate().query(sql, new Object[]{uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
     }
 
     @Override
-    public List<IUserPriorityEntity> findFollowersBy(int uid) {
-        String sql = " SELECT * FROM i_user_priority WHERE pid=? ";
-        return getJdbcTemplate().query(sql, new Object[]{uid}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
+    public List<IUserPriorityEntity> findFollowersBy(int uid, Integer pageIndex, Integer pageSize) {
+        String sql = " SELECT * FROM i_user_priority WHERE pid=?  ORDER BY `time` DESC limit ? offset ?  ";
+        return getJdbcTemplate().query(sql, new Object[]{uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<IUserPriorityEntity>(IUserPriorityEntity.class));
     }
 
     @Override
