@@ -19,7 +19,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -214,10 +213,6 @@ public class StreamService extends RecordService {
         sr.setNotice(notice);
         sr.setActivies(activesWrapper);
         return sr;
-    }
-
-    private int convertToLevel(Integer activeCredits) {
-        return convertToRank(activeCredits);
     }
 
 }

@@ -2,6 +2,8 @@ package com.ihelpoo.api;
 
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.*;
+import com.ihelpoo.api.model.common.User;
+import com.ihelpoo.api.model.entity.VUserDetailEntity;
 import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.service.UserService;
@@ -173,21 +175,8 @@ public class OoUser {
     public UserResult getUserById(
             @PathVariable(value = "uid") int uid,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        UserResult userResult = new UserResult();
-        UserResult.User user = new UserResult.User();
-        user.name = "echow";
-        user.portrait = "http://static.oschina.net/uploads/user/457/915579_100.jpeg";
-        user.jointime = "2012-12-09 13:48:05";
-        user.gender = "1";
-        user.from = "5";
-        user.devplatform = "793（1）";
-        user.expertise = "2天";
-        user.favoritecount = 1;
-        user.fanscount = 2;
-        user.followerscount = 3;
-        userResult.user = user;
-        userResult.notice = new Notice();
-        return userResult;
+        return userService.getUserDetail(uid);
+
     }
 
     @RequestMapping(value = "/user/{uid}.json", method = RequestMethod.GET, produces = "application/json")

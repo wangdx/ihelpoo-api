@@ -108,12 +108,14 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 "        c.id as school_id,\n" +
                 "        c.domain as school_domain,\n" +
                 "        d.name as academy_name,\n" +
-                "        e.name as major_name\n" +
+                "        e.name as major_name,\n" +
+                "        f.name as dorm_name\n" +
                 "    from i_user_login a\n" +
                 "            join i_user_info b ON a.uid = b.uid\n" +
                 "            join i_school_info c ON a.school = c.id\n" +
                 "            join i_op_academy d ON d.id = b.academy_op\n" +
                 "            join i_op_specialty e ON e.id = b.specialty_op\n" +
+                "            join i_op_dormitory f ON f.id = b.dormitory_op\n" +
                 "\twhere a.uid=?";
         return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<VUserDetailEntity>(VUserDetailEntity.class));
     }

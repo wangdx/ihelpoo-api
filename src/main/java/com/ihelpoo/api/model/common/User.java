@@ -64,6 +64,8 @@ public class User {
     @XmlElement
     public String major_name;
     @XmlElement
+    public String dorm_name;
+    @XmlElement
     public String school_domain;
     @XmlElement
     public int level;

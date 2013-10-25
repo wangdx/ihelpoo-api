@@ -31,6 +31,7 @@ public class VUserDetailEntity {
     private String schoolDomain;
     private String academyName;
     private String majorName;
+    private String dormName;
 
     public int getUid() {
         return uid;
@@ -248,6 +249,14 @@ public class VUserDetailEntity {
         this.majorName = majorName;
     }
 
+    public String getDormName() {
+        return dormName;
+    }
+
+    public void setDormName(String dormName) {
+        this.dormName = dormName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -264,6 +273,7 @@ public class VUserDetailEntity {
         if (avatarUrl != null ? !avatarUrl.equals(that.avatarUrl) : that.avatarUrl != null) return false;
         if (birthday != null ? !birthday.equals(that.birthday) : that.birthday != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
+        if (dormName != null ? !dormName.equals(that.dormName) : that.dormName != null) return false;
         if (email != null ? !email.equals(that.email) : that.email != null) return false;
         if (emailVerified != null ? !emailVerified.equals(that.emailVerified) : that.emailVerified != null)
             return false;
@@ -318,6 +328,7 @@ public class VUserDetailEntity {
         result = 31 * result + (schoolDomain != null ? schoolDomain.hashCode() : 0);
         result = 31 * result + (academyName != null ? academyName.hashCode() : 0);
         result = 31 * result + (majorName != null ? majorName.hashCode() : 0);
+        result = 31 * result + (dormName != null ? dormName.hashCode() : 0);
         return result;
     }
 }

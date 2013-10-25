@@ -170,4 +170,8 @@ public class RecordService {
         return (new java.text.SimpleDateFormat(
                 "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (time.floatValue() * 1000)));
     }
+
+    protected int convertToLevel(Integer activeCredits) {
+        return convertToRank(activeCredits);
+    }
 }

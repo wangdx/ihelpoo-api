@@ -3,6 +3,9 @@ package com.ihelpoo.api.service;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.MessageResult;
+import com.ihelpoo.api.model.UserResult;
+import com.ihelpoo.api.model.common.User;
+import com.ihelpoo.api.model.entity.VUserDetailEntity;
 import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
@@ -225,5 +228,36 @@ public class UserService extends RecordService {
         result.setErrorCode("1");
         result.setErrorMessage("成功取消圈");
         return genericResult;
+    }
+
+    public UserResult getUserDetail(int uid) {
+
+        VUserDetailEntity entity = userDao.findUserDetailById(uid);
+        UserResult userResult = new UserResult();
+        User user = new User();
+        user.avatar_url = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid());
+        user.email = entity.getEmail();
+        user.nickname = entity.getNickname();
+        user.gender = entity.getGender();
+        user.enrol_time = entity.getEnrolTime();
+        user.school_name = entity.getSchoolName();
+        user.academy_name = entity.getAcademyName();
+        user.major_name = entity.getMajorName();
+        user.dorm_name = entity.getDormName();
+        user.self_intro = entity.getSelfIntro();
+        user.birthday = entity.getBirthday();
+        user.followers_count = entity.getFollowersCount();
+        user.friends_count = entity.getFriendsCount();
+
+        user.uid = entity.getUid();
+        user.level = convertToLevel(entity.getActiveCredits());
+        user.email_verified = entity.getEmailVerified();
+        user.user_type = entity.getUserType();
+        user.login_days = entity.getLoginDays();
+        user.active_credits = entity.getActiveCredits();
+
+        userResult.user = user;
+        userResult.notice = new Notice();
+        return userResult;
     }
 }

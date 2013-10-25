@@ -95,7 +95,8 @@ create view v_user_detail as
         c.id as school_id,
         c.domain as school_domain,
         d.name as academy_name,
-        e.name as major_name
+        e.name as major_name,
+        f.name as dorm_name
     from
         i_user_login a
             join
@@ -105,7 +106,9 @@ create view v_user_detail as
             join
         i_op_academy d ON d.id = b.academy_op
             join
-        i_op_specialty e ON e.id = b.specialty_op)
+        i_op_specialty e ON e.id = b.specialty_op
+            join
+        i_op_dormitory f ON f.id = b.dormitory_op)
 ;
 
 create view v_login_record as(
