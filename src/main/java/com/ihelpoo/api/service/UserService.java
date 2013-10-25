@@ -28,7 +28,10 @@ import java.util.Map;
  */
 @Service
 public class UserService extends RecordService {
-    public static final int TO_FOLLOW = 0;
+    public static final int TO_UNFOLLOW = 0x00;
+    public static final int TO_FOLLOW = 0x01;
+    public static final int TO_UNSHIELD = 0x02;
+    public static final int TO_SHIELD = 0x03;
     @Autowired
     UserDao userDao;
     private int imgId;
@@ -133,15 +136,28 @@ public class UserService extends RecordService {
         result.setErrorCode("0");
 
         switch (relation) {
-            case 0:
+            case TO_UNFOLLOW:
                 return unfollow(hisuid, uid, genericResult, result);
-            case 1:
+            case TO_FOLLOW:
                 return follow(hisuid, uid, genericResult, result);
+            case TO_UNSHIELD:
+                return unshield(hisuid, uid, genericResult, result);
+            case TO_SHIELD:
+                return shield(hisuid, uid, genericResult, result);
             default:
                 result.setErrorMessage("updateRelation参数relation错误");
                 return genericResult;
         }
     }
+
+    private GenericResult unshield(int hisuid, int uid, GenericResult genericResult, Result result) {
+        return null;
+    }
+
+    private GenericResult shield(int hisuid, int uid, GenericResult genericResult, Result result) {
+        return null;
+    }
+
 
     private GenericResult follow(int hisuid, int uid, GenericResult genericResult, Result result) {
         if (hisuid == uid) {

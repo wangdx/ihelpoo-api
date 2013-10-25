@@ -37,7 +37,7 @@ public class PostDaoImpl extends JdbcDaoSupport implements PostDao {
             post.setAnswerCount(vUser.getCommentCo());
             post.setAuthor(vUser.getNickname());
             post.setAuthorid(vUser.getUid());
-            post.setPortrait("http://ihelpoo-public.stor.sinaapp.com/useralbum/" + vUser.getUid() + "/" + vUser.getIconUrl() + "_s.jpg?t=" + System.currentTimeMillis());
+            post.setPortrait("http://img.ihelpoo.cn/useralbum/" + vUser.getUid() + "/" + vUser.getIconUrl() + "_s.jpg?t=" + System.currentTimeMillis());
             post.setPubDate(friendly_time(new Date((long) vUser.getTime() * 1000)));
             post.setTitle(vUser.getContent());
             post.setViewCount(vUser.getHitCo());

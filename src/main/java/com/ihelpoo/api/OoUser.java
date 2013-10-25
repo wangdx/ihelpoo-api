@@ -32,30 +32,37 @@ public class OoUser {
     UserService userService;
 
 
-
+    /**
+     *
+     * @param hisUid
+     * @param uid
+     * @param relation 0 取消圈 1 圈
+     * @param userCookie
+     * @return
+     */
     @RequestMapping(value = "/updateRelation.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public GenericResult followXML(@RequestParam(value = "hisuid", required = false) Integer hisuid,
+    public GenericResult followXML(@RequestParam(value = "his_uid", required = false) Integer hisUid,
                                 @RequestParam(value = "uid", required = false) Integer uid,
                                 @RequestParam(value = "relation", required = false) Integer relation,
                                 @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
-        return userService.updateRelation(hisuid, uid, relation);
+        return userService.updateRelation(hisUid, uid, relation);
     }
     @RequestMapping(value = "/updateRelation.json", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public GenericResult followJSON(@RequestParam(value = "hisuid", required = false) Integer hisuid,
+    public GenericResult followJSON(@RequestParam(value = "his_uid", required = false) Integer hisUid,
                                    @RequestParam(value = "uid", required = false) Integer uid,
                                    @RequestParam(value = "relation", required = false) Integer relation,
                                    @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
-        return followXML(hisuid, uid, relation, userCookie);
+        return followXML(hisUid, uid, relation, userCookie);
     }
     @RequestMapping(value = "/updateRelation", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public GenericResult follow(@RequestParam(value = "hisuid", required = false) Integer hisuid,
+    public GenericResult follow(@RequestParam(value = "his_uid", required = false) Integer hisUid,
                                    @RequestParam(value = "uid", required = false) Integer uid,
                                    @RequestParam(value = "relation", required = false) Integer relation,
                                    @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie){
-        return followXML(hisuid, uid, relation, userCookie);
+        return followXML(hisUid, uid, relation, userCookie);
     }
 
 

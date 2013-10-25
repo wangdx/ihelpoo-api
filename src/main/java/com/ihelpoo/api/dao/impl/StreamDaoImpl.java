@@ -93,7 +93,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     @Override
     public List<String> findUserImgLinkEntitiesBy(int sid) {
         IRecordSayEntity tweetEntity = getJdbcTemplate().queryForObject("select * from i_record_say where sid=? ", new Object[]{sid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
-        String sotrageUrl = "http://ihelpoo-public.stor.sinaapp.com/";
+        String sotrageUrl = "http://img.ihelpoo.cn/";
         List<String> imgs = new ArrayList<String>();
         if (tweetEntity.getImage() == null) return Collections.emptyList();
         try {
@@ -318,11 +318,11 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
     private String convertToAvatarUrl(String iconUrl, int uid) {
 
-        String baseUrl = "http://ihelpoo-public.stor.sinaapp.com/";
+        String baseUrl = "http://img.ihelpoo.cn/";
         if (!empty(iconUrl)) {
             return baseUrl + "useralbum/" + uid + "/" + iconUrl + "_m.jpg?t=" + System.currentTimeMillis();
         } else {
-            return "http://zzuli.sinaapp.com/Public/image/common/0.jpg?t=" + System.currentTimeMillis();
+            return "http://img.ihelpoo.cn/useralbum/default_avatar.jpg";
         }
     }
 
