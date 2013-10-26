@@ -7,6 +7,7 @@ import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
+import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.GregorianCalendar;
  * @author: dongxu.wang@acm.org
  */
 @Service
-public class LoginService {
+public class LoginService extends RecordService{
 
     public static final String FAILURE = "0";
     public static final String SUCCESS = "1";
@@ -205,10 +206,9 @@ public class LoginService {
         user.school_id = String.valueOf(userLoginEntity.getSchool());
         user.nickname = userLoginEntity.getNickname();
         user.avatar_url = convertToAvatarUrl(userLoginEntity.getIconUrl(), userLoginEntity.getUid());
-        Notice notice = new Notice.Builder().build();
         genericResult.setUser(user);
         genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
-        genericResult.setNotice(notice);
+        genericResult.setNotice(getNotice(userLoginEntity.getUid()));
         return genericResult;
     }
 

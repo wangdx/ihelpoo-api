@@ -86,9 +86,8 @@ public class OoTweet {
 
 
         GenericResult genericResult = new GenericResult();
-        Notice notice = new Notice.Builder().build();
         genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
-        genericResult.setNotice(notice);
+        genericResult.setNotice(tweetService.getNotice(uid));
         return genericResult;
     }
 

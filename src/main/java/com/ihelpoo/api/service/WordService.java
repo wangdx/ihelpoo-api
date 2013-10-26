@@ -61,21 +61,15 @@ public class WordService extends RecordService {
     public UserWordResult fetchNotice(int uid, int catalog, int schoolId, int pageIndex, int pageSize) {
 
         switch (catalog) {
-            case 2:
+            case 1:
                 return fetchAt(uid, pageIndex, pageSize);
-            case 3:
-                return fetchComment(uid, pageIndex, pageSize, catalog);
+            case 2:
+                return fetchComments(uid, pageIndex, pageSize);
             default:
                 break;
         }
 
         long t = System.currentTimeMillis();
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
 
         Jedis jedis = new Jedis(Constant.R_HOST);
         Set<String> notices = jedis.hkeys(R_ACCOUNT + R_MESSAGE + uid);
@@ -155,21 +149,12 @@ public class WordService extends RecordService {
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
 
-        uar.notice = notice;
+        uar.notice = getNotice(uid);
         uar.pagesize = 20;
         uar.actives = actives;
         jedis.disconnect();
 
         return uar;
-    }
-
-
-    private UserWordResult fetchComment(int uid, int pageIndex, int pageSize, int catalog) {
-        if (catalog == 2) {//AT_ME
-            return fetchAt(uid, pageIndex, pageSize);
-        } else {
-            return fetchComments(uid, pageIndex, pageSize);
-        }
     }
 
     private UserWordResult fetchAt(int uid, int pageIndex, int pageSize) {
@@ -228,15 +213,9 @@ public class WordService extends RecordService {
 
         }
         Actives actives = new Actives();
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
-        uar.notice = notice;
+        uar.notice = getNotice(uid);
         uar.pagesize = 20;
         uar.actives = actives;
         return uar;
@@ -291,15 +270,9 @@ public class WordService extends RecordService {
 
         }
         Actives actives = new Actives();
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
-        uar.notice = notice;
+        uar.notice = getNotice(uid);
         uar.pagesize = 20;
         uar.actives = actives;
         return uar;
@@ -320,16 +293,10 @@ public class WordService extends RecordService {
             msgs.inout = "min".equals(active.getWay()) ? "-" + active.getChange() : "+" + active.getChange();
             list.add(msgs);
         }
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
         MessageResult.Messages newslist = new MessageResult.Messages(list);
         MessageResult mr = new MessageResult();
         mr.pagesize = 20;
-        mr.notice = notice;
+        mr.notice = getNotice(uid);
         mr.newslist = newslist;
         return mr;
     }
@@ -386,19 +353,12 @@ public class WordService extends RecordService {
 
         }
 
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
-
 
         ChatResult.Chats chatList = new ChatResult.Chats(chats);
 
         chatResult.messageCount = oneWayTalks.size();
         chatResult.messages = chatList;
-        chatResult.notice = notice;
+        chatResult.notice = getNotice(uid);
         chatResult.pagesize = pageSize;
         return chatResult;  //To change body of created methods use File | Settings | File Templates.
     }
@@ -436,19 +396,12 @@ public class WordService extends RecordService {
             comment.appclient = 0;
             comments.add(comment);
         }
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
-
         TweetCommentResult commentResult = new TweetCommentResult();
         TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
         commentResult.allCount = allCount;
         commentResult.pagesize = pageSize;
         commentResult.comments = commentWrapper;
-        commentResult.notice = notice;
+        commentResult.notice = getNotice(uid);
         return commentResult;
     }
 

@@ -201,12 +201,6 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
 
         Result result = new Result("1", "操作成功");
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
         TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
         comment.content = content;
         comment.pubDate = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date(System.currentTimeMillis()));
@@ -216,7 +210,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         comment.id = id;
         comment.appclient = 0;
 
-        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, comment, notice);
+        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, comment, new Notice());//FIXME
 
         return commentPushResult;
     }

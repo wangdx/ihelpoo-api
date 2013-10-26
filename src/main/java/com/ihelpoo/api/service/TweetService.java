@@ -79,18 +79,12 @@ public class TweetService extends RecordService {
             tweet.authorid = tweetEntity.getUid();
             tweets.add(tweet);
         }
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
 
         TweetResult tweetResult = new TweetResult();
         TweetResult.Tweets tweetsWrapper = new TweetResult.Tweets(tweets);
         tweetResult.tweetCount = pageSize + 1;
         tweetResult.pagesize = pageSize;
-        tweetResult.notice = notice;
+        tweetResult.notice = getNotice(uid);
         tweetResult.tweets = tweetsWrapper;
         return tweetResult;
     }
@@ -100,12 +94,6 @@ public class TweetService extends RecordService {
         VTweetDetailEntity tweetDetailEntity = streamDao.findTweetDetailBy(sid);
         long t = System.currentTimeMillis();
         String imgUrl = convertToImageUrl(tweetDetailEntity.getSid());
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
         TweetResult.Tweet tweet = new TweetResult.Tweet();
         tweet.spreadCount = tweetDetailEntity.getDiffusionCo() == null ? 0 : tweetDetailEntity.getDiffusionCo();
         tweet.onlineState = convertToOnlineState(tweetDetailEntity.getOnline());
@@ -125,7 +113,7 @@ public class TweetService extends RecordService {
         tweet.authorid = tweetDetailEntity.getUid();
         tweet.plusByMe = 0;
         tweet.plusCount = tweetDetailEntity.getPlusCo();
-        TweetDetailResult tdr = new TweetDetailResult(tweet, notice);
+        TweetDetailResult tdr = new TweetDetailResult(tweet, new Notice());//FIXME
         return tdr;
     }
 
@@ -144,19 +132,13 @@ public class TweetService extends RecordService {
             comment.appclient = 0;
             comments.add(comment);
         }
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
 
         TweetCommentResult commentResult = new TweetCommentResult();
         TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
         commentResult.allCount = allCount;
         commentResult.pagesize = pageSize;
         commentResult.comments = commentWrapper;
-        commentResult.notice = notice;
+        commentResult.notice = new Notice();//FIXME
         return commentResult;
     }
 
@@ -252,14 +234,8 @@ public class TweetService extends RecordService {
     public TweetCommentPushResult plus(int id, int uid) {
 
         Result result = new Result("1", "操作成功");
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
 
-        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, null, notice);
+        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, null, getNotice(uid));
 
         return commentPushResult;
     }
@@ -267,14 +243,8 @@ public class TweetService extends RecordService {
     public TweetCommentPushResult diffuse(int id, int uid, String content) {
 
         Result result = new Result("1", "发布成功");
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
 
-        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, null, notice);
+        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, null, getNotice(uid));
 
         return commentPushResult;
     }

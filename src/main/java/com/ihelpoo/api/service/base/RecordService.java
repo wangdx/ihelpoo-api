@@ -1,8 +1,12 @@
 package com.ihelpoo.api.service.base;
 
+import com.ihelpoo.api.dao.NotificationDao;
+import com.ihelpoo.api.model.obj.Notice;
+import com.ihelpoo.api.service.WordService;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.StreamDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -14,10 +18,45 @@ import java.util.List;
 public class RecordService {
     @Autowired
     protected StreamDao streamDao;
+    @Autowired
+    protected NotificationDao notificationDao;
+
+    public Notice getNotice(int uid){
+        Notice notice = new Notice();
+        notice.activeCount = countActive(uid);
+        notice.atmeCount = countAtme(uid);
+        notice.chatCount = countChat(uid);
+        notice.commentCount = countComment(uid);
+        notice.systemCount = countSystem(uid);
+        return notice;
+    }
+
+    public int countSystem(int uid) {
+        String uidStr = String.valueOf(uid);
+        Jedis jedis = new Jedis("localhost");
+        String countStr = jedis.hget(WordService.R_NOTICE + WordService.R_SYSTEM + uidStr.substring(0, uidStr.length() - 3), uidStr.substring(uidStr.length() - 3));
+        jedis.disconnect();
+        return countStr == null ? 0 : Integer.parseInt(countStr);
+    }
+
+    public int countAtme(int uid) {
+        return notificationDao.findNewAtmeCount(uid);
+    }
+
+    public int countComment(int uid) {
+        return notificationDao.findNewCommentCount(uid);
+    }
+
+    public int countActive(int uid) {
+        return notificationDao.findNewActiveCount(uid);
+    }
+
+    public int countChat(int uid) {
+        return notificationDao.fineNewChatCount(uid);
+    }
+
     protected String convertToOnlineState(String onlineCode) {
         return "1".equals(onlineCode) ? "在线" : "";
-
-
     }
 
     /**

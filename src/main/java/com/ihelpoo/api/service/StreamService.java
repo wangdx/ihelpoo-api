@@ -80,12 +80,6 @@ public class StreamService extends RecordService {
         user.level = convertToLevel(entity.getActiveCredits());
         user.relation = convertToRelation(uid, hisUid);
 
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
         Actives actives = new Actives();
         List<Active> activeList = new ArrayList<Active>();
         for (IRecordSayEntity recordSayEntity : recordSayEntities) {
@@ -122,7 +116,7 @@ public class StreamService extends RecordService {
         uar.result = result;
         actives.setActive(activeList);
         uar.actives = actives;
-        uar.notice = notice;
+        uar.notice = getNotice(uid);
         uar.pagesize = recordSayEntities.size();
         uar.user = user;
         return uar;
@@ -198,19 +192,13 @@ public class StreamService extends RecordService {
 
             actives.add(active);
         }
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
 
         StreamResult sr = new StreamResult();
         Actives activesWrapper = new Actives();
         activesWrapper.setActive(actives);
         sr.setActiveCount(0);
         sr.setPagesize(pageSize);
-        sr.setNotice(notice);
+        sr.setNotice(getNotice(uid));
         sr.setActivies(activesWrapper);
         return sr;
     }

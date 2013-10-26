@@ -119,16 +119,10 @@ public class UserService extends RecordService {
             list.add(message);
         }
 
-        Notice notice = new Notice.Builder()
-                .talk(0)
-                .system(0)
-                .comment(0)
-                .at(0)
-                .build();
         MessageResult.Messages newslist = new MessageResult.Messages(list);
         MessageResult mr = new MessageResult();
         mr.pagesize = 20;
-        mr.notice = notice;
+        mr.notice = getNotice(uid);
         mr.newslist = newslist;
         return mr;
     }
