@@ -9,6 +9,7 @@ import com.ihelpoo.exception.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -153,24 +154,49 @@ public class OoTweet {
 
     @RequestMapping(value = "/tweets/{id}.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
-    public TweetDetailResult say(@PathVariable int id,
-                                 @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        TweetDetailResult tdr = null;
-        try {
-            tdr = tweetService.pullTweetBy(id);
-        } catch (Exception e) {
-            tdr = new TweetDetailResult();
-            logger.error(e.getMessage());
+    public TweetDetailResult say(
+            @PathVariable Integer id,
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
+        TweetDetailResult tdr = new TweetDetailResult();
+        Result result = new Result();
+        result.setErrorCode("0");
+        if (id == null || uid == null) {
+            result.setErrorMessage("参数错误");
+            logger.error("参数错误 id=" + id + " uid=" + uid);
+            tdr.result = result;
+            return tdr;
         }
+        try {
+            tdr = tweetService.pullTweetBy(id, uid);
+        } catch (EmptyResultDataAccessException e) {
+            logger.error(e.getMessage());
+            result.setErrorMessage("未找到该记录，可能已被作者删除");
+            tdr.result = result;
+            return tdr;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            result.setErrorMessage("系统错误：" + e.getMessage());
+            tdr.result = result;
+            return tdr;
+        }
+
+        result.setErrorCode("1");
+        result.setErrorMessage("成功");
+        tdr.result = result;
         return tdr;
     }
 
 
     @RequestMapping(value = "/tweets/{id}.json", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public TweetDetailResult sayJson(@PathVariable int id,
-                                     @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return say(id, userCookie);
+    public TweetDetailResult sayJson(
+            @PathVariable Integer id,
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
+        return say(id, uid, userCookie);
     }
 
     @RequestMapping(value = "/comments.xml", method = RequestMethod.GET, produces = "application/xml")
@@ -211,31 +237,21 @@ public class OoTweet {
 
     @RequestMapping(value = "/plus.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public TweetCommentPushResult plus(
+    public GenericResult plus(
+            @RequestParam(value = "sid", required = false) Integer sid,
             @RequestParam(value = "uid", required = false) Integer uid,
-            @RequestParam(value = "id", required = false) Integer id,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        //TODO credential verification by cookie
-
-        if (uid == null || id == null) {
-            return tweetService.plus(0, 0);
-        }
-        return tweetService.plus(id, uid);
+        return tweetService.plus(sid, uid);
     }
 
     @RequestMapping(value = "/diffuse.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public TweetCommentPushResult diffuse(
+    public GenericResult diffuse(
+            @RequestParam(value = "sid", required = false) Integer sid,
             @RequestParam(value = "uid", required = false) Integer uid,
-            @RequestParam(value = "id", required = false) Integer id,
             @RequestParam(value = "content", required = false) String content,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        //TODO credential verification by cookie
-
-        if (uid == null || id == null) {
-            return tweetService.diffuse(0, 0, content);
-        }
-        return tweetService.diffuse(id, uid, content);
+        return tweetService.diffuse(sid, uid, content);
     }
 
 

@@ -42,4 +42,22 @@ public interface StreamDao {
     int saveHelpData(int sayId, int reward);
 
     int deleteTweet(Integer uid, Integer sid);
+
+    int isRecordPlusByMe(int sid, Integer uid);
+
+    int isRecordDiffuseByMe(int sid, Integer uid);
+
+    IRecordPlusEntity findPlusBy(Integer sid, Integer uid);
+
+    int deletePlus(int id);
+
+    IRecordSayEntity findOneTweetBy(Integer sid);
+
+    IMsgNoticeEntity findMsgNotice(String noticeType, Integer uid, Integer sid, String type);
+
+    int deleteNoticeMessage(long noticeId);
+
+    int addPlus(Integer sid, Integer uid);
+
+    int saveNoticeMessageForOwner(String noticeType, Integer uid, Integer sid, String plus);
 }

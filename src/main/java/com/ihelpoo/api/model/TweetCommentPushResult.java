@@ -23,8 +23,6 @@ public class TweetCommentPushResult {
     @XmlElement
     Notice notice;
 
-    public TweetCommentPushResult(){}
-
     public TweetCommentPushResult(Result result, TweetCommentResult.Comment comment, Notice notice) {
         this.result = result;
         this.comment = comment;

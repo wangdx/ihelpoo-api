@@ -1,14 +1,17 @@
 package com.ihelpoo.api.model.entity;
 
 /**
- * @author: dongxu.wang@acm.org
+ * @author: echowdx@gmail.com
  */
 public class VTweetDetailEntity {
     private int sid;
+    private String sayType;
     private Integer uid;
+    private String iconUrl;
     private String online;
     private Integer commentCo;
     private Integer diffusionCo;
+    private int plusCo;
     private String by;
     private String content;
     private Integer time;
@@ -19,10 +22,6 @@ public class VTweetDetailEntity {
     private Integer authorType;
     private String enterYear;
     private String author;
-    private String iconUrl;
-    private int plusCo;
-    private Integer type;
-    private String enteryear;
 
     public int getSid() {
         return sid;
@@ -32,12 +31,28 @@ public class VTweetDetailEntity {
         this.sid = sid;
     }
 
+    public String getSayType() {
+        return sayType;
+    }
+
+    public void setSayType(String sayType) {
+        this.sayType = sayType;
+    }
+
     public Integer getUid() {
         return uid;
     }
 
     public void setUid(Integer uid) {
         this.uid = uid;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public String getOnline() {
@@ -62,6 +77,14 @@ public class VTweetDetailEntity {
 
     public void setDiffusionCo(Integer diffusionCo) {
         this.diffusionCo = diffusionCo;
+    }
+
+    public int getPlusCo() {
+        return plusCo;
+    }
+
+    public void setPlusCo(int plusCo) {
+        this.plusCo = plusCo;
     }
 
     public String getBy() {
@@ -151,6 +174,7 @@ public class VTweetDetailEntity {
 
         VTweetDetailEntity that = (VTweetDetailEntity) o;
 
+        if (plusCo != that.plusCo) return false;
         if (sid != that.sid) return false;
         if (academy != null ? !academy.equals(that.academy) : that.academy != null) return false;
         if (active != null ? !active.equals(that.active) : that.active != null) return false;
@@ -162,7 +186,9 @@ public class VTweetDetailEntity {
         if (content != null ? !content.equals(that.content) : that.content != null) return false;
         if (diffusionCo != null ? !diffusionCo.equals(that.diffusionCo) : that.diffusionCo != null) return false;
         if (enterYear != null ? !enterYear.equals(that.enterYear) : that.enterYear != null) return false;
+        if (iconUrl != null ? !iconUrl.equals(that.iconUrl) : that.iconUrl != null) return false;
         if (online != null ? !online.equals(that.online) : that.online != null) return false;
+        if (sayType != null ? !sayType.equals(that.sayType) : that.sayType != null) return false;
         if (sex != null ? !sex.equals(that.sex) : that.sex != null) return false;
         if (time != null ? !time.equals(that.time) : that.time != null) return false;
         if (uid != null ? !uid.equals(that.uid) : that.uid != null) return false;
@@ -173,10 +199,13 @@ public class VTweetDetailEntity {
     @Override
     public int hashCode() {
         int result = sid;
+        result = 31 * result + (sayType != null ? sayType.hashCode() : 0);
         result = 31 * result + (uid != null ? uid.hashCode() : 0);
+        result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
         result = 31 * result + (online != null ? online.hashCode() : 0);
         result = 31 * result + (commentCo != null ? commentCo.hashCode() : 0);
         result = 31 * result + (diffusionCo != null ? diffusionCo.hashCode() : 0);
+        result = 31 * result + plusCo;
         result = 31 * result + (by != null ? by.hashCode() : 0);
         result = 31 * result + (content != null ? content.hashCode() : 0);
         result = 31 * result + (time != null ? time.hashCode() : 0);
@@ -188,37 +217,5 @@ public class VTweetDetailEntity {
         result = 31 * result + (enterYear != null ? enterYear.hashCode() : 0);
         result = 31 * result + (author != null ? author.hashCode() : 0);
         return result;
-    }
-
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
-
-    public int getPlusCo() {
-        return plusCo;
-    }
-
-    public void setPlusCo(int plusCo) {
-        this.plusCo = plusCo;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getEnteryear() {
-        return enteryear;
-    }
-
-    public void setEnteryear(String enteryear) {
-        this.enteryear = enteryear;
     }
 }

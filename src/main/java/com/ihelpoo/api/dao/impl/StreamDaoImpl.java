@@ -6,6 +6,7 @@ import com.ihelpoo.api.model.TweetCommentResult;
 import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.*;
+import com.ihelpoo.common.util.ID;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -68,7 +69,6 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         String sql = " select * from i_record_say where sid=? and say_type in (0,2,9) ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{sid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
     }
-
 
     public IRecordSayEntity findOneTweetBy(int sid, int uid) {
         String sql = " select * from i_record_say where sid=? and uid=? ";
@@ -217,7 +217,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
     @Override
     public VTweetDetailEntity findTweetDetailBy(int sid) {
-        String sql = "select sid,i_record_say.uid,i_user_login.icon_url,online,comment_co,diffusion_co,plus_co,`from` `by`,content,`time`,active,sex,birthday,i_op_specialty.`name` academy, `type` author_type,enteryear enter_year,nickname author\n" +
+        String sql = "select sid,say_type,i_record_say.uid,i_user_login.icon_url,online,comment_co,diffusion_co,plus_co,`from` `by`,content,`time`,active,sex,birthday,i_op_specialty.`name` academy, `type` author_type,enteryear enter_year,nickname author\n" +
                 " from i_record_say " +
                 " left join i_user_login on i_record_say.uid=i_user_login.uid " +
                 " left join i_user_info on i_record_say.uid=i_user_info.uid " +
@@ -281,7 +281,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
         int affectedSay = getJdbcTemplate().update(sqlSay, new Object[]{sid, uid});
         Object[] sidParam = {sid};
-        if(affectedSay > 0){
+        if (affectedSay > 0) {
             if ("1".equals(sayEntity.getSayType())) {
                 getJdbcTemplate().update(sqlHelp, sidParam);
                 getJdbcTemplate().update(sqlHelpReply, sidParam);
@@ -291,6 +291,72 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         }
         getJdbcTemplate().update(sqlDiffusion, sidParam);
         return affectedSay;
+    }
+
+    @Override
+    public int isRecordPlusByMe(int sid, Integer uid) {
+        String sql = "  SELECT COUNT(*) FROM i_record_plus WHERE sid=? and uid=? ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, sid, uid);
+    }
+
+    @Override
+    public int isRecordDiffuseByMe(int sid, Integer uid) {
+        String sql = "  SELECT COUNT(*) FROM i_record_diffusion WHERE sid=? and uid=? ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, sid, uid);
+    }
+
+    @Override
+    public IRecordPlusEntity findPlusBy(Integer sid, Integer uid) {
+        final String sql = " SELECT * FROM i_record_plus WHERE sid=? AND uid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{sid, uid}, new BeanPropertyRowMapper<IRecordPlusEntity>(IRecordPlusEntity.class));
+    }
+
+    @Override
+    public int deletePlus(int id) {
+        final String sql = " DELETE FROM i_record_plus WHERE id=? ";
+        return getJdbcTemplate().update(sql, new Object[]{id});
+    }
+
+    @Override
+    public IRecordSayEntity findOneTweetBy(Integer sid) {
+        String sql = " select * from i_record_say where sid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{sid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
+    }
+
+    @Override
+    public IMsgNoticeEntity findMsgNotice(String noticeType, Integer uid, Integer sid, String type) {
+        final String sql = " SELECT * FROM i_msg_notice WHERE notice_type=? AND source_id=? AND detail_id=? AND format_id=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{noticeType, uid, sid, type}, new BeanPropertyRowMapper<IMsgNoticeEntity>(IMsgNoticeEntity.class));
+    }
+
+    @Override
+    public int deleteNoticeMessage(long noticeId) {
+        final String sql = " DELETE FROM i_msg_notice WHERE notice_id=? ";
+        return getJdbcTemplate().update(sql, new Object[]{noticeId});
+    }
+
+    @Override
+    public int addPlus(final Integer sid, final Integer uid) {
+        final String sql = " INSERT INTO i_record_plus (sid, uid, `view`, deliver, create_time) values(?,?,?,?,unix_timestamp()) ";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                ps.setInt(1, sid);
+                ps.setInt(2, uid);
+                ps.setString(3, "");
+                ps.setInt(4, 0);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public int saveNoticeMessageForOwner(final String noticeType, final Integer uid, final Integer sid, String sayType) {
+        final long noticeId = ID.INSTANCE.next();
+        final String sql = " INSERT INTO i_msg_notice (notice_id, notice_type, source_id, detail_id, format_id, create_time) values (?,?,?,?,?,unix_timestamp()) ";
+        return getJdbcTemplate().update(sql, new Object[]{noticeId, "stream/" + noticeType + "-para:" + sayType, uid, sid, sayType});
     }
 
     private int fetchUserActive(IUserLoginEntity userLoginEntity) {

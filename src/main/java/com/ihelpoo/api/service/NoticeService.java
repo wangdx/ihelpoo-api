@@ -89,6 +89,9 @@ public class NoticeService extends RecordService{
     }
 
     private void clearSystem(String uidStr) {
+        if(uidStr == null || uidStr.length() < 5){
+            return;
+        }
         Jedis jedis = new Jedis("localhost");
         Set<String> notices = jedis.hkeys(WordService.R_ACCOUNT + WordService.R_MESSAGE + uidStr);
         for (String notice : notices) {

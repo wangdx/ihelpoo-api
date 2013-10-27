@@ -27,7 +27,7 @@ join i_school_info ON i_user_login.school = i_school_info.id
 };
 
 create view v_tweet_detail as (
-select sid,i_record_say.uid,online,comment_co,diffusion_co,plus_co,`from` `by`,
+select sid,say_type,i_record_say.uid,online,comment_co,diffusion_co,plus_co,`from` `by`,
 	content,`time`,active,sex,birthday,i_op_specialty.`name` academy,
 	`type`,enteryear,nickname author
 from i_record_say

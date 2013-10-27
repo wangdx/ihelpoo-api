@@ -55,8 +55,8 @@ public class NotificationDaoImpl extends JdbcDaoSupport implements NotificationD
     }
 
     @Override
-    public int deliverAllMessage(Integer uid, Integer fromUid) {
-        final String sql = " update i_talk_content set deliver='1' where uid=? and touid=? and deliver='0' ";
-        return getJdbcTemplate().update(sql, new Object[]{fromUid, uid});
+    public int deliverAllMessage(Integer uid, Integer fromUid) {//TODO only fromuid
+        final String sql = " update i_talk_content set deliver='1' where touid=? and deliver='0' ";
+        return getJdbcTemplate().update(sql, new Object[]{uid});
     }
 }

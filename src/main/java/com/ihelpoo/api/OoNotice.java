@@ -42,7 +42,7 @@ public class OoNotice {
             @RequestParam(value = "from_uid", required = false) Integer fromUid,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
     ) {
-        return noticeService.clearNotice(uid, type, 0);
+        return noticeService.clearNotice(uid, type, fromUid);
     }
 
     @RequestMapping(value = "/noticeClear.json", method = RequestMethod.POST, produces = "application/json")

@@ -12,11 +12,13 @@ import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.util.UpYun;
 import com.ihelpoo.exception.AppException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -78,6 +80,7 @@ public class TweetService extends RecordService {
             tweet.id = tweetEntity.getSid();
             tweet.authorType = convertToType(tweetEntity.getType(), tweetEntity.getEnteryear());
             tweet.authorid = tweetEntity.getUid();
+            tweet.sayType = tweetEntity.getSayType();
             tweets.add(tweet);
         }
 
@@ -91,9 +94,21 @@ public class TweetService extends RecordService {
     }
 
 
-    public TweetDetailResult pullTweetBy(int sid) {
+    public TweetDetailResult pullTweetBy(int sid, Integer uid) {
         VTweetDetailEntity tweetDetailEntity = streamDao.findTweetDetailBy(sid);
-        long t = System.currentTimeMillis();
+        TweetResult.Tweet tweet = makeTweet(tweetDetailEntity, sid, uid);
+        TweetDetailResult tdr = new TweetDetailResult(tweet, getNotice(uid));
+        return tdr;
+    }
+
+    private TweetResult.Tweet makeTweet(VTweetDetailEntity tweetDetailEntity, int sid, Integer uid) {
+        TweetResult.Tweet tweet = toTweet(tweetDetailEntity);
+        tweet.plusByMe = streamDao.isRecordPlusByMe(sid, uid);
+        tweet.diffuseByMe = streamDao.isRecordDiffuseByMe(sid, uid);
+        return tweet;
+    }
+
+    private TweetResult.Tweet toTweet(VTweetDetailEntity tweetDetailEntity) {
         String imgUrl = convertToImageUrl(tweetDetailEntity.getSid());
         TweetResult.Tweet tweet = new TweetResult.Tweet();
         tweet.spreadCount = tweetDetailEntity.getDiffusionCo() == null ? 0 : tweetDetailEntity.getDiffusionCo();
@@ -115,8 +130,8 @@ public class TweetService extends RecordService {
         tweet.authorid = tweetDetailEntity.getUid();
         tweet.plusByMe = 0;
         tweet.plusCount = tweetDetailEntity.getPlusCo();
-        TweetDetailResult tdr = new TweetDetailResult(tweet, new Notice());//FIXME
-        return tdr;
+        tweet.sayType = tweetDetailEntity.getSayType();
+        return tweet;
     }
 
     public TweetCommentResult pullCommentsBy(int sid, int pageIndex, int pageSize) {
@@ -206,7 +221,7 @@ public class TweetService extends RecordService {
             }
 
             streamDao.saveHelpData(sayId, reward);
-            userDao.saveMsgActive("min", uid,recordUserLoginActive, reward,"求帮助使用");
+            userDao.saveMsgActive("min", uid, recordUserLoginActive, reward, "求帮助使用");
             recordUserLoginActive -= reward;
         }
 
@@ -233,22 +248,108 @@ public class TweetService extends RecordService {
         return reward != null && reward >= 0;
     }
 
-    public TweetCommentPushResult plus(int id, int uid) {
+    @Transactional
+    public GenericResult plus(Integer sid, Integer uid) {
+        GenericResult genericResult = new GenericResult();
+        Result result = new Result();
+        result.setErrorCode("0");
 
-        Result result = new Result("1", "操作成功");
+        if (sid == null || uid == null) {
+            result.setErrorMessage("参数错误：sid=" + sid + " uid=" + uid);
+            genericResult.setResult(result);
+            return genericResult;
+        }
 
-        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, null, getNotice(uid));
+        IRecordSayEntity sayEntity = null;
+        try {
+            sayEntity = streamDao.findOneTweetBy(sid);
+        } catch (EmptyResultDataAccessException e) {
+        }
 
-        return commentPushResult;
+        if (sayEntity == null) {
+            result.setErrorMessage("查看的记录不存在或已被删除");
+            genericResult.setResult(result);
+            return genericResult;
+        }
+
+        String noticeType = "i";
+        if ("1".equals(sayEntity.getSayType())) {
+            noticeType = "ih";
+        }
+
+
+
+        IRecordPlusEntity plusEntity = null;
+        try {
+            plusEntity = streamDao.findPlusBy(sid, uid);
+            streamDao.deletePlus(plusEntity.getId());
+            incrPlusCountOfRecordBy(sid, -1);
+            IMsgNoticeEntity noticeEntity = streamDao.findMsgNotice("stream/" + noticeType + "-para:plus", uid, sid, "plus");
+            deleteNoticeMessage(noticeEntity.getNoticeId());
+            bounceNoticeMessageCount(sayEntity.getUid(), -1);
+            deliverBack(sayEntity.getUid(), noticeEntity.getNoticeId());
+        } catch (EmptyResultDataAccessException e) {//to plus
+            streamDao.addPlus(sid, uid);
+            incrPlusCountOfRecordBy(sid, 1);
+            int noticeIdForOwner = streamDao.saveNoticeMessageForOwner(noticeType, uid, sid, "plus");
+            bounceNoticeMessageCount(sayEntity.getUid(), 1);
+            deliverTo(sayEntity.getUid(), noticeIdForOwner);
+        }
+
+        result.setErrorCode("1");
+        result.setErrorMessage("操作成功");
+        genericResult.setResult(result);
+        genericResult.setNotice(getNotice(uid));
+        return genericResult;
     }
 
-    public TweetCommentPushResult diffuse(int id, int uid, String content) {
 
-        Result result = new Result("1", "发布成功");
+    private void deliverTo(Integer uid, long noticeId) {
+        String uidStr = String.valueOf(uid);
+        Jedis jedis = new Jedis("localhost");
+        jedis.hset(WordService.R_ACCOUNT + WordService.R_MESSAGE + uidStr, String.valueOf(noticeId), "0");
+        jedis.disconnect();
+    }
 
-        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, null, getNotice(uid));
+    private void deliverBack(Integer uid, long noticeId) {
+        String uidStr = String.valueOf(uid);
+        Jedis jedis = new Jedis("localhost");
+        jedis.hdel(WordService.R_ACCOUNT + WordService.R_MESSAGE + uidStr, String.valueOf(noticeId));
+        jedis.disconnect();
+    }
 
-        return commentPushResult;
+    private void bounceNoticeMessageCount(Integer uid, int offset) {
+        String uidStr = String.valueOf(uid);
+        Jedis jedis = new Jedis("localhost");
+        jedis.hincrBy(WordService.R_NOTICE + WordService.R_SYSTEM + uidStr.substring(0, uidStr.length() - 3), uidStr.substring(uidStr.length() - 3), offset);
+        jedis.disconnect();
+    }
+
+    private void deleteNoticeMessage(long noticeId) {
+        streamDao.deleteNoticeMessage(noticeId);
+    }
+
+    private int incrPlusCountOfRecordBy(Integer sid, int schoolId) {
+        int plusCount = 0;
+        return plusCount;
+    }
+
+    public GenericResult diffuse(Integer sid, Integer uid, String content) {
+        GenericResult genericResult = new GenericResult();
+        Result result = new Result();
+        result.setErrorCode("0");
+
+        if (sid == null || uid == null) {
+            result.setErrorMessage("参数错误：sid=" + sid + " uid=" + uid);
+            genericResult.setResult(result);
+            return genericResult;
+        }
+
+        result.setErrorCode("1");
+        result.setErrorMessage("操作成功");
+        genericResult.setResult(result);
+        genericResult.setNotice(getNotice(uid));
+        return genericResult;
     }
 
     @Transactional
@@ -320,9 +421,9 @@ public class TweetService extends RecordService {
     public GenericResult deleteTweet(Integer uid, Integer sid) {
         GenericResult genericResult = new GenericResult();
         Result result = new Result();
-        try{
+        try {
             streamDao.deleteTweet(uid, sid);
-        } catch (Exception e){
+        } catch (Exception e) {
             result.setErrorCode("0");
             result.setErrorMessage(e.getMessage());
             genericResult.setResult(result);

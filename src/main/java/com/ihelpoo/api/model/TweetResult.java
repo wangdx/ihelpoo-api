@@ -41,6 +41,8 @@ public class TweetResult {
         @XmlElement
         public int id;
         @XmlElement
+        public String sayType;
+        @XmlElement
         public String portrait;
         @XmlElement
         public String author;
@@ -77,6 +79,8 @@ public class TweetResult {
         public int rank;
         @XmlElement
         public int plusByMe;
+        @XmlElement
+        public int diffuseByMe;
 
     }
 
