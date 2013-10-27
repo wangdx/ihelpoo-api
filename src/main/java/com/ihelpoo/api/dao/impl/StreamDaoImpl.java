@@ -353,10 +353,59 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public int saveNoticeMessageForOwner(final String noticeType, final Integer uid, final Integer sid, String sayType) {
+    public int saveNoticeMessage(final String noticeType, final Integer uid, final Integer sid, String sayType) {
         final long noticeId = ID.INSTANCE.next();
         final String sql = " INSERT INTO i_msg_notice (notice_id, notice_type, source_id, detail_id, format_id, create_time) values (?,?,?,?,?,unix_timestamp()) ";
         return getJdbcTemplate().update(sql, new Object[]{noticeId, "stream/" + noticeType + "-para:" + sayType, uid, sid, sayType});
+    }
+
+    @Override
+    public IRecordDiffusionEntity findDiffusion(Integer sid, Integer uid) {
+        final String sql = " SELECT id,uid,sid,`view`,`time` FROM i_record_diffusion WHERE uid=? AND sid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid, sid}, new BeanPropertyRowMapper<IRecordDiffusionEntity>(IRecordDiffusionEntity.class));
+    }
+
+    @Override
+    public List<IRecordDiffusionEntity> findDiffusions(Integer uid, long time12Hour) {
+        final String sql = " SELECT id,uid,sid,`view`,`time` FROM i_record_diffusion WHERE uid=? AND `time` > ? ";
+        return getJdbcTemplate().query(sql, new Object[]{uid, time12Hour}, new BeanPropertyRowMapper<IRecordDiffusionEntity>(IRecordDiffusionEntity.class));
+    }
+
+    @Override
+    public int saveDiffusion(final Integer uid, final Integer sid, String content) {
+        final String sql = " INSERT INTO i_record_diffusion (uid, sid, `view`, `time`) VALUES (?,?,?,unix_timestamp()) ";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                ps.setInt(1, uid);
+                ps.setInt(2, sid);
+                ps.setString(3, "1");
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public int incrDiffusionCount(Integer sid, boolean canAffect) {
+        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET diffusion_co = diffusion_co + 1 ");
+        if (canAffect) {
+            sb.append(" , last_comment_ti=unix_timestamp() ");
+        }
+        sb.append(" WHERE sid=? ");
+        return getJdbcTemplate().update(sb.toString(), new Object[]{sid});
+    }
+
+    @Override
+    public int incrSay(Integer sid, int offset) {
+        if (offset >= 0) {
+            final String sqlInc = " UPDATE i_record_say SET plus_co = plus_co + ? WHERE sid=? ";
+            return getJdbcTemplate().update(sqlInc, new Object[]{offset, sid});
+        } else {
+            final String sqlDec = " UPDATE i_record_say SET plus_co = IF(plus_co - ? < 0, 0, plus_co - ?) WHERE sid=? ";
+            return getJdbcTemplate().update(sqlDec, new Object[]{offset, -offset, sid});
+        }
     }
 
     private int fetchUserActive(IUserLoginEntity userLoginEntity) {

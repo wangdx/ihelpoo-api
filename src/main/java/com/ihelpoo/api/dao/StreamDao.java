@@ -59,5 +59,15 @@ public interface StreamDao {
 
     int addPlus(Integer sid, Integer uid);
 
-    int saveNoticeMessageForOwner(String noticeType, Integer uid, Integer sid, String plus);
+    int saveNoticeMessage(String noticeType, Integer uid, Integer detailId, String sayType);
+
+    IRecordDiffusionEntity findDiffusion(Integer sid, Integer uid);
+
+    List<IRecordDiffusionEntity> findDiffusions(Integer uid, long time12Hour);
+
+    int saveDiffusion(Integer uid, Integer sid, String content);
+
+    int incrDiffusionCount(Integer sid, boolean canAffect);
+
+    int incrSay(Integer sid, int offset);
 }

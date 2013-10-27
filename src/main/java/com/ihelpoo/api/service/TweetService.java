@@ -278,7 +278,6 @@ public class TweetService extends RecordService {
         }
 
 
-
         IRecordPlusEntity plusEntity = null;
         try {
             plusEntity = streamDao.findPlusBy(sid, uid);
@@ -291,7 +290,7 @@ public class TweetService extends RecordService {
         } catch (EmptyResultDataAccessException e) {//to plus
             streamDao.addPlus(sid, uid);
             incrPlusCountOfRecordBy(sid, 1);
-            int noticeIdForOwner = streamDao.saveNoticeMessageForOwner(noticeType, uid, sid, "plus");
+            int noticeIdForOwner = streamDao.saveNoticeMessage(noticeType, uid, sid, "plus");
             bounceNoticeMessageCount(sayEntity.getUid(), 1);
             deliverTo(sayEntity.getUid(), noticeIdForOwner);
         }
@@ -329,9 +328,8 @@ public class TweetService extends RecordService {
         streamDao.deleteNoticeMessage(noticeId);
     }
 
-    private int incrPlusCountOfRecordBy(Integer sid, int schoolId) {
-        int plusCount = 0;
-        return plusCount;
+    private int incrPlusCountOfRecordBy(Integer sid, int offset) {
+        return streamDao.incrSay(sid, offset);
     }
 
     public GenericResult diffuse(Integer sid, Integer uid, String content) {
@@ -345,11 +343,79 @@ public class TweetService extends RecordService {
             return genericResult;
         }
 
+
+        IRecordSayEntity sayEntity = null;
+        try {
+            sayEntity = streamDao.findOneTweetBy(sid);
+        } catch (EmptyResultDataAccessException e) {
+        }
+
+        if (sayEntity == null) {
+            result.setErrorMessage("查看的记录不存在或已被删除");
+            genericResult.setResult(result);
+            return genericResult;
+        }
+
+        String noticeType = "i";
+        if ("1".equals(sayEntity.getSayType())) {
+            noticeType = "ih";
+        }
+
+        try {
+            streamDao.findDiffusion(sid, uid);
+            result.setErrorMessage("你已扩散了这条消息");
+            genericResult.setResult(result);
+            return genericResult;
+        } catch (EmptyResultDataAccessException e) {
+        }
+
+
+        long time12Hour = System.currentTimeMillis() / 1000 - 43200L;
+        List<IRecordDiffusionEntity> entities = streamDao.findDiffusions(uid, time12Hour);
+        if (entities != null && entities.size() >= 3) {
+            result.setErrorMessage("12小时内最多扩散3条");
+            genericResult.setResult(result);
+            return genericResult;
+        }
+
+        int diffuseId = streamDao.saveDiffusion(uid, sid, content);
+        int noticeIdForFollowers = streamDao.saveNoticeMessage(noticeType, uid, diffuseId, "diffusion");
+        increaseDiffusionsCountOfRecord(sid, uid);
+        int noticeIdForOwner = streamDao.saveNoticeMessage(noticeType, uid, diffuseId, "diffusiontoowner");
+        diffseIt(uid, noticeIdForOwner, noticeIdForFollowers, sayEntity.getUid());
+
+
         result.setErrorCode("1");
         result.setErrorMessage("操作成功");
         genericResult.setResult(result);
         genericResult.setNotice(getNotice(uid));
         return genericResult;
+    }
+
+    private void diffseIt(Integer uid, int noticeIdForOwner, int noticeIdForFollowers, Integer recordOwnerId) {
+        List<IUserPriorityEntity> entities = userDao.findFollowersBy(uid, 0, Integer.MAX_VALUE);
+        List<Integer> uids = new ArrayList<Integer>();
+        for(IUserPriorityEntity entity : entities){
+            uids.add(entity.getUid());
+        }
+        saveDiffusionRelations(noticeIdForOwner, noticeIdForFollowers, uids, recordOwnerId);
+    }
+
+    private void saveDiffusionRelations(int noticeIdForOwner, int noticeIdForFollowers, List<Integer> uids, Integer recordOwnerId) {
+        bounceNoticeMessageCount(recordOwnerId, 1);
+        deliverTo(recordOwnerId, noticeIdForOwner);
+        for(Integer uid : uids){
+            bounceNoticeMessageCount(uid, 1);
+            deliverTo(uid, noticeIdForFollowers);
+        }
+    }
+
+    private IRecordSayEntity increaseDiffusionsCountOfRecord(Integer sid, Integer uid) {
+        IUserLoginEntity loginEntity = userDao.findUserById(uid);
+        boolean canAffect = convertToLevel(loginEntity.getActive()) >= 2;
+        IRecordSayEntity sayEntity = streamDao.findOneTweetBy(sid);
+        streamDao.incrDiffusionCount(sid, canAffect);
+        return sayEntity;
     }
 
     @Transactional

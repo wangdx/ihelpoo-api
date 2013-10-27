@@ -12,7 +12,6 @@ public class IRecordDiffusionEntity {
     private Integer assessId;
     private int time;
     private String view;
-    private int school;
 
     public int getId() {
         return id;
@@ -106,13 +105,5 @@ public class IRecordDiffusionEntity {
 
     public void setView(String view) {
         this.view = view;
-    }
-
-    public int getSchool() {
-        return school;
-    }
-
-    public void setSchool(int school) {
-        this.school = school;
     }
 }

@@ -240,7 +240,8 @@ public class OoTweet {
     public GenericResult plus(
             @RequestParam(value = "sid", required = false) Integer sid,
             @RequestParam(value = "uid", required = false) Integer uid,
-            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
         return tweetService.plus(sid, uid);
     }
 
@@ -250,7 +251,8 @@ public class OoTweet {
             @RequestParam(value = "sid", required = false) Integer sid,
             @RequestParam(value = "uid", required = false) Integer uid,
             @RequestParam(value = "content", required = false) String content,
-            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
         return tweetService.diffuse(sid, uid, content);
     }
 
