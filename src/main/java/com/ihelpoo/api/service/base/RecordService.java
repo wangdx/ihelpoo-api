@@ -23,6 +23,9 @@ public class RecordService {
 
     public Notice getNotice(int uid){
         Notice notice = new Notice();
+        if(uid < 10000){
+            return notice;
+        }
         notice.activeCount = countActive(uid);
         notice.atmeCount = countAtme(uid);
         notice.chatCount = countChat(uid);
@@ -32,6 +35,9 @@ public class RecordService {
     }
 
     public int countSystem(int uid) {
+        if(uid < 10000){
+            return 0;
+        }
         String uidStr = String.valueOf(uid);
         Jedis jedis = new Jedis("localhost");
         String countStr = jedis.hget(WordService.R_NOTICE + WordService.R_SYSTEM + uidStr.substring(0, uidStr.length() - 3), uidStr.substring(uidStr.length() - 3));
