@@ -66,6 +66,7 @@ public class TweetService extends RecordService {
             tweet.onlineState = convertToOnlineState(tweetEntity.getOnline());
             tweet.portrait = convertToAvatarUrl(tweetEntity.getIconUrl(), tweetEntity.getUid());
             tweet.appclient = convertToBy(tweetEntity.getFrom());
+            tweet.by = tweetEntity.getFrom();
             tweet.commentCount = tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo();
             tweet.body = tweetEntity.getContent();
             tweet.pubDate = convertToDate(tweetEntity.getTime());
@@ -98,6 +99,7 @@ public class TweetService extends RecordService {
         tweet.spreadCount = tweetDetailEntity.getDiffusionCo() == null ? 0 : tweetDetailEntity.getDiffusionCo();
         tweet.onlineState = convertToOnlineState(tweetDetailEntity.getOnline());
         tweet.appclient = convertToBy(tweetDetailEntity.getBy());
+        tweet.by = tweetDetailEntity.getBy();
         tweet.body = tweetDetailEntity.getContent();
         tweet.pubDate = convertToDate(tweetDetailEntity.getTime());
         tweet.commentCount = tweetDetailEntity.getCommentCo() == null ? 0 : tweetDetailEntity.getCommentCo();

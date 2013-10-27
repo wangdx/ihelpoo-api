@@ -51,6 +51,8 @@ public class TweetResult {
         @XmlElement
         public int appclient;
         @XmlElement
+        public String by;
+        @XmlElement
         public int commentCount;
         @XmlElement
         public String pubDate;

@@ -2,7 +2,6 @@ package com.ihelpoo.api;
 
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.model.*;
-import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.service.TweetService;
 import com.ihelpoo.api.service.WordService;
@@ -44,9 +43,32 @@ public class OoTweet {
             @RequestParam(value = "uid", required = false) Integer uid,
             @RequestParam(value = "msg", required = false) String msg,
             @RequestParam(value = "reward", required = false) Integer reward,
+            @RequestParam(value = "target_school", required = false) Integer targetSchool,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String ooidCookie,
-            @CookieValue(value = Constant.SELECTED_SCHOOL, required = false) Integer selectedSchool,
             HttpServletRequest request) {
+
+        GenericResult genericResult = new GenericResult();
+        Result result = new Result();
+        result.setErrorCode(FAILURE);
+
+        if (uid == null || msg == null || targetSchool == null) {
+            result.setErrorMessage("参数错误");
+            genericResult.setResult(result);
+            logger.error("缺少参数：uid=" + uid + " message=" + msg + " target school = " + targetSchool);
+            return genericResult;
+        }
+
+        if (targetSchool < 1) {
+            result.setErrorMessage("未选择学校");
+            genericResult.setResult(result);
+            logger.error("未选择学校");
+            return genericResult;
+        }
+
+        if (targetSchool == 35) {
+            logger.warn("选择了默认学校，某些信息在WEB端可能不会显示");
+        }
+
         String userAgent = request.getHeader("User-Agent");
         String deviceType = "圈圈App";
         if (userAgent != null && userAgent.length() > 0 && userAgent.contains("/")) {
@@ -58,15 +80,15 @@ public class OoTweet {
         long t = System.currentTimeMillis() / 1000L;
         String imgPath = null;
 
-        if(request instanceof MultipartHttpServletRequest){
+        if (request instanceof MultipartHttpServletRequest) {
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
             MultipartFile multipartFile = multipartRequest.getFile("img");
             if (multipartFile != null) {
                 try {
                     imgPath = tweetService.uploadImage(uid, multipartRequest, t);
                 } catch (AppException e) {
-                    GenericResult genericResult = new GenericResult();
-                    genericResult.setResult(new Result(FAILURE, e.getMessage()));
+                    result.setErrorMessage(e.getMessage());
+                    genericResult.setResult(result);
                     logger.error("upload image failed, ", e);
                     return genericResult;
                 }
@@ -76,17 +98,17 @@ public class OoTweet {
 
         try {
             //TODO school
-            tweetService.pubTweet(uid, t, msg, reward, imgPath, deviceType, selectedSchool);
+            tweetService.pubTweet(uid, t, msg, reward, imgPath, deviceType, targetSchool);
         } catch (Exception e) {
-            GenericResult genericResult = new GenericResult();
-            genericResult.setResult(new Result(FAILURE, e.getMessage()));
+            result.setErrorMessage(e.getMessage());
+            genericResult.setResult(result);
             logger.error("upload image failed, ", e);
             return genericResult;
         }
 
-
-        GenericResult genericResult = new GenericResult();
-        genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
+        result.setErrorCode(SUCCESS);
+        result.setErrorMessage(MSG_SUC_LOGIN);
+        genericResult.setResult(result);
         genericResult.setNotice(tweetService.getNotice(uid));
         return genericResult;
     }
@@ -97,10 +119,10 @@ public class OoTweet {
             @RequestParam(value = "uid", required = false) int uid,
             @RequestParam(value = "msg", required = false) String msg,
             @RequestParam(value = "reward", required = false) Integer reward,
+            @RequestParam(value = "target_school", required = false) Integer targetSchool,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String ooidCookie,
-            @CookieValue(value = Constant.SELECTED_SCHOOL, required = false) Integer selectedSchool,
             HttpServletRequest request) {
-        return tweetPub(uid, msg, reward, ooidCookie, selectedSchool, request);
+        return tweetPub(uid, msg, reward, targetSchool, ooidCookie, request);
     }
 
     @RequestMapping(value = "/tweets.xml", method = RequestMethod.GET, produces = "application/xml")
