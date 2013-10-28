@@ -3,7 +3,6 @@ package com.ihelpoo.api.service;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.common.User;
-import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
@@ -38,7 +37,7 @@ public class LoginService extends RecordService{
         GenericResult genericResult = new GenericResult();
         IUserLoginEntity userLoginEntity = null;
         try {
-            userLoginEntity = userDao.findByUserName(username);
+            userLoginEntity = userDao.findByAccount(username);
         } catch (Exception e) {
             //TODO gentle message to user
             genericResult.setResult(new Result(FAILURE, e.getMessage()));

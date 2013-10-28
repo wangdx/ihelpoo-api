@@ -11,8 +11,11 @@ import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.util.UpYun;
 import com.ihelpoo.exception.AppException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -23,12 +26,15 @@ import redis.clients.jedis.Jedis;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author: dongxu.wang@acm.org
  */
 @Service
 public class TweetService extends RecordService {
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final int ERR_PUB_TOO_MANY = -1;
     private static final int ERR_ACTIVE_NOT_ENOUGH = -2;
@@ -160,10 +166,71 @@ public class TweetService extends RecordService {
     }
 
 
-    public TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog) {
-        return streamDao.pushComment(id, uid, atUsers, content, catalog);
+    public TweetCommentPushResult pushComment(int id, int uid, String content) {
+        TweetCommentPushResult pushResult = new TweetCommentPushResult();
+        Result result = new Result();
+        result.setErrorCode("0");
+
+        int cid = streamDao.saveComment(id, uid, content);
+        IRecordSayEntity recordSayEntity = null;
+        IUserLoginEntity userLoginEntity = null;
+        if (cid > 0) {
+            userLoginEntity = userDao.findUserById(uid);
+            int rank = convertToRank(userLoginEntity.getActive());
+            try {
+                recordSayEntity = streamDao.findOneTweetBy(id);
+            } catch (EmptyResultDataAccessException e) {
+                result.setErrorMessage("未找到或已被删除");
+                pushResult.notice = getNotice(uid);
+                pushResult.result = result;
+                return pushResult;
+            }
+            streamDao.incSayCount(id, rank >= 2, "comment_co");
+        }
+
+        int affected = userDao.incIfLessThan("active_c_limit", 15, uid);
+        if (affected > 0) {
+            userDao.incActive(uid, 1);
+            userDao.saveMsgActive("add", uid, fetchUserActive(userLoginEntity), 1, "评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)");
+        }
+        if (uid != recordSayEntity.getUid()) {
+            streamDao.saveMsgComment(recordSayEntity.getUid(), id, cid, uid);
+        }
+
+        final Pattern AT_PATTERN = Pattern.compile("@[\\u4e00-\\u9fa5\\w\\-]+");
+        Matcher matcher = AT_PATTERN.matcher(content);
+        while (matcher.find()) {
+            String atUserName = matcher.group().substring(1);
+            try {
+                IUserLoginEntity userLoginEntity1 = userDao.findUserByNickname(atUserName);
+                streamDao.saveMsgAt(userLoginEntity1.getUid(), uid, id, cid);
+            } catch (Exception e) {
+                logger.error("Fail to at user:", e);
+            }
+        }
+
+
+        TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
+        comment.content = content;
+        comment.pubDate = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date(System.currentTimeMillis()));
+        comment.author = userLoginEntity.getNickname();
+        comment.authorid = uid;
+        comment.portrait = convertToAvatarUrl(userLoginEntity.getIconUrl(), uid);
+        comment.id = id;
+        comment.appclient = 0;
+
+        result.setErrorCode("1");
+        result.setErrorMessage("评论成功");
+        pushResult.result = result;
+        pushResult.notice = getNotice(uid);
+        pushResult.comment = comment;
+        return pushResult;
     }
 
+
+    private int fetchUserActive(IUserLoginEntity userLoginEntity) {
+        return userLoginEntity.getActive() == null ? 1 : userLoginEntity.getActive() + 1;
+    }
 
     private String[] fetchLinks(List<IRecordOutimgEntity> imgLinkEntities) {
         return new String[0];
@@ -329,7 +396,7 @@ public class TweetService extends RecordService {
     }
 
     private int incrPlusCountOfRecordBy(Integer sid, int offset) {
-        return streamDao.incrSay(sid, offset);
+        return streamDao.incOrDecSayCount(sid, offset);
     }
 
     public GenericResult diffuse(Integer sid, Integer uid, String content) {
@@ -395,7 +462,7 @@ public class TweetService extends RecordService {
     private void diffseIt(Integer uid, int noticeIdForOwner, int noticeIdForFollowers, Integer recordOwnerId) {
         List<IUserPriorityEntity> entities = userDao.findFollowersBy(uid, 0, Integer.MAX_VALUE);
         List<Integer> uids = new ArrayList<Integer>();
-        for(IUserPriorityEntity entity : entities){
+        for (IUserPriorityEntity entity : entities) {
             uids.add(entity.getUid());
         }
         saveDiffusionRelations(noticeIdForOwner, noticeIdForFollowers, uids, recordOwnerId);
@@ -404,7 +471,7 @@ public class TweetService extends RecordService {
     private void saveDiffusionRelations(int noticeIdForOwner, int noticeIdForFollowers, List<Integer> uids, Integer recordOwnerId) {
         bounceNoticeMessageCount(recordOwnerId, 1);
         deliverTo(recordOwnerId, noticeIdForOwner);
-        for(Integer uid : uids){
+        for (Integer uid : uids) {
             bounceNoticeMessageCount(uid, 1);
             deliverTo(uid, noticeIdForFollowers);
         }
@@ -414,7 +481,7 @@ public class TweetService extends RecordService {
         IUserLoginEntity loginEntity = userDao.findUserById(uid);
         boolean canAffect = convertToLevel(loginEntity.getActive()) >= 2;
         IRecordSayEntity sayEntity = streamDao.findOneTweetBy(sid);
-        streamDao.incrDiffusionCount(sid, canAffect);
+        streamDao.incSayCount(sid, canAffect, "diffusion_co");
         return sayEntity;
     }
 

@@ -27,7 +27,7 @@ public interface StreamDao {
 
     List<VTweetCommentEntity> findAllCommentsBy(int sid, int pageIndex, int pageSize);
 
-    TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog);
+//    TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog);
 
     VTweetDetailEntity findTweetDetailBy(int sid);
 
@@ -67,7 +67,13 @@ public interface StreamDao {
 
     int saveDiffusion(Integer uid, Integer sid, String content);
 
-    int incrDiffusionCount(Integer sid, boolean canAffect);
+    int incSayCount(Integer sid, boolean canAffect, String countColumn);
 
-    int incrSay(Integer sid, int offset);
+    int incOrDecSayCount(Integer sid, int offset);
+
+    int saveComment(int sid, int uid, String content);
+
+    int saveMsgComment(Integer ownerUid, int sid, int ncid, int uid);
+
+    int saveMsgAt(int uid, int uid1, int id, int cid);
 }

@@ -17,39 +17,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TweetCommentPushResult {
     @XmlElement
-    Result result;
+    public Result result;
     @XmlElement
-    TweetCommentResult.Comment comment;
+    public TweetCommentResult.Comment comment;
     @XmlElement
-    Notice notice;
-
-    public TweetCommentPushResult(Result result, TweetCommentResult.Comment comment, Notice notice) {
-        this.result = result;
-        this.comment = comment;
-        this.notice = notice;
-    }
-
-    public TweetCommentResult.Comment getComment() {
-        return comment;
-    }
-
-    public void setComment(TweetCommentResult.Comment comment) {
-        this.comment = comment;
-    }
-
-    public Notice getNotice() {
-        return notice;
-    }
-
-    public void setNotice(Notice notice) {
-        this.notice = notice;
-    }
-
-    public Result getResult() {
-        return result;
-    }
-
-    public void setResult(Result result) {
-        this.result = result;
-    }
+    public Notice notice;
 }

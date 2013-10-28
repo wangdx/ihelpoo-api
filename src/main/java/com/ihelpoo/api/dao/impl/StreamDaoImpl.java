@@ -140,9 +140,81 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
                 "limit ? offset ? ";
         return getJdbcTemplate().query(sql, new Object[]{sid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VTweetCommentEntity>(VTweetCommentEntity.class));
     }
+//
+//    @Override
+//    public TweetCommentPushResult pushComment(final int id, final int uid, String[] atUsers, final String content, int catalog) {
+//        int cid = saveComment(id, uid, content);
+//
+//        IRecordSayEntity recordSayEntity = null;
+//        IUserLoginEntity userLoginEntity = null;
+//        if (cid > 0) {
+//            userLoginEntity = getJdbcTemplate().queryForObject("select  * from i_user_login where uid=? ", new Object[]{uid}, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
+//            int rank = convertToRank(userLoginEntity.getActive());
+//            String sql2 = " update i_record_say set comment_co=? ";
+//            if (rank >= 2) {
+//                sql2 += " ,last_comment_ti=unix_timestamp() ";
+//            }
+//            sql2 += " where sid=? ";
+//            try {
+//                recordSayEntity = getJdbcTemplate().queryForObject("select * from i_record_say where sid=? ", new Object[]{id}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
+//            } catch (EmptyResultDataAccessException e) {
+//                Result result = new Result();
+//                result.setErrorCode("0");
+//                result.setErrorMessage("未找到或已被删除");
+//                return new TweetCommentPushResult(result, null, new Notice());//FIXME
+//            }
+//
+//            getJdbcTemplate().update(sql2, new Object[]{recordSayEntity.getCommentCo() == null ? 1 : recordSayEntity.getCommentCo() + 1, recordSayEntity.getSid()});
+//        }
+//
+//        IUserStatusEntity userStatusEntity = getJdbcTemplate().queryForObject(" select * from i_user_status where uid=? ", new Object[]{uid}, new BeanPropertyRowMapper<IUserStatusEntity>(IUserStatusEntity.class));
+//        if (userStatusEntity.getActiveCLimit() < 15) {
+//            String sqlUpdateStatus = "update i_user_status set active_c_limit=? where uid=? ";
+//            getJdbcTemplate().update(sqlUpdateStatus, new Object[]{userStatusEntity.getActiveCLimit() + 1, uid});
+//            String sqlUpdateUser = "update i_user_login set active=? where uid=? ";
+//            getJdbcTemplate().update(sqlUpdateUser, new Object[]{fetchUserActive(userLoginEntity), uid});
+//            String sqlUpdateMsg = "insert into i_msg_active (uid, total, `change`, way, reason, `time`, deliver) values (?, ?, 1, 'add', '评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)', unix_timestamp(), 0)";
+//            getJdbcTemplate().update(sqlUpdateMsg, new Object[]{uid, fetchUserActive(userLoginEntity)});
+//        }
+//        if (uid != recordSayEntity.getUid()) {
+//            String sqlAddComment = "insert into i_msg_comment (uid, sid, ncid, rid, time, deliver) values(?,?,?,?,unix_timestamp(), 0) ";
+//            getJdbcTemplate().update(sqlAddComment, new Object[]{recordSayEntity.getUid(), id, cid, uid});
+//        }
+//
+//        final Pattern AT_PATTERN = Pattern.compile("@[\\u4e00-\\u9fa5\\w\\-]+");
+//        Matcher matcher = AT_PATTERN.matcher(content);
+//        while (matcher.find()) {
+//            String atUserName = matcher.group().substring(1);
+//            IUserLoginEntity userLoginEntity1;
+//            try {
+//                userLoginEntity1 = getJdbcTemplate().queryForObject("select * from i_user_login where nickname=?", new Object[]{atUserName}, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
+//                String sqlAddAtMsg = "insert into i_msg_at (touid, fromuid, sid, cid, time, deliver) values(?,?,?,?,unix_timestamp(), 0)";
+//                getJdbcTemplate().update(sqlAddAtMsg, new Object[]{userLoginEntity1.getUid(), uid, id, cid});
+//            } catch (EmptyResultDataAccessException e) {
+//                // can not find such an @ user.
+//                e.printStackTrace();
+//            }
+//
+//        }
+//
+//
+//        Result result = new Result("1", "操作成功");
+//        TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
+//        comment.content = content;
+//        comment.pubDate = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date(System.currentTimeMillis()));
+//        comment.author = userLoginEntity.getNickname();
+//        comment.authorid = uid;
+//        comment.portrait = convertToAvatarUrl(userLoginEntity.getIconUrl(), uid);
+//        comment.id = id;
+//        comment.appclient = 0;
+//
+//        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, comment, new Notice());//FIXME
+//
+//        return commentPushResult;
+//    }
 
     @Override
-    public TweetCommentPushResult pushComment(final int id, final int uid, String[] atUsers, final String content, int catalog) {
+    public int saveComment(final int sid, final int uid, final String content) {
         final String sql = "insert into i_record_comment (uid, sid, toid, content, image, time) values(?,?,0, ?, '', unix_timestamp());";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -150,69 +222,24 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
                 PreparedStatement ps =
                         connection.prepareStatement(sql, new String[]{"cid"});
                 ps.setInt(1, uid);
-                ps.setInt(2, id);
+                ps.setInt(2, sid);
                 ps.setString(3, content);
                 return ps;
             }
         }, keyHolder);
-        IRecordSayEntity recordSayEntity = null;
-        IUserLoginEntity userLoginEntity = null;
-        if (keyHolder.getKey().intValue() > 0) {
-            userLoginEntity = getJdbcTemplate().queryForObject("select  * from i_user_login where uid=? ", new Object[]{uid}, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
-            int rank = convertToRank(userLoginEntity.getActive());
-            String sql2 = " update i_record_say set comment_co=? ";
-            if (rank >= 2) {
-                sql2 += " ,last_comment_ti=unix_timestamp() ";
-            }
-            sql2 += " where sid=? ";
-            recordSayEntity = getJdbcTemplate().queryForObject("select * from i_record_say where sid=? ", new Object[]{id}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
-            getJdbcTemplate().update(sql2, new Object[]{recordSayEntity.getCommentCo() == null ? 1 : recordSayEntity.getCommentCo() + 1, recordSayEntity.getSid()});
-        }
+        return keyHolder.getKey().intValue();
+    }
 
-        IUserStatusEntity userStatusEntity = getJdbcTemplate().queryForObject(" select * from i_user_status where uid=? ", new Object[]{uid}, new BeanPropertyRowMapper<IUserStatusEntity>(IUserStatusEntity.class));
-        if (userStatusEntity.getActiveCLimit() < 15) {
-            String sqlUpdateStatus = "update i_user_status set active_c_limit=? where uid=? ";
-            getJdbcTemplate().update(sqlUpdateStatus, new Object[]{userStatusEntity.getActiveCLimit() + 1, uid});
-            String sqlUpdateUser = "update i_user_login set active=? where uid=? ";
-            getJdbcTemplate().update(sqlUpdateUser, new Object[]{fetchUserActive(userLoginEntity), uid});
-            String sqlUpdateMsg = "insert into i_msg_active (uid, total, `change`, way, reason, `time`, deliver) values (?, ?, 1, 'add', '评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)', unix_timestamp(), 0)";
-            getJdbcTemplate().update(sqlUpdateMsg, new Object[]{uid, fetchUserActive(userLoginEntity)});
-        }
-        if (uid != recordSayEntity.getUid()) {
-            String sqlAddComment = "insert into i_msg_comment (uid, sid, ncid, rid, time, deliver) values(?,?,?,?,unix_timestamp(), 0) ";
-            getJdbcTemplate().update(sqlAddComment, new Object[]{recordSayEntity.getUid(), id, keyHolder.getKey().intValue(), uid});
-        }
+    @Override
+    public int saveMsgComment(Integer ownerUid, int sid, int ncid, int uid) {
+        final String sql = "insert into i_msg_comment (uid, sid, ncid, rid, time, deliver) values(?,?,?,?,unix_timestamp(), 0) ";
+        return getJdbcTemplate().update(sql, new Object[]{ownerUid, sid, ncid, uid});
+    }
 
-        final Pattern AT_PATTERN = Pattern.compile("@[\\u4e00-\\u9fa5\\w\\-]+");
-        Matcher matcher = AT_PATTERN.matcher(content);
-        while (matcher.find()) {
-            String atUserName = matcher.group().substring(1);
-            IUserLoginEntity userLoginEntity1;
-            try {
-                userLoginEntity1 = getJdbcTemplate().queryForObject("select * from i_user_login where nickname=?", new Object[]{atUserName}, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
-                String sqlAddAtMsg = "insert into i_msg_at (touid, fromuid, sid, cid, time, deliver) values(?,?,?,?,unix_timestamp(), 0)";
-                getJdbcTemplate().update(sqlAddAtMsg, new Object[]{userLoginEntity1.getUid(), uid, id, keyHolder.getKey().intValue()});
-            } catch (EmptyResultDataAccessException e) {
-                // can not find such an @ user.
-                e.printStackTrace();
-            }
-
-        }
-
-
-        Result result = new Result("1", "操作成功");
-        TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
-        comment.content = content;
-        comment.pubDate = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date(System.currentTimeMillis()));
-        comment.author = userLoginEntity.getNickname();
-        comment.authorid = uid;
-        comment.portrait = convertToAvatarUrl(userLoginEntity.getIconUrl(), uid);
-        comment.id = id;
-        comment.appclient = 0;
-
-        TweetCommentPushResult commentPushResult = new TweetCommentPushResult(result, comment, new Notice());//FIXME
-
-        return commentPushResult;
+    @Override
+    public int saveMsgAt(int touid, int uid, int sid, int cid) {
+        final String sql = "insert into i_msg_at (touid, fromuid, sid, cid, time, deliver) values(?,?,?,?,unix_timestamp(), 0)";
+        return getJdbcTemplate().update(sql, new Object[]{touid, uid, sid, cid});
     }
 
     @Override
@@ -388,8 +415,8 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public int incrDiffusionCount(Integer sid, boolean canAffect) {
-        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET diffusion_co = diffusion_co + 1 ");
+    public int incSayCount(Integer sid, boolean canAffect, String countColumn) {
+        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET " + countColumn + " = " + countColumn + " + 1 ");
         if (canAffect) {
             sb.append(" , last_comment_ti=unix_timestamp() ");
         }
@@ -398,7 +425,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public int incrSay(Integer sid, int offset) {
+    public int incOrDecSayCount(Integer sid, int offset) {
         if (offset >= 0) {
             final String sqlInc = " UPDATE i_record_say SET plus_co = plus_co + ? WHERE sid=? ";
             return getJdbcTemplate().update(sqlInc, new Object[]{offset, sid});
@@ -406,10 +433,6 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
             final String sqlDec = " UPDATE i_record_say SET plus_co = IF(plus_co - ? < 0, 0, plus_co - ?) WHERE sid=? ";
             return getJdbcTemplate().update(sqlDec, new Object[]{offset, -offset, sid});
         }
-    }
-
-    private int fetchUserActive(IUserLoginEntity userLoginEntity) {
-        return userLoginEntity.getActive() == null ? 1 : userLoginEntity.getActive() + 1;
     }
 
     public static void main(String[] args) {

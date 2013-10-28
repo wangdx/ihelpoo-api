@@ -264,8 +264,7 @@ public class OoTweet {
                                               @RequestParam(value = "catalog", required = false) int catalog,
                                               @RequestParam(value = "id", required = false) int id,
                                               @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        //TODO credential verification by cookie
-        return tweetService.pushComment(id, uid, null, content, 0);
+        return tweetService.pushComment(id, uid, content);
     }
 
 
@@ -288,7 +287,7 @@ public class OoTweet {
                                                @RequestParam(value = "catalog", required = false) int catalog,
                                                @RequestParam(value = "id", required = false) int id,
                                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return tweetService.pushComment(id, uid, null, content, 0);
+        return tweetService.pushComment(id, uid, content);
     }
 
     @RequestMapping(value = "/commentReply.json", method = RequestMethod.POST, produces = "application/json")

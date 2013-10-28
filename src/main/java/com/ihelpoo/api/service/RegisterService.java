@@ -54,7 +54,7 @@ public class RegisterService extends RecordService{
         SMSCodeResult codeResult = new SMSCodeResult();
         Result result = new Result();
         try {
-            userDao.findByUserName(mobile);
+            userDao.findByAccount(mobile);
             result.setErrorCode("-" + mobile);
             result.setErrorMessage("该手机号已被注册，请直接登录或找回密码");
             codeResult.result = result;
@@ -114,7 +114,7 @@ public class RegisterService extends RecordService{
         GenericResult genericResult = new GenericResult();
         Result result = new Result();
         try {
-            userDao.findByUserName(mobile);
+            userDao.findByAccount(mobile);
             result.setErrorCode("-" + mobile);
             result.setErrorMessage("该手机号已被注册，请直接登录或找回密码");
             genericResult.setResult(result);

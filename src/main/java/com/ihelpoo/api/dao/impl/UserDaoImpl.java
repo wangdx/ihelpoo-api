@@ -290,6 +290,18 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
         return getJdbcTemplate().update(sql, new Object[]{uid, hisuid});
     }
 
+    @Override
+    public int incIfLessThan(String column, int limit, int uid) {
+        final String sql = " update i_user_status set " + column + "=IF(" + column + " < " + limit + ", " + column + " + 1, " + column + ") where uid=? ";
+        return getJdbcTemplate().update(sql, new Object[]{uid});
+    }
+
+    @Override
+    public int incActive(int uid, int amount) {
+        String sqlUpdateUser = " update i_user_login set active=active + ? where uid=? ";
+        return getJdbcTemplate().update(sqlUpdateUser, new Object[]{amount, uid});
+    }
+
 
     @Override
     public UserList getUserList(int grade) {
@@ -326,7 +338,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public IUserLoginEntity findByUserName(String username) {
+    public IUserLoginEntity findByAccount(String username) {
         String sql = " SELECT * FROM i_user_login WHERE email=? ";
         String[] params = new String[]{username};
         IUserLoginEntity userLoginEntity = null;
@@ -444,7 +456,8 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
         return userLoginEntity;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private IUserLoginEntity findUserByNickname(String nickname) {
+    @Override
+    public IUserLoginEntity findUserByNickname(String nickname) {
         final String sql = " SELECT * from i_user_login where nickname=? ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{nickname}, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
     }

@@ -15,7 +15,7 @@ public interface UserDao {
 
     UserList getUserList(OoUser.UserDimension userDimension);
 
-    IUserLoginEntity findByUserName(String username);
+    IUserLoginEntity findByAccount(String username);
 
     IUserLoginEntity findUserById(int uid);
 
@@ -80,4 +80,10 @@ public interface UserDao {
     int updateFollowActive(int hisuid, int uid, int active, String reason);
 
     int deletePriority(int uid, int hisuid);
+
+    int incIfLessThan(String column, int limit, int uid);
+
+    int incActive(int uid, int amount);
+
+    IUserLoginEntity findUserByNickname(String nickname);
 }
