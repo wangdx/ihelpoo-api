@@ -18,16 +18,17 @@ import java.util.List;
  */
 public class PostDaoImpl extends JdbcDaoSupport implements PostDao {
     @Override
-    public PostList getPostListByTimeLevel(String timeLevel, int order, int pageIndex, int pageSize) {
+    public PostList getPostListByTimeLevel(String timeLevel, Integer schoolId, int order, int pageIndex, int pageSize) {
 
         PostList postListRoot = new PostList();
 
-        String sql = "SELECT user.*, sid, say_type, content, image, url, authority, comment_co, diffusion_co, hit_co, post.time, post.from, last_comment_ti " +
+        String sql = "SELECT user.*, sid, say_type, content, image, url, authority, comment_co, diffusion_co, hit_co, post.time, post.from, last_comment_ti, post.school_id " +
                 "FROM i_record_say post INNER JOIN i_user_login user ON post.uid = user.uid " +
-                "WHERE post.say_type = ? and post.time > ? " +
+                "WHERE post.school_id = ?  and post.say_type = ? and post.time > ? " +
                 "ORDER BY post." + orderBys[order] + " DESC limit ? offset ?";
+        long oneWeek = System.currentTimeMillis() / 1000 - 3600 * 24 * 7;
         List<VUserPostEntity> postEntityList = getJdbcTemplate().query(
-                sql, new Object[]{order < 4 ? 0 : 1, /*System.currentTimeMillis() / 1000 - 3600 * 24 * 7*/0, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VUserPostEntity>(VUserPostEntity.class));
+                sql, new Object[]{schoolId, order < 4 ? 0 : 1, oneWeek, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VUserPostEntity>(VUserPostEntity.class));
 
         PostList.Posts posts = new PostList.Posts();
         List<PostList.Post> postList = new ArrayList<PostList.Post>();

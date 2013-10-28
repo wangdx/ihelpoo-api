@@ -21,9 +21,9 @@ public class RecordService {
     @Autowired
     protected NotificationDao notificationDao;
 
-    public Notice getNotice(int uid){
+    public Notice getNotice(int uid) {
         Notice notice = new Notice();
-        if(uid < 10000){
+        if (uid < 10000) {
             return notice;
         }
         notice.activeCount = countActive(uid);
@@ -35,7 +35,7 @@ public class RecordService {
     }
 
     public int countSystem(int uid) {
-        if(uid < 10000){
+        if (uid < 10000) {
             return 0;
         }
         String uidStr = String.valueOf(uid);
@@ -92,6 +92,9 @@ public class RecordService {
     }
 
     protected String convertToType(Integer type, String enteryear) {
+        if(type == null){
+            return "";
+        }
         String authorType = "";
         if (type == 3) {
             authorType += "商家";
@@ -130,7 +133,7 @@ public class RecordService {
     }
 
     protected String convertToGossip(Integer sex, String birthday) {
-        if(birthday == null){
+        if (birthday == null) {
             return "未知";
         }
         String gossip = "";
@@ -212,8 +215,7 @@ public class RecordService {
     }
 
     protected String convertToDate(Integer time) {
-        return (new java.text.SimpleDateFormat(
-                "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (time.floatValue() * 1000)));
+        return (new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date((long) time * 1000));
     }
 
     protected int convertToLevel(Integer activeCredits) {

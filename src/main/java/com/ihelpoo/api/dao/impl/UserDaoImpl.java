@@ -416,7 +416,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public int saveUser(final String mobile, final String encryptedPwd, final String nickname, final Integer school, final String skin, final Integer registerTime) {
-        final String sql = " INSERT INTO i_user_login (email, password, nickname, school, skin, logintime, lastlogintime) VALUES(?,?,?,?,?,?,?) ";
+        final String sql = " INSERT INTO i_user_login (email, password, nickname, school, skin, logintime, lastlogintime, `type`) VALUES(?,?,?,?,?,?,?, 1) ";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
