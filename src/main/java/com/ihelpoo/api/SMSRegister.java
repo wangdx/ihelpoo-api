@@ -3,12 +3,15 @@ package com.ihelpoo.api;
 import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.SMSCodeResult;
 import com.ihelpoo.api.service.RegisterService;
+import com.ihelpoo.common.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author: echowdx@gmail.com
@@ -48,9 +51,9 @@ public class SMSRegister {
             @RequestParam(value = "pwd") String pwd,
             @RequestParam(value = "schoolId") Integer schoolId,
             @RequestParam(value = "ip") String ip,
-            @RequestParam(value = "deviceType") String deviceType
+            HttpServletRequest request
     ) {
-        return registerService.register(code, mobile, pwd, schoolId, ip, deviceType);
+        return registerService.register(code, mobile, pwd, schoolId, ip, AppUtil.getDeviceType(request));
     }
 
     @RequestMapping(value = "/mobileRegister.json", method = RequestMethod.POST, produces = "application/json")
@@ -61,9 +64,9 @@ public class SMSRegister {
             @RequestParam(value = "pwd") String pwd,
             @RequestParam(value = "schoolId") Integer schoolId,
             @RequestParam(value = "ip") String ip,
-            @RequestParam(value = "deviceType") String deviceType
+            HttpServletRequest request
     ) {
-        return registerXML(code, mobile, pwd, schoolId, ip, deviceType);
+        return registerXML(code, mobile, pwd, schoolId, ip, request);
     }
 
     @RequestMapping(value = "/mobileRegister", method = RequestMethod.POST, produces = "application/json")
@@ -74,8 +77,8 @@ public class SMSRegister {
             @RequestParam(value = "pwd") String pwd,
             @RequestParam(value = "schoolId") Integer schoolId,
             @RequestParam(value = "ip") String ip,
-            @RequestParam(value = "deviceType") String deviceType
+            HttpServletRequest request
     ) {
-        return registerXML(code, mobile, pwd, schoolId, ip, deviceType);
+        return registerXML(code, mobile, pwd, schoolId, ip, request);
     }
 }

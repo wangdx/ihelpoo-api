@@ -195,9 +195,9 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int updateStatus(int uid, int activeSLimit) {
-        final String sql = " UPDATE i_user_status SET active_s_limit=?  WHERE uid=? ";
-        return getJdbcTemplate().update(sql, activeSLimit, uid);
+    public int incStatus(int uid, int offset) {
+        final String sql = " UPDATE i_user_status SET active_s_limit=active_s_limit + ?  WHERE uid=? ";
+        return getJdbcTemplate().update(sql, offset, uid);
     }
 
 

@@ -1,5 +1,6 @@
 package com.ihelpoo.api;
 
+import com.ihelpoo.common.AppUtil;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.model.*;
 import com.ihelpoo.api.model.obj.Result;
@@ -70,14 +71,6 @@ public class OoTweet {
             logger.warn("选择了默认学校，某些信息在WEB端可能不会显示");
         }
 
-        String userAgent = request.getHeader("User-Agent");
-        String deviceType = "圈圈App";
-        if (userAgent != null && userAgent.length() > 0 && userAgent.contains("/")) {
-            String[] agentArr = userAgent.split("/");
-            deviceType = agentArr[agentArr.length - 2];
-        }
-
-
         long t = System.currentTimeMillis() / 1000L;
         String imgPath = null;
 
@@ -99,7 +92,7 @@ public class OoTweet {
 
         try {
             //TODO school
-            tweetService.pubTweet(uid, t, msg, reward, imgPath, deviceType, targetSchool);
+            tweetService.pubTweet(uid, t, msg, reward, imgPath, AppUtil.getDeviceType(request), targetSchool);
         } catch (Exception e) {
             result.setErrorMessage(e.getMessage());
             genericResult.setResult(result);

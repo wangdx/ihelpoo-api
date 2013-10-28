@@ -24,7 +24,7 @@ import redis.clients.jedis.Jedis;
  * @author: echowdx@gmail.com
  */
 @Service
-public class RegisterService extends RecordService{
+public class RegisterService extends RecordService {
 
     private static final String MOB_REGISTER = "Register:";
     private static final String REGISTER_COUNT = ":CountDuringDay";
@@ -97,6 +97,7 @@ public class RegisterService extends RecordService{
             logger.warn("短信余额不多了（" + balance + "条），请相关人员对短信平台进行充值。");
             smsClient.send("18603041303,15007133699", "短信配额已经低于100，请相关人员对短信平台进行充值。");
         }
+        logger.info(mobile + "->这次的短信验证码为:" + code);
         smsClient.send(mobile, codeContent);
         codeResult.code = code;
         return codeResult;
@@ -154,7 +155,7 @@ public class RegisterService extends RecordService{
         user.uid = userLoginEntity.getUid();
         user.nickname = nickname;
         user.school_id = String.valueOf(school);
-        user.avatar_url = convertToAvatarUrl("", userLoginEntity.getUid()) ;
+        user.avatar_url = convertToAvatarUrl("", userLoginEntity.getUid());
         genericResult.setUser(user);
         genericResult.setResult(result);
         return genericResult;

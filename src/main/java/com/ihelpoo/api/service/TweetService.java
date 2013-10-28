@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -274,7 +273,7 @@ public class TweetService extends RecordService {
             recordUserLoginActive = active;
         }
 
-        userDao.updateStatus(uid, statusEntity.getActiveSLimit() + 1);
+        userDao.incStatus(uid, 1);
 
         if (isHelp(reward)) {
             List<IUserPriorityEntity> priorityEntities = userDao.findFollowersBy(uid, 0, Integer.MAX_VALUE);
@@ -568,6 +567,13 @@ public class TweetService extends RecordService {
         genericResult.setResult(result);
         genericResult.setNotice(new Notice());
         return genericResult;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(Arrays.asList(new String[]{"a","b","c"}).indexOf("c"));
+        System.out.println(Arrays.asList(new String[]{"a","b","cd"}).indexOf("d"));
+        System.out.println(Arrays.asList(new String[]{"a","b","c"}).indexOf("d"));
     }
 
 }

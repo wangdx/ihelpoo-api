@@ -9,6 +9,7 @@ import com.ihelpoo.api.service.WordService;
 import com.ihelpoo.common.util.ID;
 import redis.clients.jedis.Jedis;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
@@ -73,4 +74,15 @@ public class AppUtil {
         }
     }
 
+    public static String getDeviceType(HttpServletRequest request) {
+        String userAgent = request.getHeader("User-Agent");
+        String deviceType = "我帮圈圈";
+        if (userAgent != null && userAgent.length() > 0 && userAgent.contains("/")) {
+            String[] agentArr = userAgent.split("/");
+            if (agentArr.length >= 2) {
+                deviceType = agentArr[agentArr.length - 2];
+            }
+        }
+        return deviceType;
+    }
 }

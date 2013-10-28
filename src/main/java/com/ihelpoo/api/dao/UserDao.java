@@ -51,7 +51,7 @@ public interface UserDao {
 
     int addImageToAlbum(int uid, int schoolId, String s, long size, long t);
 
-    int updateStatus(int uid, int schoolId);
+    int incStatus(int uid, int schoolId);
 
     List<IUserPriorityEntity> findAllPrioritiesByUid(int uid, Integer pageIndex, Integer pageSize);
 
