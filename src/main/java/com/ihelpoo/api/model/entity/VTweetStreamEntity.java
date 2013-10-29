@@ -1,21 +1,25 @@
 package com.ihelpoo.api.model.entity;
 
 /**
- * @author: dongxu.wang@acm.org
+ * @author: echowdx@gmail.com
  */
 public class VTweetStreamEntity {
     private int sid;
+    private String showMajorName;
     private int uid;
     private String sayType;
     private String content;
     private String image;
     private String url;
+    private int school;
     private Integer commentCo;
     private Integer diffusionCo;
     private Integer hitCo;
+    private int plusCo;
     private Integer time;
     private String from;
     private Integer lastCommentTi;
+    private int schoolId;
     private String nickname;
     private Integer sex;
     private String birthday;
@@ -26,11 +30,7 @@ public class VTweetStreamEntity {
     private String iconUrl;
     private Integer specialtyOp;
     private String name;
-    private String number;
     private String academy;
-    private String school;
-    private int plusCo;
-    private int schoolId;
     private int id;
     private String schoolname;
     private String domain;
@@ -42,6 +42,14 @@ public class VTweetStreamEntity {
 
     public void setSid(int sid) {
         this.sid = sid;
+    }
+
+    public String getShowMajorName() {
+        return showMajorName;
+    }
+
+    public void setShowMajorName(String showMajorName) {
+        this.showMajorName = showMajorName;
     }
 
     public int getUid() {
@@ -84,6 +92,14 @@ public class VTweetStreamEntity {
         this.url = url;
     }
 
+    public int getSchool() {
+        return school;
+    }
+
+    public void setSchool(int school) {
+        this.school = school;
+    }
+
     public Integer getCommentCo() {
         return commentCo;
     }
@@ -108,6 +124,14 @@ public class VTweetStreamEntity {
         this.hitCo = hitCo;
     }
 
+    public int getPlusCo() {
+        return plusCo;
+    }
+
+    public void setPlusCo(int plusCo) {
+        this.plusCo = plusCo;
+    }
+
     public Integer getTime() {
         return time;
     }
@@ -130,6 +154,14 @@ public class VTweetStreamEntity {
 
     public void setLastCommentTi(Integer lastCommentTi) {
         this.lastCommentTi = lastCommentTi;
+    }
+
+    public int getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(int schoolId) {
+        this.schoolId = schoolId;
     }
 
     public String getNickname() {
@@ -212,109 +244,12 @@ public class VTweetStreamEntity {
         this.name = name;
     }
 
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
     public String getAcademy() {
         return academy;
     }
 
     public void setAcademy(String academy) {
         this.academy = academy;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        VTweetStreamEntity that = (VTweetStreamEntity) o;
-
-        if (sid != that.sid) return false;
-        if (uid != that.uid) return false;
-        if (academy != null ? !academy.equals(that.academy) : that.academy != null) return false;
-        if (active != null ? !active.equals(that.active) : that.active != null) return false;
-        if (birthday != null ? !birthday.equals(that.birthday) : that.birthday != null) return false;
-        if (commentCo != null ? !commentCo.equals(that.commentCo) : that.commentCo != null) return false;
-        if (content != null ? !content.equals(that.content) : that.content != null) return false;
-        if (diffusionCo != null ? !diffusionCo.equals(that.diffusionCo) : that.diffusionCo != null) return false;
-        if (enteryear != null ? !enteryear.equals(that.enteryear) : that.enteryear != null) return false;
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (hitCo != null ? !hitCo.equals(that.hitCo) : that.hitCo != null) return false;
-        if (iconUrl != null ? !iconUrl.equals(that.iconUrl) : that.iconUrl != null) return false;
-        if (image != null ? !image.equals(that.image) : that.image != null) return false;
-        if (lastCommentTi != null ? !lastCommentTi.equals(that.lastCommentTi) : that.lastCommentTi != null)
-            return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (nickname != null ? !nickname.equals(that.nickname) : that.nickname != null) return false;
-        if (number != null ? !number.equals(that.number) : that.number != null) return false;
-        if (online != null ? !online.equals(that.online) : that.online != null) return false;
-        if (sayType != null ? !sayType.equals(that.sayType) : that.sayType != null) return false;
-        if (sex != null ? !sex.equals(that.sex) : that.sex != null) return false;
-        if (specialtyOp != null ? !specialtyOp.equals(that.specialtyOp) : that.specialtyOp != null) return false;
-        if (time != null ? !time.equals(that.time) : that.time != null) return false;
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
-        if (url != null ? !url.equals(that.url) : that.url != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = sid;
-        result = 31 * result + uid;
-        result = 31 * result + (sayType != null ? sayType.hashCode() : 0);
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        result = 31 * result + (image != null ? image.hashCode() : 0);
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (commentCo != null ? commentCo.hashCode() : 0);
-        result = 31 * result + (diffusionCo != null ? diffusionCo.hashCode() : 0);
-        result = 31 * result + (hitCo != null ? hitCo.hashCode() : 0);
-        result = 31 * result + (time != null ? time.hashCode() : 0);
-        result = 31 * result + (from != null ? from.hashCode() : 0);
-        result = 31 * result + (lastCommentTi != null ? lastCommentTi.hashCode() : 0);
-        result = 31 * result + (nickname != null ? nickname.hashCode() : 0);
-        result = 31 * result + (sex != null ? sex.hashCode() : 0);
-        result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
-        result = 31 * result + (enteryear != null ? enteryear.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (online != null ? online.hashCode() : 0);
-        result = 31 * result + (active != null ? active.hashCode() : 0);
-        result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
-        result = 31 * result + (specialtyOp != null ? specialtyOp.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (number != null ? number.hashCode() : 0);
-        result = 31 * result + (academy != null ? academy.hashCode() : 0);
-        return result;
-    }
-
-    public String getSchool() {
-        return school;
-    }
-
-    public void setSchool(String school) {
-        this.school = school;
-    }
-
-    public int getPlusCo() {
-        return plusCo;
-    }
-
-    public void setPlusCo(int plusCo) {
-        this.plusCo = plusCo;
-    }
-
-    public int getSchoolId() {
-        return schoolId;
-    }
-
-    public void setSchoolId(int schoolId) {
-        this.schoolId = schoolId;
     }
 
     public int getId() {
@@ -347,5 +282,85 @@ public class VTweetStreamEntity {
 
     public void setDomainMain(String domainMain) {
         this.domainMain = domainMain;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        VTweetStreamEntity that = (VTweetStreamEntity) o;
+
+        if (id != that.id) return false;
+        if (plusCo != that.plusCo) return false;
+        if (school != that.school) return false;
+        if (schoolId != that.schoolId) return false;
+        if (sid != that.sid) return false;
+        if (uid != that.uid) return false;
+        if (academy != null ? !academy.equals(that.academy) : that.academy != null) return false;
+        if (active != null ? !active.equals(that.active) : that.active != null) return false;
+        if (birthday != null ? !birthday.equals(that.birthday) : that.birthday != null) return false;
+        if (commentCo != null ? !commentCo.equals(that.commentCo) : that.commentCo != null) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        if (diffusionCo != null ? !diffusionCo.equals(that.diffusionCo) : that.diffusionCo != null) return false;
+        if (domain != null ? !domain.equals(that.domain) : that.domain != null) return false;
+        if (domainMain != null ? !domainMain.equals(that.domainMain) : that.domainMain != null) return false;
+        if (enteryear != null ? !enteryear.equals(that.enteryear) : that.enteryear != null) return false;
+        if (from != null ? !from.equals(that.from) : that.from != null) return false;
+        if (hitCo != null ? !hitCo.equals(that.hitCo) : that.hitCo != null) return false;
+        if (iconUrl != null ? !iconUrl.equals(that.iconUrl) : that.iconUrl != null) return false;
+        if (image != null ? !image.equals(that.image) : that.image != null) return false;
+        if (lastCommentTi != null ? !lastCommentTi.equals(that.lastCommentTi) : that.lastCommentTi != null)
+            return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (nickname != null ? !nickname.equals(that.nickname) : that.nickname != null) return false;
+        if (online != null ? !online.equals(that.online) : that.online != null) return false;
+        if (sayType != null ? !sayType.equals(that.sayType) : that.sayType != null) return false;
+        if (schoolname != null ? !schoolname.equals(that.schoolname) : that.schoolname != null) return false;
+        if (sex != null ? !sex.equals(that.sex) : that.sex != null) return false;
+        if (showMajorName != null ? !showMajorName.equals(that.showMajorName) : that.showMajorName != null)
+            return false;
+        if (specialtyOp != null ? !specialtyOp.equals(that.specialtyOp) : that.specialtyOp != null) return false;
+        if (time != null ? !time.equals(that.time) : that.time != null) return false;
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sid;
+        result = 31 * result + (showMajorName != null ? showMajorName.hashCode() : 0);
+        result = 31 * result + uid;
+        result = 31 * result + (sayType != null ? sayType.hashCode() : 0);
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (image != null ? image.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + school;
+        result = 31 * result + (commentCo != null ? commentCo.hashCode() : 0);
+        result = 31 * result + (diffusionCo != null ? diffusionCo.hashCode() : 0);
+        result = 31 * result + (hitCo != null ? hitCo.hashCode() : 0);
+        result = 31 * result + plusCo;
+        result = 31 * result + (time != null ? time.hashCode() : 0);
+        result = 31 * result + (from != null ? from.hashCode() : 0);
+        result = 31 * result + (lastCommentTi != null ? lastCommentTi.hashCode() : 0);
+        result = 31 * result + schoolId;
+        result = 31 * result + (nickname != null ? nickname.hashCode() : 0);
+        result = 31 * result + (sex != null ? sex.hashCode() : 0);
+        result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
+        result = 31 * result + (enteryear != null ? enteryear.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (online != null ? online.hashCode() : 0);
+        result = 31 * result + (active != null ? active.hashCode() : 0);
+        result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
+        result = 31 * result + (specialtyOp != null ? specialtyOp.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (academy != null ? academy.hashCode() : 0);
+        result = 31 * result + id;
+        result = 31 * result + (schoolname != null ? schoolname.hashCode() : 0);
+        result = 31 * result + (domain != null ? domain.hashCode() : 0);
+        result = 31 * result + (domainMain != null ? domainMain.hashCode() : 0);
+        return result;
     }
 }

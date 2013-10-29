@@ -4,13 +4,12 @@ import com.ihelpoo.api.dao.StreamDao;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.StreamResult;
 import com.ihelpoo.api.model.UserWordResult;
+import com.ihelpoo.api.model.entity.VTweetStreamEntity;
 import com.ihelpoo.api.model.entity.VUserDetailEntity;
 import com.ihelpoo.api.model.obj.Active;
 import com.ihelpoo.api.model.obj.Actives;
-import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.entity.IRecordSayEntity;
 import com.ihelpoo.api.model.entity.IUserPriorityEntity;
-import com.ihelpoo.api.model.entity.VTweetStreamEntity;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.Constant;
@@ -173,7 +172,7 @@ public class StreamService extends RecordService {
         List<Active> actives = new ArrayList<Active>();
         for (VTweetStreamEntity tweet : tweets) {
             Active active = new Active();
-            active.academy = "[" + tweet.getName() + "]";
+            active.academy = "[" + tweet.getShowMajorName() + "]";
             active.rank = String.valueOf(convertToRank(tweet.getActive()));
             active.online = tweet.getOnline() == null ? 0 : Integer.parseInt(tweet.getOnline().trim());
             active.iconUrl = convertToAvatarUrl(tweet.getIconUrl(), tweet.getUid());

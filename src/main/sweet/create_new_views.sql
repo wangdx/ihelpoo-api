@@ -8,7 +8,7 @@ rename table user_post to v_user_post
 
 create view v_tweet_stream as
 (
-select sid,i_user_login.uid,say_type,content,image,url,comment_co,diffusion_co,hit_co,time,'from',last_comment_ti,nickname,sex,birthday,enteryear,type,online,active,icon_url,i_user_info.specialty_op,i_op_specialty.name,i_op_specialty.school,i_op_specialty.academy
+select sid,IF(i_user_login.school != i_record_say.school_id, i_school_info.`school`, i_op_specialty.`name`) as show_major_name,i_user_login.uid,say_type,content,image,url,comment_co,diffusion_co,hit_co,time,'from',last_comment_ti,nickname,sex,birthday,enteryear,type,online,active,icon_url,i_user_info.specialty_op,i_op_specialty.name,i_op_specialty.school,i_op_specialty.academy
 from i_record_say
 join i_user_login on i_record_say.uid = i_user_login.uid
 join i_user_info on i_record_say.uid=i_user_info.uid

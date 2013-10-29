@@ -42,12 +42,13 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     @Override
     public List<VTweetStreamEntity> findAllTweetsBy(int catalog, StringBuilder pids, StringBuilder sids, int schoolId, int pageIndex, int pageSize) {
         int recentThreeMonth = (int) (System.currentTimeMillis() / 1000L) - 24 * 3600 * 90;
-        StringBuilder sql = new StringBuilder(" select i_record_say.sid,i_user_login.uid,say_type,content,image,url,i_user_login.school,comment_co,diffusion_co,hit_co,plus_co,i_record_say.time,`from`,last_comment_ti,school_id,nickname,sex,birthday,enteryear,type,online,active,icon_url,i_user_info.specialty_op,i_op_specialty.name,i_op_specialty.academy,i_school_info.id,i_school_info.school as schoolname,i_school_info.domain,i_school_info.domain_main\n" +
-                " from i_record_say \n" +
-                " left join i_user_login ON i_record_say.uid = i_user_login.uid\n" +
-                " left join i_user_info on i_record_say.uid=i_user_info.uid\n" +
-                " left join i_op_specialty on i_user_info.specialty_op=i_op_specialty.id " +
-                " left join i_school_info ON i_user_login.school = i_school_info.id " +
+        StringBuilder sql = new StringBuilder(
+                "select i_record_say.sid,IF(i_user_login.school != i_record_say.school_id, i_school_info.`school`, i_op_specialty.`name`) as show_major_name,i_user_login.uid,say_type,content,image,url,i_user_login.school,comment_co,diffusion_co,hit_co,plus_co,i_record_say.time,`from`,last_comment_ti,school_id,nickname,sex,birthday,enteryear,type,online,active,icon_url,i_user_info.specialty_op,i_op_specialty.name,i_op_specialty.academy,i_school_info.id,i_school_info.school as schoolname,i_school_info.domain,i_school_info.domain_main\n" +
+                        "from i_record_say\n" +
+                        "join i_user_login ON i_record_say.uid = i_user_login.uid\n" +
+                        "join i_user_info ON i_record_say.uid = i_user_info.uid\n" +
+                        "join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id\n" +
+                        "join i_school_info ON i_user_login.school = i_school_info.id" +
                 " where say_type != '9' ");
         if (sids.length() > 0) {
             sql.append(" and i_record_say.uid NOT IN (").append(sids).append(") ");

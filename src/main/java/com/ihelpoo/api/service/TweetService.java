@@ -68,7 +68,7 @@ public class TweetService extends RecordService {
         for (VTweetStreamEntity tweetEntity : tweetEntities) {
             String firstImgUrl = convertToImageUrl(tweetEntity.getSid());
             TweetResult.Tweet tweet = new TweetResult.Tweet();
-            tweet.academy = StringUtils.isEmpty(tweetEntity.getName()) ? "" : "[" + tweetEntity.getName() + "]";
+            tweet.academy = StringUtils.isEmpty(tweetEntity.getShowMajorName()) ? "" : "[" + tweetEntity.getShowMajorName() + "]";
             tweet.rank = convertToRank(tweetEntity.getActive());
             tweet.onlineState = convertToOnlineState(tweetEntity.getOnline());
             tweet.portrait = convertToAvatarUrl(tweetEntity.getIconUrl(), tweetEntity.getUid());
@@ -76,7 +76,7 @@ public class TweetService extends RecordService {
             tweet.by = tweetEntity.getFrom();
             tweet.commentCount = tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo();
             tweet.body = tweetEntity.getContent();
-            tweet.pubDate = convertToDate(tweetEntity.getTime());
+            tweet.pubDate = convertToDate(tweetEntity.getLastCommentTi());
             tweet.spreadCount = tweetEntity.getDiffusionCo() == null ? 0 : tweetEntity.getDiffusionCo();
             tweet.authorGossip = convertToGossip(tweetEntity.getSex(), tweetEntity.getBirthday());
             tweet.imgSmall = firstImgUrl.replace("recordsay", "thumb_recordsay");

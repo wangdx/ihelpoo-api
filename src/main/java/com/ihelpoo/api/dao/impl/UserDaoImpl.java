@@ -437,7 +437,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public List<ISchoolInfoEntity> fetchAllSchools() {
-        String sql = " SELECT * FROM i_school_info where id!=35 ORDER BY initial ";// exclude test school by id!=35
+        String sql = " SELECT * FROM i_school_info where id!=35 AND status=1 ORDER BY initial ";// exclude test school by id!=35
         return getJdbcTemplate().query(sql, new BeanPropertyRowMapper<ISchoolInfoEntity>(ISchoolInfoEntity.class));
     }
 

@@ -83,6 +83,6 @@ public class AppUtil {
                 deviceType = agentArr[agentArr.length - 2];
             }
         }
-        return deviceType;
+        return "手机"+deviceType;
     }
 }
