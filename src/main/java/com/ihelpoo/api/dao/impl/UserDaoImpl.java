@@ -462,6 +462,36 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
         return getJdbcTemplate().queryForObject(sql, new Object[]{nickname}, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
     }
 
+    @Override
+    public int updateUserLogin(Integer uid, String column, String newValue) {
+        final String sql = " UPDATE i_user_login SET " + column + "=? WHERE uid=? ";
+        return getJdbcTemplate().update(sql, newValue, uid);
+    }
+
+    @Override
+    public int updateUserInfo(Integer uid, String column, String newValue) {
+        final String sql = " UPDATE i_user_info SET " + column + "=? WHERE uid=? ";
+        return getJdbcTemplate().update(sql, newValue, uid);
+    }
+
+    @Override
+    public List<IOpAcademyEntity> fetchAllAcademys(Integer schoolId) {
+        String sql = " SELECT * FROM i_op_academy where school=? ";
+        return getJdbcTemplate().query(sql, new Object[]{schoolId}, new BeanPropertyRowMapper<IOpAcademyEntity>(IOpAcademyEntity.class));
+    }
+
+    @Override
+    public List<IOpSpecialtyEntity> fetchAllSpecialties(Integer schoolId, Integer academyId) {
+        String sql = " SELECT * FROM i_op_specialty where school=? AND academy=?";
+        return getJdbcTemplate().query(sql, new Object[]{schoolId, academyId}, new BeanPropertyRowMapper<IOpSpecialtyEntity>(IOpSpecialtyEntity.class));
+    }
+
+    @Override
+    public List<IOpDormitoryEntity> fetchAllDorms(Integer schoolId) {
+        String sql = " SELECT * FROM i_op_dormitory where school=? ";
+        return getJdbcTemplate().query(sql, new Object[]{schoolId}, new BeanPropertyRowMapper<IOpDormitoryEntity>(IOpDormitoryEntity.class));
+    }
+
 
     public static void main(String[] args) {
 

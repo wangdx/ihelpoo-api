@@ -5,6 +5,8 @@ import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.service.WordService;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.StreamDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
@@ -20,6 +22,9 @@ public class RecordService {
     protected StreamDao streamDao;
     @Autowired
     protected NotificationDao notificationDao;
+
+
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Notice getNotice(int uid) {
         Notice notice = new Notice();

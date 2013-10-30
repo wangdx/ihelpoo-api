@@ -86,4 +86,14 @@ public interface UserDao {
     int incActive(int uid, int amount);
 
     IUserLoginEntity findUserByNickname(String nickname);
+
+    int updateUserLogin(Integer uid, String columnName, String newNickname);
+
+    int updateUserInfo(Integer uid, String introduction, String newIntro);
+
+    List<IOpAcademyEntity> fetchAllAcademys(Integer schoolId);
+
+    List<IOpSpecialtyEntity> fetchAllSpecialties(Integer schoolId, Integer academyId);
+
+    List<IOpDormitoryEntity> fetchAllDorms(Integer schoolId);
 }

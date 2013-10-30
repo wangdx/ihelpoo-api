@@ -31,6 +31,101 @@ public class OoUser {
     @Autowired
     UserService userService;
 
+    @RequestMapping(value = "/updateIntro.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult updateIntroXML(@RequestParam(value = "intro", required = false) String newIntro,
+                                        @RequestParam(value = "uid", required = false) Integer uid,
+                                        @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateIntro(uid, newIntro);
+    }
+
+    @RequestMapping(value = "/updateIntro.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult updateIntroJSON(@RequestParam(value = "intro", required = false) String newIntro,
+                                         @RequestParam(value = "uid", required = false) Integer uid,
+                                         @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateIntro(uid, newIntro);
+    }
+
+    @RequestMapping(value = "/updateIntro", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult updateIntro(@RequestParam(value = "intro", required = false) String newIntro,
+                                     @RequestParam(value = "uid", required = false) Integer uid,
+                                     @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateIntro(uid, newIntro);
+    }
+
+    @RequestMapping(value = "/updateEnrol.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult updateEnrolXML(@RequestParam(value = "enrol", required = false) String newEnrol,
+                                        @RequestParam(value = "uid", required = false) Integer uid,
+                                        @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateEnrol(uid, newEnrol);
+    }
+
+    @RequestMapping(value = "/updateEnrol.json", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult updateEnrolJSON(@RequestParam(value = "enrol", required = false) String newEnrol,
+                                         @RequestParam(value = "uid", required = false) Integer uid,
+                                         @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateEnrol(uid, newEnrol);
+    }
+
+    @RequestMapping(value = "/updateEnrol", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult updateEnrol(@RequestParam(value = "enrol", required = false) String newEnrol,
+                                     @RequestParam(value = "uid", required = false) Integer uid,
+                                     @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateEnrol(uid, newEnrol);
+    }
+
+    @RequestMapping(value = "/updateGender.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult updateGenderXML(@RequestParam(value = "gender", required = false) String newGender,
+                                         @RequestParam(value = "uid", required = false) Integer uid,
+                                         @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateGender(uid, newGender);
+    }
+
+    @RequestMapping(value = "/updateGender.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult updateGenderJSON(@RequestParam(value = "gender", required = false) String newGender,
+                                          @RequestParam(value = "uid", required = false) Integer uid,
+                                          @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateGender(uid, newGender);
+    }
+
+    @RequestMapping(value = "/updateGender", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult updateGender(@RequestParam(value = "gender", required = false) String newGender,
+                                      @RequestParam(value = "uid", required = false) Integer uid,
+                                      @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateGender(uid, newGender);
+    }
+
+    @RequestMapping(value = "/updateNickname.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult updateNicknameXML(@RequestParam(value = "nickname", required = false) String newNickname,
+                                           @RequestParam(value = "uid", required = false) Integer uid,
+                                           @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateNickname(uid, newNickname);
+    }
+
+    @RequestMapping(value = "/updateNickname.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult updateNicknameJSON(@RequestParam(value = "nickname", required = false) String newNickname,
+                                            @RequestParam(value = "uid", required = false) Integer uid,
+                                            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateNickname(uid, newNickname);
+    }
+
+    @RequestMapping(value = "/updateNickname", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult updateNickname(@RequestParam(value = "nickname", required = false) String newNickname,
+                                        @RequestParam(value = "uid", required = false) Integer uid,
+                                        @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return userService.updateNickname(uid, newNickname);
+    }
 
     /**
      * @param hisUid

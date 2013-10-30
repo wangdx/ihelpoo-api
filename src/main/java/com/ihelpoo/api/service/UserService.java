@@ -150,7 +150,7 @@ public class UserService extends RecordService {
         }
     }
 
-    private GenericResult unshield(int hisuid, int uid, GenericResult genericResult, Result result) {
+    private GenericResult unshield(int hisuid, int uid, GenericResult genericResult, Result result) { //TODO
         return null;
     }
 
@@ -324,4 +324,83 @@ public class UserService extends RecordService {
         return foResult;
     }
 
+    public GenericResult updateNickname(Integer uid, String newNickname) {
+        GenericResult genericResult = new GenericResult();
+        genericResult.setNotice(new Notice());
+        Result result = new Result();
+        genericResult.setResult(result);
+        result.setErrorCode("0");
+        try {
+            userDao.updateUserLogin(uid, "nickname", newNickname);
+        } catch (Exception e) {
+            result.setErrorMessage("修改昵称失败");
+            logger.error("修改昵称失败: ", e);
+            genericResult.setResult(result);
+            return genericResult;
+        }
+        result.setErrorCode("1");
+        result.setErrorMessage("昵称修改成功");
+        genericResult.setResult(result);
+        return genericResult;
+    }
+
+    public GenericResult updateGender(Integer uid, String newGender) {
+        GenericResult genericResult = new GenericResult();
+        genericResult.setNotice(new Notice());
+        Result result = new Result();
+        genericResult.setResult(result);
+        result.setErrorCode("0");
+        try {
+            userDao.updateUserLogin(uid, "sex", newGender);
+        } catch (Exception e) {
+            result.setErrorMessage("修改性别失败");
+            logger.error("修改性别失败: ", e);
+            genericResult.setResult(result);
+            return genericResult;
+        }
+        result.setErrorCode("1");
+        result.setErrorMessage("性别修改成功");
+        genericResult.setResult(result);
+        return genericResult;
+    }
+
+    public GenericResult updateEnrol(Integer uid, String newEnrol) {
+        GenericResult genericResult = new GenericResult();
+        genericResult.setNotice(new Notice());
+        Result result = new Result();
+        genericResult.setResult(result);
+        result.setErrorCode("0");
+        try {
+            userDao.updateUserLogin(uid, "enteryear", newEnrol);
+        } catch (Exception e) {
+            result.setErrorMessage("修改失败");
+            logger.error("修改入学年份失败: ", e);
+            genericResult.setResult(result);
+            return genericResult;
+        }
+        result.setErrorCode("1");
+        result.setErrorMessage("修改成功");
+        genericResult.setResult(result);
+        return genericResult;
+    }
+
+    public GenericResult updateIntro(Integer uid, String newIntro) {
+        GenericResult genericResult = new GenericResult();
+        genericResult.setNotice(new Notice());
+        Result result = new Result();
+        genericResult.setResult(result);
+        result.setErrorCode("0");
+        try {
+            userDao.updateUserInfo(uid, "introduction", newIntro);
+        } catch (Exception e) {
+            result.setErrorMessage("修改失败");
+            logger.error("修改失败: ", e);
+            genericResult.setResult(result);
+            return genericResult;
+        }
+        result.setErrorCode("1");
+        result.setErrorMessage("修改成功");
+        genericResult.setResult(result);
+        return genericResult;
+    }
 }
