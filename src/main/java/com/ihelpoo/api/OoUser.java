@@ -31,6 +31,43 @@ public class OoUser {
     @Autowired
     UserService userService;
 
+    @RequestMapping(value = "/updateMajor.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult updateMajorXML(
+            @RequestParam(value = "school_id", required = false) Integer schoolId,
+            @RequestParam(value = "academy_id", required = false) Integer academyId,
+            @RequestParam(value = "major_id", required = false) Integer majorId,
+            @RequestParam(value = "dorm_id", required = false) Integer dormId,
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
+        return userService.updateMajor(uid, schoolId, academyId, majorId, dormId);
+    }
+    @RequestMapping(value = "/updateMajor.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult updateMajorJSON(
+            @RequestParam(value = "school_id", required = false) Integer schoolId,
+            @RequestParam(value = "academy_id", required = false) Integer academyId,
+            @RequestParam(value = "major_id", required = false) Integer majorId,
+            @RequestParam(value = "dorm_id", required = false) Integer dormId,
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
+        return userService.updateMajor(uid, schoolId, academyId, majorId, dormId);
+    }
+    @RequestMapping(value = "/updateMajor", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult updateMajor(
+            @RequestParam(value = "school_id", required = false) Integer schoolId,
+            @RequestParam(value = "academy_id", required = false) Integer academyId,
+            @RequestParam(value = "major_id", required = false) Integer majorId,
+            @RequestParam(value = "dorm_id", required = false) Integer dormId,
+            @RequestParam(value = "uid", required = false) Integer uid,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
+    ) {
+        return userService.updateMajor(uid, schoolId, academyId, majorId, dormId);
+    }
+
     @RequestMapping(value = "/updateIntro.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
     public GenericResult updateIntroXML(@RequestParam(value = "intro", required = false) String newIntro,

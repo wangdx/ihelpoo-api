@@ -463,7 +463,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int updateUserLogin(Integer uid, String column, String newValue) {
+    public int updateUserLogin(Integer uid, String column, Object newValue) {
         final String sql = " UPDATE i_user_login SET " + column + "=? WHERE uid=? ";
         return getJdbcTemplate().update(sql, newValue, uid);
     }
@@ -490,6 +490,21 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     public List<IOpDormitoryEntity> fetchAllDorms(Integer schoolId) {
         String sql = " SELECT * FROM i_op_dormitory where school=? ";
         return getJdbcTemplate().query(sql, new Object[]{schoolId}, new BeanPropertyRowMapper<IOpDormitoryEntity>(IOpDormitoryEntity.class));
+    }
+
+    @Override
+    public int updateUserInfo(Integer uid, String[] columns, Object[] values) {
+        if (columns == null || values == null || columns.length != values.length) {
+            return 0;
+        }
+        final StringBuilder sqlBuilder = new StringBuilder(" UPDATE i_user_info SET ");
+        for (int i = 0; i < columns.length; ++i) {
+            sqlBuilder.append(columns[i]).append("=?,");
+        }
+        sqlBuilder.deleteCharAt(sqlBuilder.lastIndexOf(","));
+        sqlBuilder.append(" WHERE uid=?");
+
+        return getJdbcTemplate().update(sqlBuilder.toString(), values[0], values[1], values[2], uid);
     }
 
 

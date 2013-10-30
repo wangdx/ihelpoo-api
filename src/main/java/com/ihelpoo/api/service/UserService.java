@@ -403,4 +403,26 @@ public class UserService extends RecordService {
         genericResult.setResult(result);
         return genericResult;
     }
+
+    @Transactional
+    public GenericResult updateMajor(Integer uid, Integer schoolId, Integer academyId, Integer majorId, Integer dormId) {
+        GenericResult genericResult = new GenericResult();
+        genericResult.setNotice(new Notice());
+        Result result = new Result();
+        genericResult.setResult(result);
+        result.setErrorCode("0");
+        try {
+            userDao.updateUserLogin(uid, "school", schoolId);
+            userDao.updateUserInfo(uid, new String[]{"academy_op", "specialty_op", "dormitory_op" }, new Object[]{academyId, majorId, dormId});
+        } catch (Exception e) {
+            result.setErrorMessage("修改失败");
+            logger.error("修改失败: ", e);
+            genericResult.setResult(result);
+            return genericResult;
+        }
+        result.setErrorCode("1");
+        result.setErrorMessage("修改成功");
+        genericResult.setResult(result);
+        return genericResult;
+    }
 }
