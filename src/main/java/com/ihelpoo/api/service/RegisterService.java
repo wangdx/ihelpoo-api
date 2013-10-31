@@ -155,7 +155,7 @@ public class RegisterService extends RecordService {
         user.uid = userLoginEntity.getUid();
         user.nickname = nickname;
         user.school_id = String.valueOf(school);
-        user.avatar_url = convertToAvatarUrl("", userLoginEntity.getUid());
+        user.avatar_url = convertToAvatarUrl("", userLoginEntity.getUid(), false);
         genericResult.setUser(user);
         genericResult.setResult(result);
         return genericResult;

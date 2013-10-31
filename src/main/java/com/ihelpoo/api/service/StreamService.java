@@ -61,7 +61,8 @@ public class StreamService extends RecordService {
         user.followers_count = entity.getFollowersCount();
         user.friends_count = entity.getFriendsCount();
         user.avatar_type = entity.getAvatarType();
-        user.avatar_url = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid());
+        user.avatar_url = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid(), false);
+        user.avatar_preview = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid(), true);
         user.self_intro = entity.getSelfIntro();
         user.login_time = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date((long) (entity.getLoginTime() * 1000)));
         user.login_days = entity.getLoginDays();
@@ -84,7 +85,7 @@ public class StreamService extends RecordService {
         for (IRecordSayEntity recordSayEntity : recordSayEntities) {
             Active active = new Active();
             active.sid = recordSayEntity.getSid();
-            active.iconUrl = convertToAvatarUrl(entity.getAvatarUrl(), hisUid);
+            active.iconUrl = convertToAvatarUrl(entity.getAvatarUrl(), hisUid, false);
             active.nickname = entity.getNickname();
             active.uid = hisUid;
             active.catalog = 4;
@@ -175,7 +176,7 @@ public class StreamService extends RecordService {
             active.academy = "[" + tweet.getShowMajorName() + "]";
             active.rank = String.valueOf(convertToRank(tweet.getActive()));
             active.online = tweet.getOnline() == null ? 0 : Integer.parseInt(tweet.getOnline().trim());
-            active.iconUrl = convertToAvatarUrl(tweet.getIconUrl(), tweet.getUid());
+            active.iconUrl = convertToAvatarUrl(tweet.getIconUrl(), tweet.getUid(), false);
             active.from = convertToBy(tweet.getFrom());
             active.catalog = 4;                     //my space in android
             active.commentCo = tweet.getCommentCo() == null ? 0 : tweet.getCommentCo();

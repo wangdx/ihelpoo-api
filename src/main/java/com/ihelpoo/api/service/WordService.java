@@ -128,7 +128,7 @@ public class WordService extends RecordService {
 
             Active active = new Active();
             active.sid = msg.getDetailId();
-            active.iconUrl = convertToAvatarUrl(msg.getIconUrl(), msg.getUid());
+            active.iconUrl = convertToAvatarUrl(msg.getIconUrl(), msg.getUid(), false);
             active.nickname = msg.getNickname();
             active.uid = msg.getUid();
             active.catalog = 3;
@@ -193,7 +193,7 @@ public class WordService extends RecordService {
 
             Active active = new Active();
             active.sid = atUserEntity.getSid();
-            active.iconUrl = convertToAvatarUrl(atUserEntity.getIconUrl(), atUserEntity.getUid());
+            active.iconUrl = convertToAvatarUrl(atUserEntity.getIconUrl(), atUserEntity.getUid(), false);
             active.nickname = atUserEntity.getNickname();
             active.uid = atUserEntity.getUid();
             active.catalog = 3;
@@ -248,7 +248,7 @@ public class WordService extends RecordService {
             Active active = new Active();
 
             active.sid = msgCommentEntity.getSid();
-            active.iconUrl = convertToAvatarUrl(user.getIconUrl(), user.getUid());
+            active.iconUrl = convertToAvatarUrl(user.getIconUrl(), user.getUid(), false);
             active.nickname = user.getNickname();
 
             active.uid = user.getUid();
@@ -341,7 +341,7 @@ public class WordService extends RecordService {
 
             ChatResult.Chat c1 = new ChatResult.Chat();
             c1.id = talk.getId();
-            c1.portrait = convertToAvatarUrl(fromIcon, talk.getUid() == null ? 10000 : talk.getUid());
+            c1.portrait = convertToAvatarUrl(fromIcon, talk.getUid() == null ? 10000 : talk.getUid(), false);
             c1.friendid = friendID;
             c1.friendname = usersMap.get(friendID) == null ? "" : usersMap.get(friendID).getNickname();
             c1.sender = friendName;
@@ -390,8 +390,7 @@ public class WordService extends RecordService {
             comment.pubDate = convertToDate(commentEntity.getTime());
             comment.author = commentEntity.getNickname();
             comment.authorid = commentEntity.getUid();
-            comment.portrait =
-                    convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid());
+            comment.portrait = convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid(), false);
             comment.id = commentEntity.getSid() == null ? -1 : commentEntity.getSid();
             comment.appclient = 0;
             comments.add(comment);
@@ -454,7 +453,7 @@ public class WordService extends RecordService {
         comment.authorid = uid;
         comment.author = user.getNickname();
         comment.content = content;
-        comment.portrait = convertToAvatarUrl(user.getIconUrl(), user.getUid());
+        comment.portrait = convertToAvatarUrl(user.getIconUrl(), user.getUid(), false);
         comment.pubDate = convertToDate(time);
         doChatResult.result = result;
         doChatResult.comment = comment;

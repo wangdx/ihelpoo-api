@@ -7,7 +7,6 @@ import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
 import com.ihelpoo.api.service.base.RecordService;
-import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -207,19 +206,11 @@ public class LoginService extends RecordService{
         user.uid = userLoginEntity.getUid();
         user.school_id = String.valueOf(userLoginEntity.getSchool());
         user.nickname = userLoginEntity.getNickname();
-        user.avatar_url = convertToAvatarUrl(userLoginEntity.getIconUrl(), userLoginEntity.getUid());
+        user.avatar_url = convertToAvatarUrl(userLoginEntity.getIconUrl(), userLoginEntity.getUid(), false);
         genericResult.setUser(user);
         genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
         genericResult.setNotice(getNotice(userLoginEntity.getUid()));
         return genericResult;
-    }
-
-    protected String convertToAvatarUrl(String iconUrl, int uid) {
-        if (!empty(iconUrl)) {
-            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
-        } else {
-            return Constant.IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
-        }
     }
 
     protected boolean empty(String iconUrl) {

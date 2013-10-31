@@ -84,9 +84,13 @@ public class RecordService {
         return imgUrl;
     }
 
-    protected String convertToAvatarUrl(String iconUrl, int uid) {
+    protected String convertToAvatarUrl(String iconUrl, int uid, boolean isPreview) {
+        String imageSize = "_s.jpg!app";
+        if(isPreview){
+            imageSize = ".jpg";
+        }
         if (!empty(iconUrl)) {
-            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl+ imageSize +"?t=" + System.currentTimeMillis();
         } else {
             return Constant.IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
         }

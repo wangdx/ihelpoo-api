@@ -71,7 +71,7 @@ public class TweetService extends RecordService {
             tweet.academy = StringUtils.isEmpty(tweetEntity.getShowMajorName()) ? "" : "[" + tweetEntity.getShowMajorName() + "]";
             tweet.rank = convertToRank(tweetEntity.getActive());
             tweet.onlineState = convertToOnlineState(tweetEntity.getOnline());
-            tweet.portrait = convertToAvatarUrl(tweetEntity.getIconUrl(), tweetEntity.getUid());
+            tweet.portrait = convertToAvatarUrl(tweetEntity.getIconUrl(), tweetEntity.getUid(), false);
             tweet.appclient = convertToBy(tweetEntity.getFrom());
             tweet.by = tweetEntity.getFrom();
             tweet.commentCount = tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo();
@@ -125,7 +125,7 @@ public class TweetService extends RecordService {
         tweet.commentCount = tweetDetailEntity.getCommentCo() == null ? 0 : tweetDetailEntity.getCommentCo();
         tweet.imgSmall = imgUrl.replace("recordsay", "thumb_recordsay");
         tweet.imgBig = imgUrl;
-        tweet.portrait = convertToAvatarUrl(tweetDetailEntity.getIconUrl(), tweetDetailEntity.getUid());
+        tweet.portrait = convertToAvatarUrl(tweetDetailEntity.getIconUrl(), tweetDetailEntity.getUid(), false);
         tweet.rank = convertToRank(tweetDetailEntity.getActive());
         tweet.authorGossip = convertToGossip(tweetDetailEntity.getSex(), tweetDetailEntity.getBirthday());
         tweet.academy = tweetDetailEntity.getAcademy();
@@ -149,7 +149,7 @@ public class TweetService extends RecordService {
             comment.pubDate = convertToDate(commentEntity.getTime());
             comment.author = commentEntity.getNickname();
             comment.authorid = commentEntity.getUid();
-            comment.portrait = convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid());
+            comment.portrait = convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid(), false);
             comment.id = commentEntity.getSid() == null ? -1 : commentEntity.getSid();
             comment.appclient = 0;
             comments.add(comment);
@@ -214,7 +214,7 @@ public class TweetService extends RecordService {
         comment.pubDate = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date(System.currentTimeMillis()));
         comment.author = userLoginEntity.getNickname();
         comment.authorid = uid;
-        comment.portrait = convertToAvatarUrl(userLoginEntity.getIconUrl(), uid);
+        comment.portrait = convertToAvatarUrl(userLoginEntity.getIconUrl(), uid, false);
         comment.id = id;
         comment.appclient = 0;
 

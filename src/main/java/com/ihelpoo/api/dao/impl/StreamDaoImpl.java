@@ -443,49 +443,4 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
             System.out.println(matcher.group().substring(1));
         }
     }
-
-    private String convertToDate(Integer time) {
-        return (new java.text.SimpleDateFormat(
-                "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (time.floatValue() * 1000)));
-    }
-
-    private String convertToAvatarUrl(String iconUrl, int uid) {
-
-        String baseUrl = "http://img.ihelpoo.cn/";
-        if (!empty(iconUrl)) {
-            return baseUrl + "useralbum/" + uid + "/" + iconUrl + "_m.jpg?t=" + System.currentTimeMillis();
-        } else {
-            return "http://img.ihelpoo.cn/useralbum/default_avatar.jpg";
-        }
-    }
-
-    private boolean empty(String iconUrl) {
-        return iconUrl == null || iconUrl.length() <= 0;
-    }
-
-    private int convertToRank(Integer active) {
-        if (active == null)
-            return 1;
-        if (active < 30) {
-            return 1;
-        } else if (active < 120) {
-            return 2;
-        } else if (active < 330) {
-            return 3;
-        } else if (active < 720) {
-            return 4;
-        } else if (active < 1350) {
-            return 5;
-        } else if (active < 3990) {
-            return 6;
-        } else if (active < 10200) {
-            return 7;
-        } else if (active < 22230) {
-            return 8;
-        } else if (active < 41280) {
-            return 9;
-        } else {
-            return 10;
-        }
-    }
 }

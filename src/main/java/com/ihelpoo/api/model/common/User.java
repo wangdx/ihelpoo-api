@@ -46,6 +46,8 @@ public class User {
     @XmlElement
     public String avatar_url;
     @XmlElement
+    public String avatar_preview;
+    @XmlElement
     public String web_theme;
     @XmlElement
     public String self_intro;

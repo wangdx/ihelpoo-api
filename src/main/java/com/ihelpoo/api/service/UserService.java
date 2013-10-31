@@ -232,7 +232,7 @@ public class UserService extends RecordService {
         VUserDetailEntity entity = userDao.findUserDetailById(uid);
         UserResult userResult = new UserResult();
         User user = new User();
-        user.avatar_url = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid());
+        user.avatar_url = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid(), false);
         user.email = entity.getEmail();
         user.nickname = entity.getNickname();
         user.gender = entity.getGender();
@@ -305,7 +305,7 @@ public class UserService extends RecordService {
             user.active_credits = entity.getActive() == null ? 0 : entity.getActive();
             user.level = convertToLevel(entity.getActive());
             user.gender = entity.getSex();
-            user.avatar_url = convertToAvatarUrl(entity.getIconUrl(), entity.getUid());
+            user.avatar_url = convertToAvatarUrl(entity.getIconUrl(), entity.getUid(), false);
             user.uid = entity.getUid();
             user.online_status = entity.getOnline();
             user.school_id = String.valueOf(entity.getSchool());
