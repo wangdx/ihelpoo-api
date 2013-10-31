@@ -10,6 +10,7 @@ import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +39,10 @@ public class LoginService extends RecordService{
         IUserLoginEntity userLoginEntity = null;
         try {
             userLoginEntity = userDao.findByAccount(username);
+        } catch (EmptyResultDataAccessException e) {
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
+            return genericResult;
         } catch (Exception e) {
-            //TODO gentle message to user
             genericResult.setResult(new Result(FAILURE, e.getMessage()));
             return genericResult;
         }
