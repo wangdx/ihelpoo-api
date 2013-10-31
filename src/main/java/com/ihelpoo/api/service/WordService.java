@@ -286,10 +286,10 @@ public class WordService extends RecordService {
         for (IMsgActiveEntity active : actives) {
             MessageResult.Message msgs = new MessageResult.Message();
             msgs.id = active.getId();
-            msgs.author = "(" + active.getTotal() + ")";
+            msgs.author = "[" + active.getTotal() + "]";
             msgs.commentCount = Integer.valueOf(active.getDeliver());
             msgs.pubDate = convertToDate(active.getTime());
-            msgs.title = " " + active.getReason();
+            msgs.title = active.getReason();
             msgs.inout = "min".equals(active.getWay()) ? "-" + active.getChange() : "+" + active.getChange();
             list.add(msgs);
         }
@@ -447,7 +447,7 @@ public class WordService extends RecordService {
         DoChatResult doChatResult = new DoChatResult();
         Result result = new Result();
         result.setErrorCode("1");
-        result.setErrorMessage("留言发表成功");
+        result.setErrorMessage("发送成功");
         TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
         comment.id = 0;
         comment.authorid = uid;
