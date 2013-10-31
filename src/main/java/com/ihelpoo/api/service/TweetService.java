@@ -74,6 +74,7 @@ public class TweetService extends RecordService {
             tweet.portrait = convertToAvatarUrl(tweetEntity.getIconUrl(), tweetEntity.getUid(), false);
             tweet.appclient = convertToBy(tweetEntity.getFrom());
             tweet.by = tweetEntity.getFrom();
+            tweet.plusCount = tweetEntity.getPlusCo();
             tweet.commentCount = tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo();
             tweet.body = tweetEntity.getContent();
             tweet.pubDate = convertToDate(tweetEntity.getLastCommentTi());
@@ -91,7 +92,7 @@ public class TweetService extends RecordService {
 
         TweetResult tweetResult = new TweetResult();
         TweetResult.Tweets tweetsWrapper = new TweetResult.Tweets(tweets);
-        tweetResult.tweetCount = pageSize + 1;
+        tweetResult.tweetCount = tweetEntities.size();
         tweetResult.pagesize = pageSize;
         tweetResult.notice = getNotice(uid);
         tweetResult.tweets = tweetsWrapper;
