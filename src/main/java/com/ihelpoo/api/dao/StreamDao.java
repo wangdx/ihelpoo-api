@@ -27,6 +27,8 @@ public interface StreamDao {
 
     List<VTweetCommentEntity> findAllCommentsBy(int sid, int pageIndex, int pageSize);
 
+    List<VTweetCommentEntity> findAllHelpRepliesBy(Integer sid, Integer pageIndex, Integer pageSize);
+
 //    TweetCommentPushResult pushComment(int id, int uid, String[] atUsers, String content, int catalog);
 
     VTweetDetailEntity findTweetDetailBy(int sid);

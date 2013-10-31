@@ -140,7 +140,7 @@ public class TweetService extends RecordService {
         return tweet;
     }
 
-    public TweetCommentResult pullCommentsBy(int sid, int pageIndex, int pageSize) {
+    public TweetCommentResult pullCommentsBy(int uid, int sid, int pageIndex, int pageSize) {
         List<VTweetCommentEntity> commentEntities = streamDao.findAllCommentsBy(sid, pageIndex, pageSize);
         int allCount = commentEntities.size();
         List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
@@ -161,7 +161,34 @@ public class TweetService extends RecordService {
         commentResult.allCount = allCount;
         commentResult.pagesize = pageSize;
         commentResult.comments = commentWrapper;
-        commentResult.notice = new Notice();//FIXME
+        commentResult.notice = getNotice(uid);
+        return commentResult;
+    }
+
+
+
+    public TweetCommentResult pullHelpRepliesBy(Integer uid, Integer sid, Integer pageIndex, Integer pageSize) {
+        List<VTweetCommentEntity> commentEntities = streamDao.findAllHelpRepliesBy(sid, pageIndex, pageSize);
+        int allCount = commentEntities.size();
+        List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
+        for (VTweetCommentEntity commentEntity : commentEntities) {
+            TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
+            comment.content = commentEntity.getContent();
+            comment.pubDate = convertToDate(commentEntity.getTime());
+            comment.author = commentEntity.getNickname();
+            comment.authorid = commentEntity.getUid();
+            comment.portrait = convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid(), false);
+            comment.id = commentEntity.getSid() == null ? -1 : commentEntity.getSid();
+            comment.appclient = 0;
+            comments.add(comment);
+        }
+
+        TweetCommentResult commentResult = new TweetCommentResult();
+        TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
+        commentResult.allCount = allCount;
+        commentResult.pagesize = pageSize;
+        commentResult.comments = commentWrapper;
+        commentResult.notice = getNotice(uid);
         return commentResult;
     }
 
@@ -576,5 +603,4 @@ public class TweetService extends RecordService {
         System.out.println(Arrays.asList(new String[]{"a","b","cd"}).indexOf("d"));
         System.out.println(Arrays.asList(new String[]{"a","b","c"}).indexOf("d"));
     }
-
 }
