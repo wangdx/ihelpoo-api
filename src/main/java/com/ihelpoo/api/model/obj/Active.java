@@ -32,7 +32,7 @@ public class Active {
     @XmlElement(name = "objecttitle")
     public String objecttitle;
     @XmlElement(name = "appclient")
-    public int from;
+    public String from;
     @XmlElement(name = "objectreply")
     public ObjectReply objectreply;
     @XmlElement(name = "url")
@@ -47,8 +47,8 @@ public class Active {
     public String time;
     @XmlElement(name = "tweetimage")
     public String image;
-
-
+    @XmlElement(name = "imgBig")
+    public String imgBig;
     @XmlElement(name = "diffusionCo")
     public int diffusionCo;
     @XmlElement(name = "academy")
@@ -61,4 +61,5 @@ public class Active {
     public int online;
     @XmlElement(name="activeRank")
     public String rank;
+
 }

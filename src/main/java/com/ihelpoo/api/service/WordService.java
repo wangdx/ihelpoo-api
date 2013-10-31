@@ -135,7 +135,7 @@ public class WordService extends RecordService {
             active.objecttype = 3;
             active.objectcatalog = 0;
             active.objecttitle = "";
-            active.from = 3;
+            active.from = "";
             active.url = "";
             active.objectID = sid;
             active.content = content;
@@ -201,7 +201,7 @@ public class WordService extends RecordService {
             active.objectcatalog = 0;
             active.objecttitle = "";
             active.academy = info;
-            active.from = 3;
+            active.from = "";
             active.url = "";
             active.objectID = atUserEntity.getCid() == null ? atUserEntity.getSid() : atUserEntity.getCid();
             active.content = contentDetail;
@@ -258,7 +258,7 @@ public class WordService extends RecordService {
             active.objecttitle = "";
             active.objectreply = or;
             active.academy = info;
-            active.from = 3;
+            active.from = "";
             active.url = "";
             active.objectID = msgCommentEntity.getCid() == null ? msgCommentEntity.getSid() : msgCommentEntity.getCid();
             active.content = contentDetail;

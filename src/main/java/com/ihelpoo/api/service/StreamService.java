@@ -83,6 +83,7 @@ public class StreamService extends RecordService {
         Actives actives = new Actives();
         List<Active> activeList = new ArrayList<Active>();
         for (IRecordSayEntity recordSayEntity : recordSayEntities) {
+            String firstImgUrl = convertToImageUrl(recordSayEntity.getSid());
             Active active = new Active();
             active.sid = recordSayEntity.getSid();
             active.iconUrl = convertToAvatarUrl(entity.getAvatarUrl(), hisUid, false);
@@ -92,7 +93,7 @@ public class StreamService extends RecordService {
             active.objecttype = 3;
             active.objectcatalog = 0;
             active.objecttitle = "孤独";
-            active.from = 3;
+            active.from = recordSayEntity.getFrom();
             active.objectID = 136727;
 
             active.content = recordSayEntity.getContent();
@@ -100,7 +101,8 @@ public class StreamService extends RecordService {
             active.commentCo = recordSayEntity.getCommentCo() == null ? 0 : recordSayEntity.getCommentCo();
             active.time = (new java.text.SimpleDateFormat(
                     "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (recordSayEntity.getTime().floatValue() * 1000)));
-            active.image = convertToImageUrl(recordSayEntity.getSid());
+            active.image =  firstImgUrl.replace("recordsay", "thumb_recordsay");
+            active.imgBig = firstImgUrl;
 
             active.academy = entity.getAcademyName();
             active.authorType = convertToType(entity.getUserType(), entity.getEnrolTime());
@@ -177,7 +179,7 @@ public class StreamService extends RecordService {
             active.rank = String.valueOf(convertToRank(tweet.getActive()));
             active.online = tweet.getOnline() == null ? 0 : Integer.parseInt(tweet.getOnline().trim());
             active.iconUrl = convertToAvatarUrl(tweet.getIconUrl(), tweet.getUid(), false);
-            active.from = convertToBy(tweet.getFrom());
+            active.from = tweet.getFrom();
             active.catalog = 4;                     //my space in android
             active.commentCo = tweet.getCommentCo() == null ? 0 : tweet.getCommentCo();
             active.content = tweet.getContent();
