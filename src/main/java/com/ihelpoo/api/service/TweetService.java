@@ -92,7 +92,7 @@ public class TweetService extends RecordService {
 
         TweetResult tweetResult = new TweetResult();
         TweetResult.Tweets tweetsWrapper = new TweetResult.Tweets(tweets);
-        tweetResult.tweetCount = tweetEntities.size();
+        tweetResult.tweetCount = pageSize + 1;
         tweetResult.pagesize = pageSize;
         tweetResult.notice = getNotice(uid);
         tweetResult.tweets = tweetsWrapper;

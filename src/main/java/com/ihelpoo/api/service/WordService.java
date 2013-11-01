@@ -231,17 +231,33 @@ public class WordService extends RecordService {
             String info = null;
             String contentDetail = null;
             if (msgCommentEntity.getCid() != null) {
-                IRecordCommentEntity commentEntity = commentDao.fetchCommentBy(msgCommentEntity.getCid());
-                content = commentEntity.getContent() == null ? "这条评论被你删除了的" : commentEntity.getContent();
+                IRecordCommentEntity commentEntity = null;
+                try {
+                    commentEntity = commentDao.fetchCommentBy(msgCommentEntity.getCid());
+                    content = commentEntity.getContent();
+                } catch (EmptyResultDataAccessException e) {
+                    content = "这条评论被你删除了的";
+                }
                 info = "回复了你的评论: ";
             } else {
-                IRecordSayEntity sayEntity = streamDao.findTweetBy(msgCommentEntity.getSid());
-                content = sayEntity.getContent() == null ? "内容被你删除了的" : sayEntity.getContent();
+                IRecordSayEntity sayEntity = null;
+                try {
+                    sayEntity = streamDao.findTweetBy(msgCommentEntity.getSid());
+                    content = sayEntity.getContent();
+                } catch (EmptyResultDataAccessException e) {
+                    content = "内容被你删除了的";
+                }
                 info = "评论了你：";
             }
             if (msgCommentEntity.getNcid() != null) {
-                IRecordCommentEntity commentEntityDetail = commentDao.fetchCommentBy(msgCommentEntity.getNcid());
-                contentDetail = commentEntityDetail.getContent() == null ? "评论又被" + nickname + "删除了" : commentEntityDetail.getContent();
+                IRecordCommentEntity commentEntityDetail = null;
+                try {
+                    commentEntityDetail = commentDao.fetchCommentBy(msgCommentEntity.getNcid());
+                    contentDetail = commentEntityDetail.getContent();
+                } catch (EmptyResultDataAccessException e) {
+                    contentDetail = "评论又被" + nickname + "删除了";
+                }
+
             }
 
             ObjectReply or = new ObjectReply("我", content);
