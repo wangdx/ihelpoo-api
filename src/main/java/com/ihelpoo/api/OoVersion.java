@@ -20,7 +20,7 @@ public class OoVersion {
 
     @RequestMapping(value = "/versions.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
-    public VersionResult checkVersion(){
+    public VersionResult checkVersionXML(){
         VersionResult.Android andr = new VersionResult.Android.Builder()
                 .versionCode(VERSION_CODE)
                 .versionName(VERSION_NAME)
@@ -45,7 +45,14 @@ public class OoVersion {
     @RequestMapping(value = "/versions.json", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public VersionResult checkVersionJson(){
-        return checkVersion();
+        return checkVersionXML();
+    }
+
+
+    @RequestMapping(value = "/versions", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public VersionResult checkVersion(){
+        return checkVersionXML();
     }
 }
 
