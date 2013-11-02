@@ -144,6 +144,8 @@ public class RegisterService extends RecordService {
         int t = (int) (System.currentTimeMillis() / 1000L);
         final String nickname = "oih_" + ID.INSTANCE.next();
         IUserLoginEntity userLoginEntity = userDao.saveUser(mobile, new MD5().encrypt(pwd), nickname, school, t);
+        userDao.saveUserInfo(userLoginEntity.getUid());
+
         userDao.saveStatus(userLoginEntity.getUid(), 6);
 
         tweetService.pubTweet(userLoginEntity.getUid(), t, "我刚刚加入了我帮圈圈:)", null, null, deviceType, school);

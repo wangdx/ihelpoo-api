@@ -49,7 +49,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
                         "join i_user_info ON i_record_say.uid = i_user_info.uid\n" +
                         "join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id\n" +
                         "join i_school_info ON i_user_login.school = i_school_info.id" +
-                " where say_type != '9' ");
+                        " where say_type != '9' ");
         if (sids.length() > 0) {
             sql.append(" and i_record_say.uid NOT IN (").append(sids).append(") ");
         }
@@ -165,6 +165,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
                 "limit ? offset ? ";
         return getJdbcTemplate().query(sql, new Object[]{sid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VTweetCommentEntity>(VTweetCommentEntity.class));
     }
+
     @Override
     public int findAllCommentsCountBy(int sid) {
         String sql = "select COUNT(*) from i_record_comment\n" +
@@ -386,7 +387,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
     @Override
     public int incSayCount(Integer sid, boolean canAffect, String countColumn) {
-        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET " + countColumn + " = " + countColumn + " + 1 ");
+        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET " + countColumn + " = IF(" + countColumn + " IS NULL,1, " + countColumn + " + 1 ) ");
         if (canAffect) {
             sb.append(" , last_comment_ti=unix_timestamp() ");
         }
@@ -397,11 +398,11 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     @Override
     public int incOrDecSayCount(Integer sid, int offset) {
         if (offset >= 0) {
-            final String sqlInc = " UPDATE i_record_say SET plus_co = plus_co + ? WHERE sid=? ";
-            return getJdbcTemplate().update(sqlInc, new Object[]{offset, sid});
+            final String sqlInc = " UPDATE i_record_say SET plus_co = IF(plus_co IS NULL, ?, plus_co + ?) WHERE sid=? ";
+            return getJdbcTemplate().update(sqlInc, new Object[]{offset, offset, sid});
         } else {
-            final String sqlDec = " UPDATE i_record_say SET plus_co = IF(plus_co - ? < 0, 0, plus_co - ?) WHERE sid=? ";
-            return getJdbcTemplate().update(sqlDec, new Object[]{offset, -offset, sid});
+            final String sqlDec = " UPDATE i_record_say SET plus_co = IF(plus_co IS NULL OR plus_co - ? < 0, 0, plus_co - ?) WHERE sid=? ";
+            return getJdbcTemplate().update(sqlDec, new Object[]{-offset, -offset, sid});
         }
     }
 

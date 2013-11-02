@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -400,6 +401,11 @@ public class TweetService extends RecordService {
             int noticeIdForOwner = streamDao.saveNoticeMessage(noticeType, uid, sid, "plus");
             bounceNoticeMessageCount(sayEntity.getUid(), 1);
             deliverTo(sayEntity.getUid(), noticeIdForOwner);
+        } catch (IncorrectResultSizeDataAccessException e){
+            logger.error("系统错误:", e);
+            result.setErrorMessage("系统错误:" + e.getMessage());
+            genericResult.setResult(result);
+            return genericResult;
         }
 
         result.setErrorCode("1");
@@ -479,11 +485,11 @@ public class TweetService extends RecordService {
 
         long time12Hour = System.currentTimeMillis() / 1000 - 43200L;
         List<IRecordDiffusionEntity> entities = streamDao.findDiffusions(uid, time12Hour);
-        if (entities != null && entities.size() >= 3) {
-            result.setErrorMessage("12小时内最多扩散3条");
-            genericResult.setResult(result);
-            return genericResult;
-        }
+//        if (entities != null && entities.size() >= 3) {
+//            result.setErrorMessage("12小时内最多扩散3条");
+//            genericResult.setResult(result);
+//            return genericResult;
+//        }
 
         int diffuseId = streamDao.saveDiffusion(uid, sid, content);
         int noticeIdForFollowers = streamDao.saveNoticeMessage(noticeType, uid, diffuseId, "diffusion");

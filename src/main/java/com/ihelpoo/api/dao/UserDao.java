@@ -98,4 +98,6 @@ public interface UserDao {
     List<IOpDormitoryEntity> fetchAllDorms(Integer schoolId);
 
     int updateUserInfo(Integer uid, String[] columns, Object[] values);
+
+    int saveUserInfo(int uid);
 }
