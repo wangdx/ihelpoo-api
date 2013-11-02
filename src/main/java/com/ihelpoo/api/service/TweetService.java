@@ -76,7 +76,7 @@ public class TweetService extends RecordService {
             tweet.appclient = convertToBy(tweetEntity.getFrom());
             tweet.by = tweetEntity.getFrom();
             tweet.plusCount = tweetEntity.getPlusCo();
-            tweet.commentCount = tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo();
+            tweet.comment_count = tweetEntity.getCommentCo() == null ? 0 : tweetEntity.getCommentCo();
             tweet.body = tweetEntity.getContent();
             tweet.pubDate = convertToDate(tweetEntity.getLastCommentTi());
             tweet.spreadCount = tweetEntity.getDiffusionCo() == null ? 0 : tweetEntity.getDiffusionCo();
@@ -124,7 +124,7 @@ public class TweetService extends RecordService {
         tweet.by = tweetDetailEntity.getBy();
         tweet.body = tweetDetailEntity.getContent();
         tweet.pubDate = convertToDate(tweetDetailEntity.getTime());
-        tweet.commentCount = tweetDetailEntity.getCommentCo() == null ? 0 : tweetDetailEntity.getCommentCo();
+        tweet.comment_count = tweetDetailEntity.getCommentCo() == null ? 0 : tweetDetailEntity.getCommentCo();
         tweet.imgSmall = imgUrl.replace("recordsay", "thumb_recordsay");
         tweet.imgBig = imgUrl;
         tweet.portrait = convertToAvatarUrl(tweetDetailEntity.getIconUrl(), tweetDetailEntity.getUid(), false);

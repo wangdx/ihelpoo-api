@@ -55,7 +55,7 @@ public class TweetResult {
         @XmlElement
         public String by;
         @XmlElement
-        public int commentCount;
+        public int comment_count;
         @XmlElement
         public String pubDate;
         @XmlElement
