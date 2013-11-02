@@ -113,6 +113,7 @@ public class WordService extends RecordService {
             VTweetDetailEntity tweetDetailEntity = null;
             ObjectReply or = null;
             int sid = 0;
+            String sayType = null;
             if (msg.getDetailId() > 0) {
                 try {
                     tweetDetailEntity = streamDao.findTweetDetailBy(msg.getDetailId());
@@ -122,6 +123,7 @@ public class WordService extends RecordService {
                 if (tweetDetailEntity != null) {
                     or = new ObjectReply(tweetDetailEntity.getAuthor(), tweetDetailEntity.getContent());
                     sid = tweetDetailEntity.getSid();
+                    sayType = tweetDetailEntity.getSayType();
                 }
             }
 
@@ -143,6 +145,7 @@ public class WordService extends RecordService {
             active.time = convertToDate(msg.getCreatTi());
             active.online = Integer.parseInt(msg.getOnline());
             active.objectreply = or;
+            active.objectSayType = sayType;
 
             activeList.add(active);
         }

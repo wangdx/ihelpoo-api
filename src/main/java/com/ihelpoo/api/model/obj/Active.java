@@ -61,5 +61,7 @@ public class Active {
     public int online;
     @XmlElement(name="activeRank")
     public String rank;
+    @XmlElement(name="objectSayType")
+    public String objectSayType;
 
 }
