@@ -64,6 +64,7 @@ public class TweetService extends RecordService {
         }
 
         List<VTweetStreamEntity> tweetEntities = streamDao.findAllTweetsBy(catalog, pids, sids, schoolId, pageIndex, pageSize);
+        int count = streamDao.findAllTweetsCountBy(catalog, pids, sids, schoolId);
         List<TweetResult.Tweet> tweets = new ArrayList<TweetResult.Tweet>();
         for (VTweetStreamEntity tweetEntity : tweetEntities) {
             String firstImgUrl = convertToImageUrl(tweetEntity.getSid());
@@ -92,7 +93,7 @@ public class TweetService extends RecordService {
 
         TweetResult tweetResult = new TweetResult();
         TweetResult.Tweets tweetsWrapper = new TweetResult.Tweets(tweets);
-        tweetResult.tweetCount = pageSize + 1;
+        tweetResult.tweetCount = count;
         tweetResult.pagesize = pageSize;
         tweetResult.notice = getNotice(uid);
         tweetResult.tweets = tweetsWrapper;

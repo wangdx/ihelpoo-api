@@ -66,6 +66,30 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
+    public int findAllTweetsCountBy(int catalog, StringBuilder pids, StringBuilder sids, int schoolId) {
+        int recentThreeMonth = (int) (System.currentTimeMillis() / 1000L) - 24 * 3600 * 90;
+        StringBuilder sql = new StringBuilder(
+                "select count(*) \n" +
+                        "from i_record_say\n" +
+                        "join i_user_login ON i_record_say.uid = i_user_login.uid\n" +
+                        "join i_user_info ON i_record_say.uid = i_user_info.uid\n" +
+                        "join i_op_specialty ON i_user_info.specialty_op = i_op_specialty.id\n" +
+                        "join i_school_info ON i_user_login.school = i_school_info.id" +
+                        " where say_type != '9' ");
+        if (sids.length() > 0) {
+            sql.append(" and i_record_say.uid NOT IN (").append(sids).append(") ");
+        }
+        if (catalog == CATALOG_MINE && pids.length() > 0) {// 如果没有圈人，则会显示所有
+            sql.append(" and i_record_say.uid IN (").append(pids).append(") ");
+        } else if (CATALOG_HELP == catalog) {
+            sql.append(" and i_record_say.school_id = ").append(schoolId).append(" and say_type = '1' ");
+        } else {
+            sql.append(" and i_record_say.school_id = ").append(schoolId).append(" and i_record_say.time > ").append(recentThreeMonth).append(" ");
+        }
+        return getJdbcTemplate().queryForObject(sql.toString(), Integer.class);
+    }
+
+    @Override
     public IRecordSayEntity findTweetBy(int sid) {//FIXME if help, will throw exception
         String sql = " select * from i_record_say where sid=? and say_type in (0,2,9) ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{sid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));

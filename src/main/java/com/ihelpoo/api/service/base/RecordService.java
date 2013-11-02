@@ -86,11 +86,11 @@ public class RecordService {
 
     protected String convertToAvatarUrl(String iconUrl, int uid, boolean isPreview) {
         String imageSize = "_s.jpg!app";
-        if(isPreview){
+        if (isPreview) {
             imageSize = ".jpg";
         }
         if (!empty(iconUrl)) {
-            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl+ imageSize +"?t=" + System.currentTimeMillis();
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + imageSize + "?t=" + System.currentTimeMillis();
         } else {
             return Constant.IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
         }
@@ -101,7 +101,7 @@ public class RecordService {
     }
 
     protected String convertToType(Integer type, String enteryear) {
-        if(type == null){
+        if (type == null) {
             return "";
         }
         String authorType = "";
@@ -224,7 +224,7 @@ public class RecordService {
     }
 
     protected String convertToDate(Integer time) {
-        return (new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date((long) time * 1000));
+        return time == null ? "" : (new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date((long) time * 1000));
     }
 
     protected int convertToLevel(Integer activeCredits) {

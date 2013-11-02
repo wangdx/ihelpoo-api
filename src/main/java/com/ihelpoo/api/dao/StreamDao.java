@@ -78,4 +78,6 @@ public interface StreamDao {
     int saveMsgComment(Integer ownerUid, int sid, int ncid, int uid);
 
     int saveMsgAt(int uid, int uid1, int id, int cid);
+
+    int findAllTweetsCountBy(int catalog, StringBuilder pids, StringBuilder sids, int schoolId);
 }
