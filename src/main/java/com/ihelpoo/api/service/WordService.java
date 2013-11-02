@@ -375,7 +375,7 @@ public class WordService extends RecordService {
         chatResult.messageCount = oneWayTalks.size();
         chatResult.messages = chatList;
         chatResult.notice = getNotice(uid);
-        chatResult.pagesize = pageSize;
+        chatResult.page_size = talks.size();
         return chatResult;  //To change body of created methods use File | Settings | File Templates.
     }
 
@@ -414,7 +414,7 @@ public class WordService extends RecordService {
         TweetCommentResult commentResult = new TweetCommentResult();
         TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
         commentResult.all_count = allCount;
-        commentResult.page_size = pageSize;
+        commentResult.page_size = allCount;
         commentResult.comments = commentWrapper;
         commentResult.notice = getNotice(uid);
         return commentResult;
