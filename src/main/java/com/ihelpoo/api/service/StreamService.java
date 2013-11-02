@@ -40,8 +40,6 @@ public class StreamService extends RecordService {
         Result result = new Result();
         result.setErrorCode("0");
 
-        List<IRecordSayEntity> recordSayEntities = streamDao.findTweetsBy(hisUid, pageIndex, pageSize);
-
 
         VUserDetailEntity entity = null;
         try {
@@ -80,6 +78,8 @@ public class StreamService extends RecordService {
         user.level = convertToLevel(entity.getActiveCredits());
         user.relation = convertToRelation(uid, hisUid);
 
+
+        List<IRecordSayEntity> recordSayEntities = streamDao.findTweetsBy(hisUid, pageIndex, pageSize);
         Actives actives = new Actives();
         List<Active> activeList = new ArrayList<Active>();
         for (IRecordSayEntity recordSayEntity : recordSayEntities) {
@@ -119,7 +119,7 @@ public class StreamService extends RecordService {
         actives.setActive(activeList);
         uar.actives = actives;
         uar.notice = getNotice(uid);
-        uar.pagesize = recordSayEntities.size();
+        uar.page_size = recordSayEntities.size();
         uar.user = user;
         return uar;
     }

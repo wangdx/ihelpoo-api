@@ -15,4 +15,6 @@ public interface CommentDao {
     IRecordCommentEntity fetchCommentBy(Integer cid);
 
     List<VAtUserEntity> fetchAllAtBy(int uid, int pageIndex, int pageSize);
+
+    int fetchAllCommentsCountBy(int uid);
 }

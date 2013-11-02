@@ -204,11 +204,6 @@ public class OoTweet {
             @RequestParam(value = "sid", required = false) Integer id,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie
     ) {
-        if (id == null) {
-            throw new IllegalArgumentException("id is mandatory");
-        }
-        pageIndex = pageIndex == null ? Constant.DEFAULT_PAGEINDEX : pageIndex;
-        pageSize = pageSize == null ? Constant.DEFAULT_PAGESIZE : pageSize;
         catalog = catalog == null ? 0 : catalog;
 
 
@@ -216,7 +211,7 @@ public class OoTweet {
             return wordService.pullChatsBy(uid, id, pageIndex, pageSize);
         }
 
-        if (isHelp) {
+        if (isHelp != null && isHelp) {
             return tweetService.pullHelpRepliesBy(uid, id, pageIndex, pageSize);
         }
         return tweetService.pullCommentsBy(uid, id, pageIndex, pageSize);

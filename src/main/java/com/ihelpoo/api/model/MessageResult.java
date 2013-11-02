@@ -16,7 +16,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MessageResult {
     @XmlElement
-    public int pagesize;
+    public int page_size;
 
     @XmlElement
     public Messages newslist;

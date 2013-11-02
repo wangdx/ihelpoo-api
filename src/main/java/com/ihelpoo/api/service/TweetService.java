@@ -141,9 +141,14 @@ public class TweetService extends RecordService {
         return tweet;
     }
 
-    public TweetCommentResult pullCommentsBy(int uid, int sid, int pageIndex, int pageSize) {
+    public TweetCommentResult pullCommentsBy(Integer uid, Integer sid, Integer pageIndex, Integer pageSize) {
+        if (sid == null) {
+            throw new IllegalArgumentException("id is mandatory");
+        }
+        pageIndex = pageIndex == null ? Constant.DEFAULT_PAGEINDEX : pageIndex;
+        pageSize = pageSize == null ? Constant.DEFAULT_PAGESIZE : pageSize;
         List<VTweetCommentEntity> commentEntities = streamDao.findAllCommentsBy(sid, pageIndex, pageSize);
-        int allCount = commentEntities.size();
+//        int allCount = streamDao.findAllCommentsCountBy(sid);
         List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
         for (VTweetCommentEntity commentEntity : commentEntities) {
             TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
@@ -159,8 +164,8 @@ public class TweetService extends RecordService {
 
         TweetCommentResult commentResult = new TweetCommentResult();
         TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
-        commentResult.allCount = allCount;
-        commentResult.pagesize = pageSize;
+//        commentResult.all_count = allCount;
+        commentResult.page_size = commentEntities.size();
         commentResult.comments = commentWrapper;
         commentResult.notice = getNotice(uid);
         return commentResult;
@@ -186,8 +191,8 @@ public class TweetService extends RecordService {
 
         TweetCommentResult commentResult = new TweetCommentResult();
         TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
-        commentResult.allCount = allCount;
-        commentResult.pagesize = pageSize;
+        commentResult.all_count = allCount;
+        commentResult.page_size = pageSize;
         commentResult.comments = commentWrapper;
         commentResult.notice = getNotice(uid);
         return commentResult;

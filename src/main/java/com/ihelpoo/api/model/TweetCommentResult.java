@@ -16,9 +16,9 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TweetCommentResult {
     @XmlElement
-    public int allCount;
+    public int all_count;
     @XmlElement
-    public int pagesize;
+    public int page_size;
     @XmlElement
     public Comments comments;
     @XmlElement

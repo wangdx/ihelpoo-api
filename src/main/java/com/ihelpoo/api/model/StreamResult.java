@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class StreamResult {
     @XmlElement(name = "activeCount")
     int activeCount;
-    @XmlElement(name = "pagesize")
+    @XmlElement(name = "page_size")
     int pagesize;
     @XmlElement(name = "activies")
     Actives activies;

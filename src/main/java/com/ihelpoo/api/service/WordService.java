@@ -150,7 +150,7 @@ public class WordService extends RecordService {
         UserWordResult uar = new UserWordResult();
 
         uar.notice = getNotice(uid);
-        uar.pagesize = 20;
+        uar.page_size = 20;
         uar.actives = actives;
         jedis.disconnect();
 
@@ -216,7 +216,7 @@ public class WordService extends RecordService {
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
         uar.notice = getNotice(uid);
-        uar.pagesize = 20;
+        uar.page_size = 20;
         uar.actives = actives;
         return uar;
     }
@@ -289,7 +289,7 @@ public class WordService extends RecordService {
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
         uar.notice = getNotice(uid);
-        uar.pagesize = 20;
+        uar.page_size = 20;
         uar.actives = actives;
         return uar;
     }
@@ -311,7 +311,7 @@ public class WordService extends RecordService {
         }
         MessageResult.Messages newslist = new MessageResult.Messages(list);
         MessageResult mr = new MessageResult();
-        mr.pagesize = 20;
+        mr.page_size = actives.size();
         mr.notice = getNotice(uid);
         mr.newslist = newslist;
         return mr;
@@ -413,8 +413,8 @@ public class WordService extends RecordService {
         }
         TweetCommentResult commentResult = new TweetCommentResult();
         TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
-        commentResult.allCount = allCount;
-        commentResult.pagesize = pageSize;
+        commentResult.all_count = allCount;
+        commentResult.page_size = pageSize;
         commentResult.comments = commentWrapper;
         commentResult.notice = getNotice(uid);
         return commentResult;
@@ -599,7 +599,7 @@ public class WordService extends RecordService {
 //    public TweetCommentResult pullChatsBy(int id, int pageIndex, int pageSize) {
 //
 //        List<VTweetCommentEntity> commentEntities = messageDao.findAllChatsBy(id, pageIndex, pageSize);
-//        int allCount = commentEntities.size();
+//        int all_count = commentEntities.size();
 //        List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
 //        for (VTweetCommentEntity commentEntity : commentEntities) {
 //            TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
@@ -622,8 +622,8 @@ public class WordService extends RecordService {
 //
 //        TweetCommentResult commentResult = new TweetCommentResult();
 //        TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
-//        commentResult.setAllCount(allCount);
-//        commentResult.setPagesize(pageSize);
+//        commentResult.setAllCount(all_count);
+//        commentResult.setPage_size(pageSize);
 //        commentResult.setComments(commentWrapper);
 //        commentResult.setNotice(notice);
 //        return commentResult;

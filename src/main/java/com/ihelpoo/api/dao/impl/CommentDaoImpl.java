@@ -22,6 +22,12 @@ public class CommentDaoImpl extends NamedParameterJdbcDaoSupport implements Comm
     }
 
     @Override
+    public int fetchAllCommentsCountBy(int uid) {
+        String sql = " SELECT count(*) FROM i_msg_comment WHERE uid=? ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, uid);
+    }
+
+    @Override
     public IRecordCommentEntity fetchCommentBy(Integer cid) {
         String sql = " SELECT * FROM i_record_comment WHERE cid=? ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{cid}, new BeanPropertyRowMapper<IRecordCommentEntity>(IRecordCommentEntity.class));

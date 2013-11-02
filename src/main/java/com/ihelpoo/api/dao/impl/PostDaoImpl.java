@@ -49,6 +49,7 @@ public class PostDaoImpl extends JdbcDaoSupport implements PostDao {
 
         postListRoot.setPosts(posts);
         postListRoot.setNotice(new Notice());
+        postListRoot.setPage_size(postEntityList.size());
         return postListRoot;
     }
 

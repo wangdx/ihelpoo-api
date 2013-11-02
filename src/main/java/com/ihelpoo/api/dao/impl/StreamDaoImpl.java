@@ -165,6 +165,13 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
                 "limit ? offset ? ";
         return getJdbcTemplate().query(sql, new Object[]{sid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VTweetCommentEntity>(VTweetCommentEntity.class));
     }
+    @Override
+    public int findAllCommentsCountBy(int sid) {
+        String sql = "select COUNT(*) from i_record_comment\n" +
+                " left join i_user_login on i_record_comment.uid=i_user_login.uid\n" +
+                " where sid=? ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, sid);
+    }
 
     @Override
     public List<VTweetCommentEntity> findAllHelpRepliesBy(Integer sid, Integer pageIndex, Integer pageSize) {

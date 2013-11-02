@@ -23,7 +23,7 @@ public class UserWordResult {
     @XmlElement
     public Result result;
     @XmlElement
-    public int pagesize;
+    public int page_size;
     @XmlElement
     public User user;
     @XmlElement
