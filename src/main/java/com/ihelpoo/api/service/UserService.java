@@ -252,6 +252,7 @@ public class UserService extends RecordService {
         user.user_type = entity.getUserType();
         user.login_days = entity.getLoginDays();
         user.active_credits = entity.getActiveCredits();
+        user.web_theme = entity.getWebTheme();
 
         userResult.user = user;
         userResult.notice = new Notice();
