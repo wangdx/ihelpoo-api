@@ -86,12 +86,23 @@ public class PostList{
         private Integer viewCount;
         @XmlElement
         private String pubDate;
+        @XmlElement
+        private String sayType;
+
 
         @XmlElement
         private String answer;
 
         @XmlElement
         protected int id;
+
+        public String getSayType() {
+            return sayType;
+        }
+
+        public void setSayType(String sayType) {
+            this.sayType = sayType;
+        }
 
         public void setAnswer(String answer) {
             this.answer = answer;

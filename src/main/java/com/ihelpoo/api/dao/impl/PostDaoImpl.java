@@ -43,6 +43,7 @@ public class PostDaoImpl extends JdbcDaoSupport implements PostDao {
             post.setTitle(vUser.getContent());
             post.setViewCount(vUser.getHitCo());
             post.setAnswer(vUser.getContent());
+            post.setSayType(vUser.getSayType());
             postList.add(post);
         }
         posts.setPost(postList);
