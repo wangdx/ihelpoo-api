@@ -485,11 +485,11 @@ public class TweetService extends RecordService {
 
         long time12Hour = System.currentTimeMillis() / 1000 - 43200L;
         List<IRecordDiffusionEntity> entities = streamDao.findDiffusions(uid, time12Hour);
-//        if (entities != null && entities.size() >= 3) {
-//            result.setErrorMessage("12小时内最多扩散3条");
-//            genericResult.setResult(result);
-//            return genericResult;
-//        }
+        if (entities != null && entities.size() >= 3) {
+            result.setErrorMessage("12小时内最多扩散3条");
+            genericResult.setResult(result);
+            return genericResult;
+        }
 
         int diffuseId = streamDao.saveDiffusion(uid, sid, content);
         int noticeIdForFollowers = streamDao.saveNoticeMessage(noticeType, uid, diffuseId, "diffusion");
