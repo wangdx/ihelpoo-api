@@ -93,8 +93,8 @@ public class TweetService extends RecordService {
 
         TweetResult tweetResult = new TweetResult();
         TweetResult.Tweets tweetsWrapper = new TweetResult.Tweets(tweets);
-        tweetResult.tweetCount = count;
-        tweetResult.pagesize = pageSize;
+        tweetResult.tweet_count = count;
+        tweetResult.page_size = tweetEntities.size();
         tweetResult.notice = getNotice(uid);
         tweetResult.tweets = tweetsWrapper;
         return tweetResult;
@@ -153,6 +153,10 @@ public class TweetService extends RecordService {
         for (VTweetCommentEntity commentEntity : commentEntities) {
             TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
             comment.content = commentEntity.getContent();
+            if (commentEntity.getToid() != null && commentEntity.getToid() > 9999) {
+                IUserLoginEntity user = userDao.findUserById(commentEntity.getToid());
+                comment.content = "[回复:" + user.getNickname() + "] " + comment.content;
+            }
             comment.pubDate = convertToDate(commentEntity.getTime());
             comment.author = commentEntity.getNickname();
             comment.authorid = commentEntity.getUid();
@@ -172,7 +176,6 @@ public class TweetService extends RecordService {
     }
 
 
-
     public TweetCommentResult pullHelpRepliesBy(Integer uid, Integer sid, Integer pageIndex, Integer pageSize) {
         List<VTweetCommentEntity> commentEntities = streamDao.findAllHelpRepliesBy(sid, pageIndex, pageSize);
         int allCount = commentEntities.size();
@@ -180,6 +183,10 @@ public class TweetService extends RecordService {
         for (VTweetCommentEntity commentEntity : commentEntities) {
             TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
             comment.content = commentEntity.getContent();
+            if (commentEntity.getToid() != null && commentEntity.getToid() > 9999) {
+                IUserLoginEntity user = userDao.findUserById(commentEntity.getToid());
+                comment.content = "[回复:" + user.getNickname() + "] " + comment.content;
+            }
             comment.pubDate = convertToDate(commentEntity.getTime());
             comment.author = commentEntity.getNickname();
             comment.authorid = commentEntity.getUid();
@@ -605,8 +612,8 @@ public class TweetService extends RecordService {
 
 
     public static void main(String[] args) {
-        System.out.println(Arrays.asList(new String[]{"a","b","c"}).indexOf("c"));
-        System.out.println(Arrays.asList(new String[]{"a","b","cd"}).indexOf("d"));
-        System.out.println(Arrays.asList(new String[]{"a","b","c"}).indexOf("d"));
+        System.out.println(Arrays.asList(new String[]{"a", "b", "c"}).indexOf("c"));
+        System.out.println(Arrays.asList(new String[]{"a", "b", "cd"}).indexOf("d"));
+        System.out.println(Arrays.asList(new String[]{"a", "b", "c"}).indexOf("d"));
     }
 }

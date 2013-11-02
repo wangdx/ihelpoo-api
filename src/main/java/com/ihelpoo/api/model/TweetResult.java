@@ -16,9 +16,9 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TweetResult {
     @XmlElement
-    public int tweetCount;
+    public int tweet_count;
     @XmlElement
-    public int pagesize;
+    public int page_size;
     @XmlElement
     public Tweets tweets;
     @XmlElement
