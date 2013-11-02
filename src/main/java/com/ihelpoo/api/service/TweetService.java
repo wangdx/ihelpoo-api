@@ -199,7 +199,7 @@ public class TweetService extends RecordService {
         TweetCommentResult commentResult = new TweetCommentResult();
         TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
         commentResult.all_count = allCount;
-        commentResult.page_size = pageSize;
+        commentResult.page_size = allCount;
         commentResult.comments = commentWrapper;
         commentResult.notice = getNotice(uid);
         return commentResult;
