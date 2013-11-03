@@ -3,6 +3,7 @@ package com.ihelpoo.api.dao;
 import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.*;
+import com.ihelpoo.api.service.RegisterService;
 
 import java.util.List;
 import java.util.Set;
@@ -99,5 +100,7 @@ public interface UserDao {
 
     int updateUserInfo(Integer uid, String[] columns, Object[] values);
 
-    int saveUserInfo(int uid);
+    int saveUserInfo(int uid, int academyId, int majorId, int dormId);
+
+    RegisterService.DefaultMajor fetchDefaultMajor(Integer school);
 }

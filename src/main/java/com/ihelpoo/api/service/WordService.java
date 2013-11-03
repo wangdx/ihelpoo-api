@@ -91,8 +91,8 @@ public class WordService extends RecordService {
         List<Active> activeList = new ArrayList<Active>();
         for (VMsgLoginEntity msg : msgLoginEntities) {
             String view = "";
+            IRecordDiffusionEntity diffusionEntity = null;
             if ("diffusiontoowner".equals(msg.getFormatId()) || "diffusion".equals(msg.getFormatId())) {
-                IRecordDiffusionEntity diffusionEntity = null;
                 try {
                     diffusionEntity = messageDao.findDiffusionBy(msg.getDetailId());
                 } catch (EmptyResultDataAccessException e) {
@@ -114,26 +114,44 @@ public class WordService extends RecordService {
             ObjectReply or = null;
             int sid = 0;
             String sayType = null;
-            if (msg.getDetailId() > 0) {
+            if(diffusionEntity != null){
+                try {
+                    tweetDetailEntity = streamDao.findTweetDetailBy(diffusionEntity.getSid());
+                } catch (EmptyResultDataAccessException e) {
+                    //eat it
+                }
+            }else if (msg.getDetailId() > 0) {
                 try {
                     tweetDetailEntity = streamDao.findTweetDetailBy(msg.getDetailId());
                 } catch (EmptyResultDataAccessException e) {
                     //eat it
                 }
-                if (tweetDetailEntity != null) {
-                    or = new ObjectReply(tweetDetailEntity.getAuthor(), tweetDetailEntity.getContent());
-                    sid = tweetDetailEntity.getSid();
-                    sayType = tweetDetailEntity.getSayType();
-                }
+            }
+            if (tweetDetailEntity != null) {
+                or = new ObjectReply(tweetDetailEntity.getAuthor(), tweetDetailEntity.getContent());
+                sid = tweetDetailEntity.getSid();
+                sayType = tweetDetailEntity.getSayType();
             }
 
 
+
+
             Active active = new Active();
+            if(tweetDetailEntity != null && (
+                    "diffusiontoowner".equals(msg.getFormatId())
+                    || "diffusion".equals(msg.getFormatId())
+                    || "plus".equals(msg.getFormatId())
+                    || "stream/ih-para:needhelp".equals(msg.getFormatId())
+                    || "stream/ih-para:newHelp".equals(msg.getFormatId())
+                    || "stream/ih-para:reply".equals(msg.getFormatId())
+                    || "stream/ih-para:success".equals(msg.getFormatId())
+            )){
+                active.catalog = 3; //TWEET
+            }
             active.sid = msg.getDetailId();
             active.iconUrl = convertToAvatarUrl(msg.getIconUrl(), msg.getUid(), false);
             active.nickname = msg.getNickname();
             active.uid = msg.getUid();
-            active.catalog = 3;
             active.objecttype = 3;
             active.objectcatalog = 0;
             active.objecttitle = "";

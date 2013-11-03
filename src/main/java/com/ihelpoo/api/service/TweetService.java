@@ -416,27 +416,6 @@ public class TweetService extends RecordService {
     }
 
 
-    private void deliverTo(Integer uid, long noticeId) {
-        String uidStr = String.valueOf(uid);
-        Jedis jedis = new Jedis("localhost");
-        jedis.hset(WordService.R_ACCOUNT + WordService.R_MESSAGE + uidStr, String.valueOf(noticeId), "0");
-        jedis.disconnect();
-    }
-
-    private void deliverBack(Integer uid, long noticeId) {
-        String uidStr = String.valueOf(uid);
-        Jedis jedis = new Jedis("localhost");
-        jedis.hdel(WordService.R_ACCOUNT + WordService.R_MESSAGE + uidStr, String.valueOf(noticeId));
-        jedis.disconnect();
-    }
-
-    private void bounceNoticeMessageCount(Integer uid, int offset) {
-        String uidStr = String.valueOf(uid);
-        Jedis jedis = new Jedis("localhost");
-        jedis.hincrBy(WordService.R_NOTICE + WordService.R_SYSTEM + uidStr.substring(0, uidStr.length() - 3), uidStr.substring(uidStr.length() - 3), offset);
-        jedis.disconnect();
-    }
-
     private void deleteNoticeMessage(long noticeId) {
         streamDao.deleteNoticeMessage(noticeId);
     }

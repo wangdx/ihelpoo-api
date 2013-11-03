@@ -82,4 +82,6 @@ public interface StreamDao {
     int findAllTweetsCountBy(int catalog, StringBuilder pids, StringBuilder sids, int schoolId);
 
     int findAllCommentsCountBy(int sid);
+
+    long saveNotice(int from, String noticeType, int detailId);
 }

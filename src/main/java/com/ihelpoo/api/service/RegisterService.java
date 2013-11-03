@@ -144,9 +144,14 @@ public class RegisterService extends RecordService {
         int t = (int) (System.currentTimeMillis() / 1000L);
         final String nickname = "oih_" + ID.INSTANCE.next();
         IUserLoginEntity userLoginEntity = userDao.saveUser(mobile, new MD5().encrypt(pwd), nickname, school, t);
-        userDao.saveUserInfo(userLoginEntity.getUid());
+        DefaultMajor defaultMajor = userDao.fetchDefaultMajor(school);
+        userDao.saveUserInfo(userLoginEntity.getUid(), defaultMajor.getAcademyId(), defaultMajor.getMajorId(), defaultMajor.getDormId());
 
         userDao.saveStatus(userLoginEntity.getUid(), 6);
+
+        long noticeId = streamDao.saveNotice(10000, "system/welcome", 0);
+        deliverTo(userLoginEntity.getUid(), noticeId);
+        bounceNoticeMessageCount(userLoginEntity.getUid(), 1);
 
         tweetService.pubTweet(userLoginEntity.getUid(), t, "我刚刚加入了我帮圈圈:)", null, null, deviceType, school);
 
@@ -161,5 +166,44 @@ public class RegisterService extends RecordService {
         genericResult.setUser(user);
         genericResult.setResult(result);
         return genericResult;
+    }
+
+    public static class DefaultMajor {
+        private int schoolId;
+        private int academyId;
+        private int majorId;
+        private int dormId;
+
+        public int getAcademyId() {
+            return academyId;
+        }
+
+        public void setAcademyId(int academyId) {
+            this.academyId = academyId;
+        }
+
+        public int getMajorId() {
+            return majorId;
+        }
+
+        public void setMajorId(int majorId) {
+            this.majorId = majorId;
+        }
+
+        public int getDormId() {
+            return dormId;
+        }
+
+        public void setDormId(int dormId) {
+            this.dormId = dormId;
+        }
+
+        public int getSchoolId() {
+            return schoolId;
+        }
+
+        public void setSchoolId(int schoolId) {
+            this.schoolId = schoolId;
+        }
     }
 }

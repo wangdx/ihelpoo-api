@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import redis.clients.jedis.Jedis;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -356,6 +357,15 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         final String sql = " INSERT INTO i_msg_notice (notice_id, notice_type, source_id, detail_id, format_id, create_time) values (?,?,?,?,?,unix_timestamp()) ";
         return getJdbcTemplate().update(sql, new Object[]{noticeId, "stream/" + noticeType + "-para:" + sayType, uid, sid, sayType});
     }
+
+    @Override
+    public long saveNotice(int from, String noticeType, int detailId){
+        final long noticeId = ID.INSTANCE.next();
+        String sql = " INSERT INTO i_msg_notice (notice_id, notice_type, source_id, detail_id, format_id, create_time) values (?,?,?,?,?,unix_timestamp()) ";
+        getJdbcTemplate().update(sql, new Object[]{noticeId, noticeType, from, detailId, noticeType});
+        return noticeId;
+    }
+
 
     @Override
     public IRecordDiffusionEntity findDiffusion(Integer sid, Integer uid) {

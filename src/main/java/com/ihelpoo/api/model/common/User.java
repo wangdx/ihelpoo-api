@@ -22,13 +22,13 @@ public class User {
     @XmlElement
     public int email_verified;
     @XmlElement
-    public int gender;
+    public Integer gender;
     @XmlElement
     public String birthday;
     @XmlElement
     public String enrol_time;
     @XmlElement
-    public int user_type;
+    public Integer user_type;
     @XmlElement
     public String login_time;
     @XmlElement
@@ -36,11 +36,11 @@ public class User {
     @XmlElement
     public String create_time;
     @XmlElement
-    public int login_days;
+    public Integer login_days;
     @XmlElement
     public String online_status;
     @XmlElement
-    public int active_credits;
+    public Integer active_credits;
     @XmlElement
     public String avatar_type;
     @XmlElement
@@ -54,9 +54,9 @@ public class User {
     @XmlElement
     public String real_name;
     @XmlElement
-    public int followers_count;
+    public Integer followers_count;
     @XmlElement
-    public int friends_count;
+    public Integer friends_count;
     @XmlElement
     public String school_id;
     @XmlElement
@@ -70,9 +70,9 @@ public class User {
     @XmlElement
     public String school_domain;
     @XmlElement
-    public int level;
+    public Integer level;
     @XmlElement
-    public int relation;
+    public Integer relation;
 
 
 

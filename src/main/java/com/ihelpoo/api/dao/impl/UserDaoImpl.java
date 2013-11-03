@@ -4,6 +4,7 @@ import com.ihelpoo.api.OoUser;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.UserList;
 import com.ihelpoo.api.model.entity.*;
+import com.ihelpoo.api.service.RegisterService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -437,9 +438,19 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
 
     @Override
-    public int saveUserInfo(int uid) {
-        String sql = " INSERT INTO i_user_info (uid, dynamic, fans, follow) VALUES(?,1,0,0) ";
-        return getJdbcTemplate().update(sql, new Object[]{uid});
+    public int saveUserInfo(int uid, int academyId, int majorId, int dormId) {
+        String sql = " INSERT INTO i_user_info (uid, academy_op, specialty_op, dormitory_op, dynamic, fans, follow) VALUES(?,?,?,?,1,0,0) ";
+        return getJdbcTemplate().update(sql, new Object[]{uid, academyId, majorId, dormId});
+    }
+
+    @Override
+    public RegisterService.DefaultMajor fetchDefaultMajor(Integer school) {
+        String sql = "select \n" +
+                "(select id from i_op_academy where id=?) as school_id ,\n" +
+                "(select id from i_op_academy where school=school_id limit 1) as academy_id ,\n" +
+                "(select id from i_op_specialty where school=school_id and academy=academy_id limit 1) as major_id,\n" +
+                "(select id from i_op_dormitory where school=school_id limit 1) as dorm_id";// exclude test school by id!=35
+        return getJdbcTemplate().queryForObject(sql, new BeanPropertyRowMapper<RegisterService.DefaultMajor>(RegisterService.DefaultMajor.class), school);
     }
 
     @Override
