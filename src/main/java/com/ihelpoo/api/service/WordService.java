@@ -160,7 +160,7 @@ public class WordService extends RecordService {
             active.objectID = sid;
             active.content = content;
             active.commentCo = 0;
-            active.time = convertToDate(msg.getCreatTi());
+            active.time = convertToDate(msg.getCreateTime());
             active.online = Integer.parseInt(msg.getOnline());
             active.objectreply = or;
             active.objectSayType = sayType;

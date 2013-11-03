@@ -521,9 +521,9 @@ public class TweetService extends RecordService {
         IUserLoginEntity loginEntity = userDao.findUserById(uid);
         int rank = this.convertToRank(loginEntity.getActive());
         BigInteger defaultSize = getAlbumSize(rank);
-        if (curSize > defaultSize.intValue()) {
-            throw new AppException("相册容量不够了，请联系我帮圈圈扩容");
-        }
+//        if (curSize > defaultSize.intValue()) {
+//            throw new AppException("相册容量不够了，请联系我帮圈圈扩容");
+//        }
 
         Map<String, String> lParams = new HashMap<String, String>();
         // 设置缩略图类型，必须搭配缩略图参数值（KEY_VALUE）使用，否则无效

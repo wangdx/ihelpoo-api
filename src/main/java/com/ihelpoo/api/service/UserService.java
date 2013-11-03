@@ -229,8 +229,16 @@ public class UserService extends RecordService {
 
     public UserResult getUserDetail(int uid) {
 
-        VUserDetailEntity entity = userDao.findUserDetailById(uid);
         UserResult userResult = new UserResult();
+        Result result = new Result();
+        result.setErrorCode("0");
+        if(uid < 10000){
+            result.setErrorMessage("用户未登录");
+            userResult.result = result;
+            return userResult;
+        }
+
+        VUserDetailEntity entity = userDao.findUserDetailById(uid);
         User user = new User();
         user.avatar_url = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid(), false);
         user.email = entity.getEmail();
@@ -257,6 +265,9 @@ public class UserService extends RecordService {
         user.login_time = String.valueOf(entity.getLoginTime());
         user.last_login = entity.getLastLogin();
 
+        result.setErrorCode("1");
+        result.setErrorMessage("");
+        userResult.result = result;
         userResult.user = user;
         userResult.notice = new Notice();
         return userResult;
