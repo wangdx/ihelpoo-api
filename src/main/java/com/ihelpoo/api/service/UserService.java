@@ -121,7 +121,7 @@ public class UserService extends RecordService {
 
         MessageResult.Messages newslist = new MessageResult.Messages(list);
         MessageResult mr = new MessageResult();
-        mr.page_size = 20;
+        mr.page_size = entities.size();
         mr.notice = getNotice(uid);
         mr.newslist = newslist;
         return mr;

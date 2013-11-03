@@ -153,7 +153,7 @@ public class WordService extends RecordService {
         UserWordResult uar = new UserWordResult();
 
         uar.notice = getNotice(uid);
-        uar.page_size = 20;
+        uar.page_size = msgLoginEntities.size();
         uar.actives = actives;
         jedis.disconnect();
 
@@ -219,7 +219,7 @@ public class WordService extends RecordService {
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
         uar.notice = getNotice(uid);
-        uar.page_size = 20;
+        uar.page_size = atUserEntities.size();
         uar.actives = actives;
         return uar;
     }
@@ -292,7 +292,7 @@ public class WordService extends RecordService {
         actives.setActive(activeList);
         UserWordResult uar = new UserWordResult();
         uar.notice = getNotice(uid);
-        uar.page_size = 20;
+        uar.page_size = msgCommentEntities.size();
         uar.actives = actives;
         return uar;
     }
