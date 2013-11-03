@@ -54,8 +54,12 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         if (sids.length() > 0) {
             sql.append(" and i_record_say.uid NOT IN (").append(sids).append(") ");
         }
-        if (catalog == CATALOG_MINE && pids.length() > 0) {// 如果没有圈人，则会显示所有
-            sql.append(" and i_record_say.uid IN (").append(pids).append(") ");
+        if (catalog == CATALOG_MINE) {
+            if(pids.length() > 0){
+                sql.append(" and i_record_say.uid IN (").append(pids).append(") ");
+            } else { // 如果没有圈人，则返回空
+                sql.append(" and false ");
+            }
         } else if (CATALOG_HELP == catalog) {
             sql.append(" and i_record_say.school_id = ").append(schoolId).append(" and say_type = '1' ");
         } else {

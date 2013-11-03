@@ -417,7 +417,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public int saveUser(final String mobile, final String encryptedPwd, final String nickname, final Integer school, final String skin, final Integer registerTime) {
-        final String sql = " INSERT INTO i_user_login (email, password, nickname, school, skin, logintime, lastlogintime, creat_ti, status, `type`) VALUES(?,?,?,?,?,?,?,?,2, 1) ";
+        final String sql = " INSERT INTO i_user_login (email, password, nickname, school, skin, logintime, lastlogintime, creat_ti, status, `type`) VALUES(?,?,?,?,?,?,?,?,2,1) ";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -462,13 +462,13 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public IUserLoginEntity saveUser(String mobile, String encrypt, String nickname, Integer school, Integer registerTime) {
-        int uid = saveUser(mobile, encrypt, nickname, school, "", registerTime);
+        int uid = saveUser(mobile, encrypt, nickname, school, "1", registerTime);
         IUserLoginEntity userLoginEntity = new IUserLoginEntity();
         userLoginEntity.setUid(uid);
         userLoginEntity.setEmail(mobile);
         userLoginEntity.setPassword(encrypt);
         userLoginEntity.setNickname(nickname);
-        userLoginEntity.setSkin("");
+        userLoginEntity.setSkin("1");
         userLoginEntity.setSchool(school);
         userLoginEntity.setLogintime(registerTime);
         userLoginEntity.setLastlogintime(registerTime);

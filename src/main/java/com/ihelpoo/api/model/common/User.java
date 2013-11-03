@@ -32,7 +32,7 @@ public class User {
     @XmlElement
     public String login_time;
     @XmlElement
-    public String last_login;
+    public Integer last_login;
     @XmlElement
     public String create_time;
     @XmlElement
