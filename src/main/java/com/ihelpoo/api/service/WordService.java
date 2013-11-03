@@ -279,7 +279,7 @@ public class WordService extends RecordService {
             active.academy = info;
             active.from = "";
             active.url = "";
-            active.objectID = msgCommentEntity.getCid() == null ? msgCommentEntity.getSid() : msgCommentEntity.getCid();
+            active.objectID = msgCommentEntity.getSid();
             active.content = contentDetail;
             active.commentCo = 0;
             active.time = convertToDate(msgCommentEntity.getTime());
