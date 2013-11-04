@@ -269,7 +269,7 @@ public class OoTweet {
                                                  @RequestParam(value = "id", required = false) int id,
                                                  @RequestParam(value = "is_help", required = false) Boolean help,
                                                  @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return tweetService.pushComment(id, uid, content, 0, help);
+        return tweetService.pushComment(id, uid, content, 0, "", help);
     }
 
 
@@ -300,12 +300,13 @@ public class OoTweet {
     public TweetCommentPushResult commentReply(@RequestParam(value = "content", required = false) String content,
                                                @RequestParam(value = "uid", required = false) int uid,
                                                @RequestParam(value = "authorid", required = false) int authorid,
+                                               @RequestParam(value = "author", required = false) String author,
                                                @RequestParam(value = "replyid", required = false) int replyid,
                                                @RequestParam(value = "catalog", required = false) int catalog,
                                                @RequestParam(value = "id", required = false) int id,
                                                @RequestParam(value = "is_help", required = false) Boolean isHelp,
                                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return tweetService.replyComment(id, uid, content, authorid, isHelp);
+        return tweetService.replyComment(id, uid, content, authorid, author, isHelp);
     }
 
     @RequestMapping(value = "/commentReply.json", method = RequestMethod.POST, produces = "application/json")
@@ -313,12 +314,13 @@ public class OoTweet {
     public TweetCommentPushResult commentReplyJSON(@RequestParam(value = "content", required = false) String content,
                                                    @RequestParam(value = "uid", required = false) int uid,
                                                    @RequestParam(value = "authorid", required = false) int authorid,
+                                                   @RequestParam(value = "author", required = false) String author,
                                                    @RequestParam(value = "replyid", required = false) int replyid,
                                                    @RequestParam(value = "catalog", required = false) int catalog,
                                                    @RequestParam(value = "id", required = false) int id,
                                                    @RequestParam(value = "is_help", required = false) Boolean isHelp,
                                                    @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return commentReply(content, uid, authorid, replyid, catalog, id, isHelp, userCookie);
+        return commentReply(content, uid, authorid, author, replyid, catalog, id, isHelp, userCookie);
     }
 
 

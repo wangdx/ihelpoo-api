@@ -206,7 +206,7 @@ public class TweetService extends RecordService {
     }
 
 
-    public TweetCommentPushResult pushComment(int id, int uid, String content, int toUid, Boolean isHelp) {
+    public TweetCommentPushResult pushComment(int id, int uid, String content, int toUid, String toNickname, Boolean isHelp) {
         TweetCommentPushResult pushResult = new TweetCommentPushResult();
         Result result = new Result();
         result.setErrorCode("0");
@@ -270,7 +270,7 @@ public class TweetService extends RecordService {
 
         //返回结果供显示
         TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
-        comment.content = toUid > 9999 ? "[回复] " + content : content;
+        comment.content = toUid > 9999 ? "[回复"+toNickname+"] " + content : content;
         comment.pubDate = (new java.text.SimpleDateFormat(DEFAULT_DATE_FORMAT)).format(new Date());
         comment.author = userLoginEntity.getNickname();
         comment.authorid = uid;
@@ -630,8 +630,8 @@ public class TweetService extends RecordService {
         System.out.println(Arrays.asList(new String[]{"a", "b", "c"}).indexOf("d"));
     }
 
-    public TweetCommentPushResult replyComment(int id, int uid, String content, int authorid, Boolean help) {
-        return pushComment(id, uid, content, authorid, help);//TODO
+    public TweetCommentPushResult replyComment(int id, int uid, String content, int authorid, String author, Boolean help) {
+        return pushComment(id, uid, content, authorid, author, help);//TODO
     }
 
     public GenericResult deleteComment(Integer authorid, Integer replyid, Boolean help) {
