@@ -128,13 +128,14 @@ public class OoTweet {
 
     @RequestMapping(value = "/tweets.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
-    public TweetResult stream(@RequestParam(value = "pageIndex", required = false) int pageIndex,
-                              @RequestParam(value = "pageSize", required = false) int pageSize,
-                              @RequestParam(value = "catalog", required = false) int catalog,
-                              @RequestParam(value = "uid", required = false) int uid,
-                              @RequestParam(value = "schoolId", required = false) int schoolId,
-                              @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie,
-                              HttpServletResponse response) {
+    public TweetResult stream(
+            @RequestParam(value = "pageIndex", required = false) int pageIndex,
+            @RequestParam(value = "pageSize", required = false) int pageSize,
+            @RequestParam(value = "catalog", required = false) int catalog,
+            @RequestParam(value = "uid", required = false) int uid,
+            @RequestParam(value = "schoolId", required = false) int schoolId,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie,
+            HttpServletResponse response) {
         Cookie schoolCookie = new Cookie(Constant.SELECTED_SCHOOL, String.valueOf(schoolId));
         response.addCookie(schoolCookie);
         return tweetService.pullBy(uid, catalog, schoolId, pageIndex, pageSize);
@@ -142,13 +143,14 @@ public class OoTweet {
 
     @RequestMapping(value = "/tweets.json", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public TweetResult streamJson(@RequestParam(value = "pageIndex", required = false) int pageIndex,
-                                  @RequestParam(value = "pageSize", required = false) int pageSize,
-                                  @RequestParam(value = "catalog", required = false) int catalog,
-                                  @RequestParam(value = "uid", required = false) int uid,
-                                  @RequestParam(value = "schoolId", required = false) int schoolId,
-                                  @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie,
-                                  HttpServletResponse response) {
+    public TweetResult streamJson(
+            @RequestParam(value = "pageIndex", required = false) int pageIndex,
+            @RequestParam(value = "pageSize", required = false) int pageSize,
+            @RequestParam(value = "catalog", required = false) int catalog,
+            @RequestParam(value = "uid", required = false) int uid,
+            @RequestParam(value = "schoolId", required = false) int schoolId,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie,
+            HttpServletResponse response) {
         return stream(pageIndex, pageSize, catalog, uid, schoolId, userCookie, response);
     }
 
@@ -263,24 +265,26 @@ public class OoTweet {
 
     @RequestMapping(value = "/commentPush.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public TweetCommentPushResult commentPushXML(@RequestParam(value = "content", required = false) String content,
-                                                 @RequestParam(value = "uid", required = false) int uid,
-                                                 @RequestParam(value = "catalog", required = false) int catalog,
-                                                 @RequestParam(value = "id", required = false) int id,
-                                                 @RequestParam(value = "is_help", required = false) Boolean help,
-                                                 @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+    public TweetCommentPushResult commentPushXML(
+            @RequestParam(value = "content", required = false) String content,
+            @RequestParam(value = "uid", required = false) int uid,
+            @RequestParam(value = "catalog", required = false) int catalog,
+            @RequestParam(value = "id", required = false) int id,
+            @RequestParam(value = "is_help", required = false) Boolean help,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         return tweetService.pushComment(id, uid, content, 0, "", help);
     }
 
 
     @RequestMapping(value = "/commentPush.json", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public TweetCommentPushResult commentPushJSON(@RequestParam(value = "content", required = false) String content,
-                                                  @RequestParam(value = "uid", required = false) int uid,
-                                                  @RequestParam(value = "catalog", required = false) int catalog,
-                                                  @RequestParam(value = "id", required = false) int id,
-                                                  @RequestParam(value = "is_help", required = false) Boolean help,
-                                                  @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+    public TweetCommentPushResult commentPushJSON(
+            @RequestParam(value = "content", required = false) String content,
+            @RequestParam(value = "uid", required = false) int uid,
+            @RequestParam(value = "catalog", required = false) int catalog,
+            @RequestParam(value = "id", required = false) int id,
+            @RequestParam(value = "is_help", required = false) Boolean help,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         return commentPushXML(content, uid, catalog, id, help, userCookie);
     }
 
@@ -297,29 +301,31 @@ public class OoTweet {
 
     @RequestMapping(value = "/commentReply.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public TweetCommentPushResult commentReply(@RequestParam(value = "content", required = false) String content,
-                                               @RequestParam(value = "uid", required = false) int uid,
-                                               @RequestParam(value = "authorid", required = false) int authorid,
-                                               @RequestParam(value = "author", required = false) String author,
-                                               @RequestParam(value = "replyid", required = false) int replyid,
-                                               @RequestParam(value = "catalog", required = false) int catalog,
-                                               @RequestParam(value = "id", required = false) int id,
-                                               @RequestParam(value = "is_help", required = false) Boolean isHelp,
-                                               @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+    public TweetCommentPushResult commentReply(
+            @RequestParam(value = "content", required = false) String content,
+            @RequestParam(value = "uid", required = false) int uid,
+            @RequestParam(value = "authorid", required = false) int authorid,
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "replyid", required = false) int replyid,
+            @RequestParam(value = "catalog", required = false) int catalog,
+            @RequestParam(value = "id", required = false) int id,
+            @RequestParam(value = "is_help", required = false) Boolean isHelp,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         return tweetService.replyComment(id, uid, content, authorid, author, isHelp);
     }
 
     @RequestMapping(value = "/commentReply.json", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public TweetCommentPushResult commentReplyJSON(@RequestParam(value = "content", required = false) String content,
-                                                   @RequestParam(value = "uid", required = false) int uid,
-                                                   @RequestParam(value = "authorid", required = false) int authorid,
-                                                   @RequestParam(value = "author", required = false) String author,
-                                                   @RequestParam(value = "replyid", required = false) int replyid,
-                                                   @RequestParam(value = "catalog", required = false) int catalog,
-                                                   @RequestParam(value = "id", required = false) int id,
-                                                   @RequestParam(value = "is_help", required = false) Boolean isHelp,
-                                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+    public TweetCommentPushResult commentReplyJSON(
+            @RequestParam(value = "content", required = false) String content,
+            @RequestParam(value = "uid", required = false) int uid,
+            @RequestParam(value = "authorid", required = false) int authorid,
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "replyid", required = false) int replyid,
+            @RequestParam(value = "catalog", required = false) int catalog,
+            @RequestParam(value = "id", required = false) int id,
+            @RequestParam(value = "is_help", required = false) Boolean isHelp,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         return commentReply(content, uid, authorid, author, replyid, catalog, id, isHelp, userCookie);
     }
 

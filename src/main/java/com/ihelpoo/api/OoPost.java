@@ -18,19 +18,21 @@ public class OoPost {
 
     @RequestMapping(value = "/posts.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
-    public PostList getPostList(@RequestParam(value = "page_index") int pageIndex,
-                                @RequestParam(value = "page_size") int pageSize,
-                                @RequestParam(value = "school_id") int schoolId,
-                                @RequestParam(value = "catalog") int catalog) {
+    public PostList getPostList(
+            @RequestParam(value = "page_index") int pageIndex,
+            @RequestParam(value = "page_size") int pageSize,
+            @RequestParam(value = "school_id") int schoolId,
+            @RequestParam(value = "catalog") int catalog) {
         return postDao.getPostListByTimeLevel("//TODO, with time level", schoolId, catalog, pageIndex, pageSize);
     }
 
     @RequestMapping(value = "/posts.json", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public PostList getPostListJson(@RequestParam(value = "page_index") int pageIndex,
-                                @RequestParam(value = "page_size") int pageSize,
-                                @RequestParam(value = "school_id") int schoolId,
-                                @RequestParam(value = "catalog") int catalog) {
+    public PostList getPostListJson(
+            @RequestParam(value = "page_index") int pageIndex,
+            @RequestParam(value = "page_size") int pageSize,
+            @RequestParam(value = "school_id") int schoolId,
+            @RequestParam(value = "catalog") int catalog) {
         return postDao.getPostListByTimeLevel("//TODO, with time level", schoolId, catalog, pageIndex, pageSize);
     }
 }

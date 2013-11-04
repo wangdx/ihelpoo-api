@@ -19,12 +19,13 @@ public class OoStream {
 
     @RequestMapping(value = "/stream.xml", method = RequestMethod.GET, produces = "application/xml")
     @ResponseBody
-    public StreamResult stream(@RequestParam(value = "pageIndex", required = false) int pageIndex,
-                               @RequestParam(value = "pageSize", required = false) int pageSize,
-                               @RequestParam(value = "catalog", required = false) int catalog,
-                               @RequestParam(value = "uid", required = false) int uid,
-                               @RequestParam(value = "schoolId", required = false) int schoolId,
-                               @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+    public StreamResult stream(
+            @RequestParam(value = "pageIndex", required = false) int pageIndex,
+            @RequestParam(value = "pageSize", required = false) int pageSize,
+            @RequestParam(value = "catalog", required = false) int catalog,
+            @RequestParam(value = "uid", required = false) int uid,
+            @RequestParam(value = "schoolId", required = false) int schoolId,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         //TODO credential verification by cookie
         return streamService.pullBy(uid, catalog, schoolId, pageIndex, pageSize);
     }
@@ -32,12 +33,13 @@ public class OoStream {
 
     @RequestMapping(value = "/stream.json", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public StreamResult streamJson(@RequestParam(value = "pageIndex", required = false) int pageIndex,
-                                   @RequestParam(value = "pageSize", required = false) int pageSize,
-                                   @RequestParam(value = "catalog", required = false) int catalog,
-                                   @RequestParam(value = "uid", required = false) int uid,
-                                   @RequestParam(value = "schoolId", required = false) int schoolId,
-                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+    public StreamResult streamJson(
+            @RequestParam(value = "pageIndex", required = false) int pageIndex,
+            @RequestParam(value = "pageSize", required = false) int pageSize,
+            @RequestParam(value = "catalog", required = false) int catalog,
+            @RequestParam(value = "uid", required = false) int uid,
+            @RequestParam(value = "schoolId", required = false) int schoolId,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
         //TODO credential verification by cookie
         return streamService.pullBy(uid, catalog, schoolId, pageIndex, pageSize);
     }

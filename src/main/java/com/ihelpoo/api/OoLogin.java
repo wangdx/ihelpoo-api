@@ -34,11 +34,12 @@ public class OoLogin {
 
     @RequestMapping(value = "/login.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public GenericResult login(@RequestParam(value = "username", required = false) String username,
-                                @RequestParam(value = "pwd", required = false) String pwd,
-                                @RequestParam(value = "status", required = false) String status,
-                                @RequestParam(value = "ip", required = false) String ip,
-                                HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
+    public GenericResult login(
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "pwd", required = false) String pwd,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "ip", required = false) String ip,
+            HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
         Cookie ooidCookie = new Cookie(Constant.OO_USER_COOKIE, md5.encrypt(username) + md5.encrypt(pwd) + md5.encrypt(String.valueOf(System.currentTimeMillis())));
         response.addCookie(ooidCookie);
         response.setContentType("text/xml; charset=utf-8");
@@ -47,11 +48,12 @@ public class OoLogin {
 
     @RequestMapping(value = "/login.json", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public GenericResult loginJson(@RequestParam(value = "username", required = false) String username,
-                             @RequestParam(value = "pwd", required = false) String pwd,
-                             @RequestParam(value = "status", required = false) String status,
-                             @RequestParam(value = "ip", required = false) String ip,
-                             HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
+    public GenericResult loginJson(
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "pwd", required = false) String pwd,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "ip", required = false) String ip,
+            HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
         return login(username, pwd, status, ip, response);
     }
 }
