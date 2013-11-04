@@ -378,6 +378,26 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<IRecordCommentEntity>(IRecordCommentEntity.class));
     }
 
+    @Override
+    public int deleteCommment(Integer replyid, Integer authorid, Integer sid) {
+        if(sid != null && sid > 0){
+            final String sql = " DELETE FROM i_record_comment WHERE sid=? ";
+            return getJdbcTemplate().update(sql, new Object[]{sid});
+        }
+        final String sql = " DELETE FROM i_record_comment WHERE cid=? and uid=? ";
+        return getJdbcTemplate().update(sql, new Object[]{replyid, authorid});
+    }
+
+    @Override
+    public int deleteHelpReply(Integer replyid, Integer authorid, Integer sid) {
+        if(sid != null && sid > 0){
+            final String sql = " DELETE FROM i_record_helpreply WHERE sid=? ";
+            return getJdbcTemplate().update(sql, new Object[]{sid});
+        }
+        final String sql = " DELETE FROM i_record_helpreply WHERE id=? and uid=? ";
+        return getJdbcTemplate().update(sql, new Object[]{replyid, authorid});
+    }
+
 
     @Override
     public IRecordDiffusionEntity findDiffusion(Integer sid, Integer uid) {

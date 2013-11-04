@@ -86,4 +86,8 @@ public interface StreamDao {
     long saveNotice(int from, String noticeType, int detailId);
 
     IRecordCommentEntity findLastCommentBy(int uid, Boolean isHelp);
+
+    int deleteCommment(Integer replyid, Integer authorid, Integer sid);
+
+    int deleteHelpReply(Integer replyid, Integer authorid, Integer sid);
 }

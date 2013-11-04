@@ -161,7 +161,7 @@ public class TweetService extends RecordService {
             comment.author = commentEntity.getNickname();
             comment.authorid = commentEntity.getUid();
             comment.portrait = convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid(), false);
-            comment.id = commentEntity.getSid() == null ? -1 : commentEntity.getSid();
+            comment.id = commentEntity.getCid();
             comment.appclient = 0;
             comments.add(comment);
         }
@@ -191,7 +191,7 @@ public class TweetService extends RecordService {
             comment.author = commentEntity.getNickname();
             comment.authorid = commentEntity.getUid();
             comment.portrait = convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid(), false);
-            comment.id = commentEntity.getSid() == null ? -1 : commentEntity.getSid();
+            comment.id = commentEntity.getCid();
             comment.appclient = 0;
             comments.add(comment);
         }
@@ -599,11 +599,16 @@ public class TweetService extends RecordService {
     }
 
     @Transactional
-    public GenericResult deleteTweet(Integer uid, Integer sid) {
+    public GenericResult deleteTweet(Integer uid, Integer sid, Boolean isHelp) {
         GenericResult genericResult = new GenericResult();
         Result result = new Result();
         try {
             streamDao.deleteTweet(uid, sid);
+            if(isHelp != null && isHelp){
+                streamDao.deleteCommment(-1, uid, sid);
+            } else {
+                streamDao.deleteHelpReply(-1, uid, sid);
+            }
         } catch (Exception e) {
             result.setErrorCode("0");
             result.setErrorMessage(e.getMessage());
@@ -627,5 +632,33 @@ public class TweetService extends RecordService {
 
     public TweetCommentPushResult replyComment(int id, int uid, String content, int authorid, Boolean help) {
         return pushComment(id, uid, content, authorid, help);//TODO
+    }
+
+    public GenericResult deleteComment(Integer authorid, Integer replyid, Boolean help) {
+        GenericResult genericResult = new GenericResult();
+        Result result = new Result();
+        result.setErrorCode("0");
+        int affected = 0;
+        try {
+            if (help != null && help) {
+                affected = streamDao.deleteHelpReply(replyid, authorid, -1);
+            } else {
+                affected = streamDao.deleteCommment(replyid, authorid, -1);
+            }
+            if (affected == 0) {
+                result.setErrorMessage("没有权限,删除评论出错啦");
+                genericResult.setResult(result);
+                return genericResult;
+            }
+        } catch (Exception e) {
+            result.setErrorMessage("系统出错：" + e.getMessage());
+            genericResult.setResult(result);
+            return genericResult;
+        }
+        result.setErrorCode("1");
+        result.setErrorMessage("操作成功");
+        genericResult.setResult(result);
+        genericResult.setNotice(new Notice());
+        return genericResult;
     }
 }

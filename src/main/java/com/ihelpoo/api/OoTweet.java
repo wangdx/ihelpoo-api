@@ -100,7 +100,7 @@ public class OoTweet {
             return genericResult;
         }
 
-        if(resultCode == TweetService.ERR_DUPLICATED_CONTENT){
+        if (resultCode == TweetService.ERR_DUPLICATED_CONTENT) {
             result.setErrorCode(FAILURE);
             result.setErrorMessage("不要贪心噢，不能重复发布相同的内容");
             genericResult.setResult(result);
@@ -281,7 +281,18 @@ public class OoTweet {
                                                   @RequestParam(value = "id", required = false) int id,
                                                   @RequestParam(value = "is_help", required = false) Boolean help,
                                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return commentPushXML(content, uid, catalog, id,help, userCookie);
+        return commentPushXML(content, uid, catalog, id, help, userCookie);
+    }
+
+
+    @RequestMapping(value = "/commentDelete.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult commentDeleteXML(
+            @RequestParam(value = "authorid", required = false) Integer authorid,
+            @RequestParam(value = "replyid", required = false) Integer replyid,
+            @RequestParam(value = "is_help", required = false) Boolean isHelp,
+            @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
+        return tweetService.deleteComment(authorid, replyid, isHelp);
     }
 
     @RequestMapping(value = "/commentReply.xml", method = RequestMethod.POST, produces = "application/xml")
@@ -317,7 +328,7 @@ public class OoTweet {
             @RequestParam(value = "uid", required = false) Integer uid,
             @RequestParam(value = "sid", required = false) Integer sid,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String ooidCookie) {
-        return tweetService.deleteTweet(uid, sid);
+        return tweetService.deleteTweet(uid, sid, false);
     }
 
     @RequestMapping(value = "/delTweet", method = RequestMethod.POST, produces = "application/json")
