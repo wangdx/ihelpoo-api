@@ -104,6 +104,11 @@ public class UserService extends RecordService {
         return newImageName;
     }
 
+    public static void main(String[] args) {
+        Integer time =  1383496809;
+        System.out.println((new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date((long) time * 1000)));
+    }
+
     public MessageResult fetchActivesBy(int uid, int pageIndex, int pageSize) {
         List<VLoginRecordEntity> entities = userDao.findAllActivesBy(uid, pageIndex, pageSize);
         List<MessageResult.Message> list = new ArrayList<MessageResult.Message>();

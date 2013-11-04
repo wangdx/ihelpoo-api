@@ -90,14 +90,20 @@ public class OoTweet {
             }
         }
 
-
+        int resultCode = 0;
         try {
-            //TODO school
-            tweetService.pubTweet(uid, t, msg, reward, imgPath, AppUtil.getDeviceType(request), targetSchool);
+            resultCode = tweetService.pubTweet(uid, t, msg, reward, imgPath, AppUtil.getDeviceType(request), targetSchool);
         } catch (Exception e) {
             result.setErrorMessage(e.getMessage());
             genericResult.setResult(result);
             logger.error("upload image failed, ", e);
+            return genericResult;
+        }
+
+        if(resultCode == TweetService.ERR_DUPLICATED_CONTENT){
+            result.setErrorCode(FAILURE);
+            result.setErrorMessage("不要贪心噢，不能重复发布相同的内容");
+            genericResult.setResult(result);
             return genericResult;
         }
 
@@ -261,8 +267,9 @@ public class OoTweet {
                                                  @RequestParam(value = "uid", required = false) int uid,
                                                  @RequestParam(value = "catalog", required = false) int catalog,
                                                  @RequestParam(value = "id", required = false) int id,
+                                                 @RequestParam(value = "is_help", required = false) Boolean help,
                                                  @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return tweetService.pushComment(id, uid, content);
+        return tweetService.pushComment(id, uid, content, 0, help);
     }
 
 
@@ -272,8 +279,9 @@ public class OoTweet {
                                                   @RequestParam(value = "uid", required = false) int uid,
                                                   @RequestParam(value = "catalog", required = false) int catalog,
                                                   @RequestParam(value = "id", required = false) int id,
+                                                  @RequestParam(value = "is_help", required = false) Boolean help,
                                                   @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return commentPushXML(content, uid, catalog, id, userCookie);
+        return commentPushXML(content, uid, catalog, id,help, userCookie);
     }
 
     @RequestMapping(value = "/commentReply.xml", method = RequestMethod.POST, produces = "application/xml")
@@ -284,8 +292,9 @@ public class OoTweet {
                                                @RequestParam(value = "replyid", required = false) int replyid,
                                                @RequestParam(value = "catalog", required = false) int catalog,
                                                @RequestParam(value = "id", required = false) int id,
+                                               @RequestParam(value = "is_help", required = false) Boolean isHelp,
                                                @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return tweetService.pushComment(id, uid, content);
+        return tweetService.replyComment(id, uid, content, authorid, isHelp);
     }
 
     @RequestMapping(value = "/commentReply.json", method = RequestMethod.POST, produces = "application/json")
@@ -296,8 +305,9 @@ public class OoTweet {
                                                    @RequestParam(value = "replyid", required = false) int replyid,
                                                    @RequestParam(value = "catalog", required = false) int catalog,
                                                    @RequestParam(value = "id", required = false) int id,
+                                                   @RequestParam(value = "is_help", required = false) Boolean isHelp,
                                                    @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return commentReply(content, uid, authorid, replyid, catalog, id, userCookie);
+        return commentReply(content, uid, authorid, replyid, catalog, id, isHelp, userCookie);
     }
 
 

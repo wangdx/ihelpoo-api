@@ -53,7 +53,7 @@ public class StreamService extends RecordService {
         user.academy_name = entity.getAcademyName();
         user.active_credits = entity.getActiveCredits();
         user.birthday = entity.getBirthday();
-        user.create_time = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date((long) (entity.getCreateTime() * 1000)));
+        user.create_time = convertToDate(entity.getCreateTime());
         user.school_domain = entity.getSchoolDomain();
         user.enrol_time = entity.getEnrolTime();
         user.followers_count = entity.getFollowersCount();
@@ -62,7 +62,7 @@ public class StreamService extends RecordService {
         user.avatar_url = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid(), false);
         user.avatar_preview = convertToAvatarUrl(entity.getAvatarUrl(), entity.getUid(), true);
         user.self_intro = entity.getSelfIntro();
-        user.login_time = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date((long) (entity.getLoginTime() * 1000)));
+        user.login_time = convertToDate(entity.getLoginTime());
         user.login_days = entity.getLoginDays();
         user.major_name = entity.getMajorName();
         user.nickname = entity.getNickname();
@@ -99,8 +99,7 @@ public class StreamService extends RecordService {
             active.content = recordSayEntity.getContent();
 
             active.commentCo = recordSayEntity.getCommentCo() == null ? 0 : recordSayEntity.getCommentCo();
-            active.time = (new java.text.SimpleDateFormat(
-                    "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (recordSayEntity.getTime().floatValue() * 1000)));
+            active.time = convertToDate(recordSayEntity.getTime());
             active.image =  firstImgUrl.replace("recordsay", "thumb_recordsay");
             active.imgBig = firstImgUrl;
 
@@ -183,7 +182,7 @@ public class StreamService extends RecordService {
             active.catalog = 4;                     //my space in android
             active.commentCo = tweet.getCommentCo() == null ? 0 : tweet.getCommentCo();
             active.content = tweet.getContent();
-            active.time = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date((long) (tweet.getTime().floatValue() * 1000)));
+            active.time = convertToDate(tweet.getTime());
             active.diffusionCo = tweet.getDiffusionCo() == null ? 0 : tweet.getDiffusionCo();
             active.authorGossip = convertToGossip(tweet.getSex(), tweet.getBirthday());
             active.image = convertToImageUrl(tweet.getSid());

@@ -1,10 +1,6 @@
 package com.ihelpoo.api.dao.impl;
 
 import com.ihelpoo.api.dao.StreamDao;
-import com.ihelpoo.api.model.TweetCommentPushResult;
-import com.ihelpoo.api.model.TweetCommentResult;
-import com.ihelpoo.api.model.obj.Notice;
-import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.common.util.ID;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,14 +9,12 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import redis.clients.jedis.Jedis;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,7 +49,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
             sql.append(" and i_record_say.uid NOT IN (").append(sids).append(") ");
         }
         if (catalog == CATALOG_MINE) {
-            if(pids.length() > 0){
+            if (pids.length() > 0) {
                 sql.append(" and i_record_say.uid IN (").append(pids).append(") ");
             } else { // 如果没有圈人，则返回空
                 sql.append(" and false ");
@@ -184,26 +178,32 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         String sql = "select id as cid,i_user_login.uid,sid,toid,content,image,diffusion_co,time,nickname,sex,birthday,enteryear,type,online,active,icon_url from i_record_helpreply\n" +
                 "left join i_user_login on i_record_helpreply.uid=i_user_login.uid\n" +
                 "where sid=?\n" +
-                "order by `time` ASC \n" +
+                "order by `time` DESC \n" +
                 "limit ? offset ? ";
         return getJdbcTemplate().query(sql, new Object[]{sid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VTweetCommentEntity>(VTweetCommentEntity.class));
     }
 
     @Override
-    public int saveComment(final int sid, final int uid, final String content) {
-        final String sql = "insert into i_record_comment (uid, sid, toid, content, image, time) values(?,?,0, ?, '', unix_timestamp());";
+    public int saveComment(final int sid, final int uid, final String content, final int toUid, Boolean isHelp) {
+        final String tableName = isHelpReply(isHelp) ? "i_record_helpreply" : "i_record_comment";
+        final String cid = isHelpReply(isHelp) ? "id" : "cid";
+        final String sql = "insert into " + tableName + " (uid, sid, toid, content, image, time) values(?,?,?,?, '', unix_timestamp());";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement ps =
-                        connection.prepareStatement(sql, new String[]{"cid"});
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{cid});
                 ps.setInt(1, uid);
                 ps.setInt(2, sid);
-                ps.setString(3, content);
+                ps.setInt(3, toUid);
+                ps.setString(4, content);
                 return ps;
             }
         }, keyHolder);
         return keyHolder.getKey().intValue();
+    }
+
+    private boolean isHelpReply(Boolean isHelp) {
+        return isHelp != null && isHelp;
     }
 
     @Override
@@ -363,11 +363,19 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public long saveNotice(int from, String noticeType, int detailId){
+    public long saveNotice(int from, String noticeType, int detailId) {
         final long noticeId = ID.INSTANCE.next();
         String sql = " INSERT INTO i_msg_notice (notice_id, notice_type, source_id, detail_id, format_id, create_time) values (?,?,?,?,?,unix_timestamp()) ";
         getJdbcTemplate().update(sql, new Object[]{noticeId, noticeType, from, detailId, noticeType});
         return noticeId;
+    }
+
+    @Override
+    public IRecordCommentEntity findLastCommentBy(int uid, Boolean isHelp) {
+        String tableName = isHelpReply(isHelp) ? "i_record_helpreply" : "i_record_comment";
+        String cid = isHelpReply(isHelp) ? "id as cid" : "cid";
+        final String sql = " SELECT " + cid + ", uid, sid, `time`, content FROM " + tableName + " WHERE uid=? ORDER BY `time` DESC limit 1 ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<IRecordCommentEntity>(IRecordCommentEntity.class));
     }
 
 

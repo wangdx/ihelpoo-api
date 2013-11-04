@@ -293,8 +293,8 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public int incIfLessThan(String column, int limit, int uid) {
-        final String sql = " update i_user_status set " + column + "=IF(" + column + " < " + limit + ", " + column + " + 1, " + column + ") where uid=? ";
-        return getJdbcTemplate().update(sql, new Object[]{uid});
+        final String sql = " update i_user_status set " + column + "=" + column + " + 1 " + " where uid=? and "+column+" < ? ";
+        return getJdbcTemplate().update(sql, new Object[]{uid, limit});
     }
 
     @Override

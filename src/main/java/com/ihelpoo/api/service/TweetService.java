@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -36,9 +35,9 @@ import java.util.regex.Pattern;
 public class TweetService extends RecordService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final int ERR_PUB_TOO_MANY = -1;
-    private static final int ERR_ACTIVE_NOT_ENOUGH = -2;
-    private static final int ERR_DUPLICATED_CONTENT = -3;
+    public static final int ERR_PUB_TOO_MANY = -1;
+    public static final int ERR_ACTIVE_NOT_ENOUGH = -2;
+    public static final int ERR_DUPLICATED_CONTENT = -3;
 
     @Autowired
     UserDao userDao;
@@ -207,12 +206,30 @@ public class TweetService extends RecordService {
     }
 
 
-    public TweetCommentPushResult pushComment(int id, int uid, String content) {
+    public TweetCommentPushResult pushComment(int id, int uid, String content, int toUid, Boolean isHelp) {
         TweetCommentPushResult pushResult = new TweetCommentPushResult();
         Result result = new Result();
         result.setErrorCode("0");
 
-        int cid = streamDao.saveComment(id, uid, content);
+        if (content == null || id < 0 || uid < 10000) {
+            result.setErrorMessage("参数错误");
+            pushResult.result = result;
+            return pushResult;
+        }
+
+        String lastContent = null;
+        try {
+            IRecordCommentEntity commentEntity = streamDao.findLastCommentBy(uid, isHelp);
+            lastContent = commentEntity.getContent();
+        } catch (EmptyResultDataAccessException e) {
+        }
+        if (content.equals(lastContent)) {
+            result.setErrorMessage("不要贪心噢，不能回复相同的内容");
+            pushResult.result = result;
+            return pushResult;
+        }
+
+        int cid = streamDao.saveComment(id, uid, content, toUid, isHelp);
         IRecordSayEntity recordSayEntity = null;
         IUserLoginEntity userLoginEntity = null;
         if (cid > 0) {
@@ -251,9 +268,10 @@ public class TweetService extends RecordService {
         }
 
 
+        //返回结果供显示
         TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
-        comment.content = content;
-        comment.pubDate = (new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format(new Date(System.currentTimeMillis()));
+        comment.content = toUid > 9999 ? "[回复] " + content : content;
+        comment.pubDate = (new java.text.SimpleDateFormat(DEFAULT_DATE_FORMAT)).format(new Date());
         comment.author = userLoginEntity.getNickname();
         comment.authorid = uid;
         comment.portrait = convertToAvatarUrl(userLoginEntity.getIconUrl(), uid, false);
@@ -292,8 +310,13 @@ public class TweetService extends RecordService {
             return ERR_ACTIVE_NOT_ENOUGH;
         }
 
-        IRecordSayEntity sayEntity = streamDao.findLastTweetBy(uid);
-        if (sayEntity != null && sayEntity.getContent().equals(content)) {
+        String lastSay = null;
+        try {
+            IRecordSayEntity sayEntity = streamDao.findLastTweetBy(uid);
+            lastSay = sayEntity.getContent();
+        } catch (EmptyResultDataAccessException e) {
+        }
+        if (content.equals(lastSay)) {
             return ERR_DUPLICATED_CONTENT;
         }
 
@@ -401,7 +424,7 @@ public class TweetService extends RecordService {
             int noticeIdForOwner = streamDao.saveNoticeMessage(noticeType, uid, sid, "plus");
             bounceNoticeMessageCount(sayEntity.getUid(), 1);
             deliverTo(sayEntity.getUid(), noticeIdForOwner);
-        } catch (IncorrectResultSizeDataAccessException e){
+        } catch (IncorrectResultSizeDataAccessException e) {
             logger.error("系统错误:", e);
             result.setErrorMessage("系统错误:" + e.getMessage());
             genericResult.setResult(result);
@@ -600,5 +623,9 @@ public class TweetService extends RecordService {
         System.out.println(Arrays.asList(new String[]{"a", "b", "c"}).indexOf("c"));
         System.out.println(Arrays.asList(new String[]{"a", "b", "cd"}).indexOf("d"));
         System.out.println(Arrays.asList(new String[]{"a", "b", "c"}).indexOf("d"));
+    }
+
+    public TweetCommentPushResult replyComment(int id, int uid, String content, int authorid, Boolean help) {
+        return pushComment(id, uid, content, authorid, help);//TODO
     }
 }

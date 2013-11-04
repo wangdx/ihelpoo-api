@@ -18,6 +18,7 @@ import java.util.List;
  * @author: dongxu.wang@acm.org
  */
 public class RecordService {
+    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     @Autowired
     protected StreamDao streamDao;
     @Autowired
@@ -224,7 +225,7 @@ public class RecordService {
     }
 
     protected String convertToDate(Integer time) {
-        return time == null ? "" : (new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date((long) time * 1000));
+        return time == null ? "" : (new java.text.SimpleDateFormat(DEFAULT_DATE_FORMAT)).format(new Date((long) time * 1000));
     }
 
     protected int convertToLevel(Integer activeCredits) {

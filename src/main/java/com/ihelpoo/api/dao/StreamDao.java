@@ -73,7 +73,7 @@ public interface StreamDao {
 
     int incOrDecSayCount(Integer sid, int offset);
 
-    int saveComment(int sid, int uid, String content);
+    int saveComment(int sid, int uid, String content, int toUid, Boolean isHelp);
 
     int saveMsgComment(Integer ownerUid, int sid, int ncid, int uid);
 
@@ -84,4 +84,6 @@ public interface StreamDao {
     int findAllCommentsCountBy(int sid);
 
     long saveNotice(int from, String noticeType, int detailId);
+
+    IRecordCommentEntity findLastCommentBy(int uid, Boolean isHelp);
 }
