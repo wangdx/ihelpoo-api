@@ -352,10 +352,11 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public int saveNoticeMessage(final String noticeType, final Integer uid, final Integer sid, String sayType) {
+    public long saveNoticeMessage(final String noticeType, final Integer uid, final Integer sid, String sayType) {
         final long noticeId = ID.INSTANCE.next();
         final String sql = " INSERT INTO i_msg_notice (notice_id, notice_type, source_id, detail_id, format_id, create_time) values (?,?,?,?,?,unix_timestamp()) ";
-        return getJdbcTemplate().update(sql, new Object[]{noticeId, "stream/" + noticeType + "-para:" + sayType, uid, sid, sayType});
+        getJdbcTemplate().update(sql, new Object[]{noticeId, "stream/" + noticeType + "-para:" + sayType, uid, sid, sayType});
+        return noticeId;
     }
 
     @Override

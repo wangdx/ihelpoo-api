@@ -421,7 +421,7 @@ public class TweetService extends RecordService {
         } catch (EmptyResultDataAccessException e) {//to plus
             streamDao.addPlus(sid, uid);
             incrPlusCountOfRecordBy(sid, 1);
-            int noticeIdForOwner = streamDao.saveNoticeMessage(noticeType, uid, sid, "plus");
+            long noticeIdForOwner = streamDao.saveNoticeMessage(noticeType, uid, sid, "plus");
             bounceNoticeMessageCount(sayEntity.getUid(), 1);
             deliverTo(sayEntity.getUid(), noticeIdForOwner);
         } catch (IncorrectResultSizeDataAccessException e) {
@@ -494,9 +494,9 @@ public class TweetService extends RecordService {
         }
 
         int diffuseId = streamDao.saveDiffusion(uid, sid, content);
-        int noticeIdForFollowers = streamDao.saveNoticeMessage(noticeType, uid, diffuseId, "diffusion");
+        long noticeIdForFollowers = streamDao.saveNoticeMessage(noticeType, uid, diffuseId, "diffusion");
         increaseDiffusionsCountOfRecord(sid, uid);
-        int noticeIdForOwner = streamDao.saveNoticeMessage(noticeType, uid, diffuseId, "diffusiontoowner");
+        long noticeIdForOwner = streamDao.saveNoticeMessage(noticeType, uid, diffuseId, "diffusiontoowner");
         diffseIt(uid, noticeIdForOwner, noticeIdForFollowers, sayEntity.getUid());
 
 
@@ -507,7 +507,7 @@ public class TweetService extends RecordService {
         return genericResult;
     }
 
-    private void diffseIt(Integer uid, int noticeIdForOwner, int noticeIdForFollowers, Integer recordOwnerId) {
+    private void diffseIt(Integer uid, long noticeIdForOwner, long noticeIdForFollowers, Integer recordOwnerId) {
         List<IUserPriorityEntity> entities = userDao.findFollowersBy(uid, 0, Integer.MAX_VALUE);
         List<Integer> uids = new ArrayList<Integer>();
         for (IUserPriorityEntity entity : entities) {
@@ -516,7 +516,7 @@ public class TweetService extends RecordService {
         saveDiffusionRelations(noticeIdForOwner, noticeIdForFollowers, uids, recordOwnerId);
     }
 
-    private void saveDiffusionRelations(int noticeIdForOwner, int noticeIdForFollowers, List<Integer> uids, Integer recordOwnerId) {
+    private void saveDiffusionRelations(long noticeIdForOwner, long noticeIdForFollowers, List<Integer> uids, Integer recordOwnerId) {
         bounceNoticeMessageCount(recordOwnerId, 1);
         deliverTo(recordOwnerId, noticeIdForOwner);
         for (Integer uid : uids) {

@@ -18,7 +18,7 @@ public class ChatResult {
     @XmlElement
     public int page_size;
     @XmlElement
-    public int messageCount;
+    public int message_count;
 
     @XmlElement
     public Chats messages;

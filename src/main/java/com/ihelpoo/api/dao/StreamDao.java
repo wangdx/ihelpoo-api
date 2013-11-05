@@ -61,7 +61,7 @@ public interface StreamDao {
 
     int addPlus(Integer sid, Integer uid);
 
-    int saveNoticeMessage(String noticeType, Integer uid, Integer detailId, String sayType);
+    long saveNoticeMessage(String noticeType, Integer uid, Integer detailId, String sayType);
 
     IRecordDiffusionEntity findDiffusion(Integer sid, Integer uid);
 

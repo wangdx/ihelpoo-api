@@ -393,7 +393,7 @@ public class WordService extends RecordService {
 
         ChatResult.Chats chatList = new ChatResult.Chats(chats);
 
-        chatResult.messageCount = oneWayTalks.size();
+        chatResult.message_count = talks.size();
         chatResult.messages = chatList;
         chatResult.notice = getNotice(uid);
         chatResult.page_size = talks.size();
