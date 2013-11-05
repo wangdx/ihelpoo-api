@@ -46,7 +46,7 @@ public interface UserDao {
 
     int addSay(int uid, int sayType, String body, int imgId, long t, String from, int schoolId);
 
-    int addDynamic(int dynId, String changeicon);
+    int addDynamic(int dynId, String dType);
 
     int findSizeOfAlbum(int uid);
 
@@ -100,7 +100,11 @@ public interface UserDao {
 
     int updateUserInfo(Integer uid, String[] columns, Object[] values);
 
-    int saveUserInfo(int uid, int academyId, int majorId, int dormId);
+    int saveUserInfo(int uid, int academyId, int majorId, int dormId, String weibo);
 
     RegisterService.DefaultMajor fetchDefaultMajor(Integer school);
+
+    IUserLoginWbEntity findByThirdAccount(String account, String weibo);
+
+    int saveUserThird(String thirdUid, int uid, String thirdType);
 }

@@ -73,6 +73,8 @@ public class User {
     public Integer level;
     @XmlElement
     public Integer relation;
+    @XmlElement
+    public Boolean byThird;
 
 
 

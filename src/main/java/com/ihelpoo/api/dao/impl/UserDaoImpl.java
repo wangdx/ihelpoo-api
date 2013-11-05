@@ -155,7 +155,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int addDynamic(final int sayId, final String changeicon) {
+    public int addDynamic(final int sayId, final String dType) {
         final String sql = "insert into i_record_dynamic (sid, `type`) values(?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -163,7 +163,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 PreparedStatement ps =
                         connection.prepareStatement(sql, new String[]{"id"});
                 ps.setInt(1, sayId);
-                ps.setString(2, changeicon);
+                ps.setString(2, dType);
                 return ps;
             }
         }, keyHolder);
@@ -293,7 +293,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public int incIfLessThan(String column, int limit, int uid) {
-        final String sql = " update i_user_status set " + column + "=" + column + " + 1 " + " where uid=? and "+column+" < ? ";
+        final String sql = " update i_user_status set " + column + "=" + column + " + 1 " + " where uid=? and " + column + " < ? ";
         return getJdbcTemplate().update(sql, new Object[]{uid, limit});
     }
 
@@ -439,7 +439,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
 
     @Override
-    public int saveUserInfo(int uid, int academyId, int majorId, int dormId) {
+    public int saveUserInfo(int uid, int academyId, int majorId, int dormId, String weibo) {
         String sql = " INSERT INTO i_user_info (uid, academy_op, specialty_op, dormitory_op, dynamic, fans, follow) VALUES(?,?,?,?,1,0,0) ";
         return getJdbcTemplate().update(sql, new Object[]{uid, academyId, majorId, dormId});
     }
@@ -452,6 +452,22 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 "(select id from i_op_specialty where school=school_id and academy=academy_id limit 1) as major_id,\n" +
                 "(select id from i_op_dormitory where school=school_id limit 1) as dorm_id";// exclude test school by id!=35
         return getJdbcTemplate().queryForObject(sql, new BeanPropertyRowMapper<RegisterService.DefaultMajor>(RegisterService.DefaultMajor.class), school);
+    }
+
+    @Override
+    public IUserLoginWbEntity findByThirdAccount(String thirdUid, String thirdType) {
+        String tableName = "weibo".equals(thirdType) ? "i_user_login_wb" : "i_user_login_qq";
+        String columnName = "weibo".equals(thirdType) ? "weibo_uid" : "qq_uid";
+        final String sql = " SELECT uid, " + columnName + " AS third_uid FROM " + tableName + " WHERE " + columnName + "=?";
+        return getJdbcTemplate().queryForObject(sql, new BeanPropertyRowMapper<IUserLoginWbEntity>(IUserLoginWbEntity.class), thirdUid);
+    }
+
+    @Override
+    public int saveUserThird(String thirdUid, int uid, String thirdType) {
+        String tableName = "weibo".equals(thirdType) ? "i_user_login_wb" : "i_user_login_qq";
+        String columnName = "weibo".equals(thirdType) ? "weibo_uid" : "qq_uid";
+        final String sql = " INSERT INTO " + tableName + "(uid, "+columnName+") values(?,?)";
+        return getJdbcTemplate().update(sql, new Object[]{uid, thirdUid});
     }
 
     @Override

@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @Controller
-public class SMSRegister {
+public class RegisterOrLogin {
 
     @Autowired
     RegisterService registerService;
@@ -80,5 +80,20 @@ public class SMSRegister {
             HttpServletRequest request
     ) {
         return registerXML(code, mobile, pwd, schoolId, ip, request);
+    }
+
+    @RequestMapping(value = "/thirdLogin.xml", method = RequestMethod.POST, produces = "application/xml")
+    @ResponseBody
+    public GenericResult thirdLoginXML(
+            @RequestParam(value = "third_uid", required = false) String thirdUid,
+            @RequestParam(value = "third_type", required = false) String thirdType,
+            @RequestParam(value = "school_id", required = false) Integer schoolId,
+            @RequestParam(value = "ip", required = false) String ip,
+            @RequestParam(value = "nickname", required = false) String thirdNickname,
+            @RequestParam(value = "status", required = false) String status,
+            HttpServletRequest request
+    ) {
+        GenericResult genericResult = registerService.thirdLogin(thirdUid, schoolId, ip, AppUtil.getDeviceType(request), thirdNickname, thirdType, status);
+        return genericResult;
     }
 }

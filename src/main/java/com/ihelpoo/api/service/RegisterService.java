@@ -4,6 +4,7 @@ import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.SMSCodeResult;
 import com.ihelpoo.api.model.common.User;
+import com.ihelpoo.api.model.entity.IUserLoginWbEntity;
 import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.service.base.RecordService;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 
+import java.util.Random;
+
 /**
  * @author: echowdx@gmail.com
  */
@@ -31,6 +34,10 @@ public class RegisterService extends RecordService {
     private static final String REGISTER_CODE = ":Code";
     public static final int ONE_DAY = 3600 * 24;
     public static final int QUOTA_SMS = 202;
+    public static final String LOGINWEIBO_COM = "@loginweibo.com";
+    public static final String LOGINQQ_COM = "@loginqq.com";
+    public static final int RANDOM_MIN = 10000000;
+    public static final int RANDOM_MAX = 99999999;
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -41,6 +48,9 @@ public class RegisterService extends RecordService {
 
     @Autowired
     TweetService tweetService;
+
+    @Autowired
+    WordService wordService;
 
     /**
      * 获取短信验证码，24小时内有效
@@ -145,7 +155,7 @@ public class RegisterService extends RecordService {
         final String nickname = "oih_" + ID.INSTANCE.next();
         IUserLoginEntity userLoginEntity = userDao.saveUser(mobile, new MD5().encrypt(pwd), nickname, school, t);
         DefaultMajor defaultMajor = userDao.fetchDefaultMajor(school);
-        userDao.saveUserInfo(userLoginEntity.getUid(), defaultMajor.getAcademyId(), defaultMajor.getMajorId(), defaultMajor.getDormId());
+        userDao.saveUserInfo(userLoginEntity.getUid(), defaultMajor.getAcademyId(), defaultMajor.getMajorId(), defaultMajor.getDormId(), "");
 
         userDao.saveStatus(userLoginEntity.getUid(), 6);
 
@@ -166,6 +176,65 @@ public class RegisterService extends RecordService {
         genericResult.setUser(user);
         genericResult.setResult(result);
         return genericResult;
+    }
+
+    public GenericResult thirdLogin(String thirdUid, Integer schoolId, String ip, String deviceType, String thirdNickname, String thirdType, String status) {
+        logger.info("sms register...");
+
+        ip = ip == null ? "0.0.0.0" : ip;
+        deviceType = deviceType == null ? "圈圈App" : deviceType;
+
+        GenericResult genericResult = new GenericResult();
+        Result result = new Result();
+        try {
+            return thirdDirectLogin(thirdUid, ip, thirdType, status);
+        } catch (EmptyResultDataAccessException e) {
+            try {
+                return toRegisterAndLogin(thirdUid, schoolId, ip, deviceType, thirdNickname, thirdType);
+            } catch (Exception e1) {
+                result.setErrorCode("0");
+                result.setErrorMessage("系统错误，登录失败：" + e.getMessage());
+                genericResult.setResult(result);
+                return genericResult;
+            }
+        } catch (Exception e) {
+            result.setErrorCode("0");
+            result.setErrorMessage("系统错误，登录失败：" + e.getMessage());
+            genericResult.setResult(result);
+            return genericResult;
+        }
+    }
+
+    private GenericResult thirdDirectLogin(String thirdUid, String ip, String thirdType, String status) {
+        IUserLoginWbEntity entity = userDao.findByThirdAccount(thirdUid, thirdType);
+        IUserLoginEntity userLoginEntity = userDao.findUserById(entity.getUid());
+        return loginService.login(userLoginEntity.getEmail(), "", status, ip, true);
+    }
+
+    private GenericResult toRegisterAndLogin(String thirdUid, Integer schoolId, String ip, String deviceType, String thirdNickname, String thirdType) throws Exception {
+        String email = thirdUid + getSuffixOfAccount(thirdType);
+        String password = String.valueOf(new Random().nextInt(RANDOM_MAX - RANDOM_MIN) + RANDOM_MIN);
+        logger.info("-> Generate random password for " + email + " is:" + password);
+        String encryptedPwd = new MD5().encrypt(password);
+        String nickname = thirdNickname;
+        int t = (int) (System.currentTimeMillis() / 1000L);
+        IUserLoginEntity userLoginEntity = userDao.saveUser(email, encryptedPwd, nickname, schoolId, t);
+        userDao.saveUserThird(thirdUid, userLoginEntity.getUid(), thirdType);
+        DefaultMajor defaultMajor = userDao.fetchDefaultMajor(schoolId);
+        userDao.saveUserInfo(userLoginEntity.getUid(), defaultMajor.getAcademyId(), defaultMajor.getMajorId(), defaultMajor.getDormId(), "http://weibo.com/" + thirdUid);
+        userDao.saveStatus(userLoginEntity.getUid(), 6);
+        wordService.doChat(10000, userLoginEntity.getUid(), "系统为您自动分配了我帮圈圈登录账号:" + email + " 密码为:" + password + "。为方便保证独立账号登录，希望您能及时重新设置账号和密码:)");
+        int sid = tweetService.pubTweet(userLoginEntity.getUid(), t, "我刚刚通过" + getThirdName(thirdType) + "登录加入了我帮圈圈:)", null, null, deviceType, schoolId);
+        userDao.addDynamic(sid, "join");
+        return loginService.succeedToLogin(userLoginEntity);//First Time is register , not login
+    }
+
+    private String getThirdName(String thirdType) {
+        return "weibo".equals(thirdType) ? "微博" : "QQ";
+    }
+
+    private String getSuffixOfAccount(String thirdType) {
+        return "weibo".equals(thirdType) ? LOGINWEIBO_COM : LOGINQQ_COM;
     }
 
     public static class DefaultMajor {

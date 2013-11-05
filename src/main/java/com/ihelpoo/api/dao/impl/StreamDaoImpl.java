@@ -250,11 +250,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     @Override
     public IRecordSayEntity findLastTweetBy(int uid) {
         final String sql = " SELECT * FROM i_record_say WHERE uid=? ORDER BY `time` DESC LIMIT 1 ";
-        try {
-            return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+        return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
     }
 
     @Override
@@ -380,7 +376,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
     @Override
     public int deleteCommment(Integer replyid, Integer authorid, Integer sid) {
-        if(sid != null && sid > 0){
+        if (sid != null && sid > 0) {
             final String sql = " DELETE FROM i_record_comment WHERE sid=? ";
             return getJdbcTemplate().update(sql, new Object[]{sid});
         }
@@ -390,7 +386,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
     @Override
     public int deleteHelpReply(Integer replyid, Integer authorid, Integer sid) {
-        if(sid != null && sid > 0){
+        if (sid != null && sid > 0) {
             final String sql = " DELETE FROM i_record_helpreply WHERE sid=? ";
             return getJdbcTemplate().update(sql, new Object[]{sid});
         }

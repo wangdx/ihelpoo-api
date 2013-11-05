@@ -3,9 +3,9 @@ package com.ihelpoo.api.service;
 import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.common.User;
-import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
+import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.GregorianCalendar;
  * @author: dongxu.wang@acm.org
  */
 @Service
-public class LoginService extends RecordService{
+public class LoginService extends RecordService {
 
     public static final String FAILURE = "0";
     public static final String SUCCESS = "1";
@@ -33,7 +33,7 @@ public class LoginService extends RecordService{
     @Autowired
     MD5 md5;
 
-    public GenericResult login(String username, String pwd, String status, String ip) {
+    public GenericResult login(String username, String pwd, String status, String ip, boolean isThirdLogin) {
         GenericResult genericResult = new GenericResult();
         IUserLoginEntity userLoginEntity = null;
         try {
@@ -46,11 +46,13 @@ public class LoginService extends RecordService{
             return genericResult;
         }
 
-
-        if (!userLoginEntity.getPassword().equals(md5.encrypt(pwd))) {
-            genericResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
-            return genericResult;
+        if(!isThirdLogin){
+            if (!userLoginEntity.getPassword().equals(md5.encrypt(pwd))) {
+                genericResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
+                return genericResult;
+            }
         }
+
 
         if (syncUserStatus(userLoginEntity, status, ip) < 1) {
             genericResult.setResult(new Result(FAILURE, MSG_ERR_SYNC_STATUS));
@@ -200,12 +202,13 @@ public class LoginService extends RecordService{
         return userLoginEntity.getLastlogintime() == null;
     }
 
-    private GenericResult succeedToLogin(IUserLoginEntity userLoginEntity) {
+    public GenericResult succeedToLogin(IUserLoginEntity userLoginEntity) {
         GenericResult genericResult = new GenericResult();
         User user = new User();
         user.uid = userLoginEntity.getUid();
         user.school_id = String.valueOf(userLoginEntity.getSchool());
         user.nickname = userLoginEntity.getNickname();
+        user.email = userLoginEntity.getEmail();
         user.avatar_url = convertToAvatarUrl(userLoginEntity.getIconUrl(), userLoginEntity.getUid(), false);
         genericResult.setUser(user);
         genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
@@ -216,6 +219,7 @@ public class LoginService extends RecordService{
     protected boolean empty(String iconUrl) {
         return iconUrl == null || iconUrl.length() <= 0;
     }
+
     public static void main(String[] args) {
         System.out.println("你好");
     }
