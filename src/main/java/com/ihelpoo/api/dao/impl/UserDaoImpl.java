@@ -83,7 +83,8 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public VUserDetailEntity findUserDetailById(int uid) {
-        String sql = "select a.uid as uid,\n" +
+        String sql = "select\n" +
+                "        a.uid as uid,\n" +
                 "        a.nickname as nickname,\n" +
                 "        a.sex as gender,\n" +
                 "        a.email as email,\n" +
@@ -105,18 +106,24 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 "        b.realname as real_name,\n" +
                 "        b.fans as followers_count,\n" +
                 "        b.follow as friends_count,\n" +
-                "        c.school as school_name,\n" +
                 "        c.id as school_id,\n" +
-                "        c.domain as school_domain,\n" +
-                "        d.name as academy_name,\n" +
-                "        e.name as major_name,\n" +
-                "        f.name as dorm_name\n" +
-                "    from i_user_login a\n" +
-                "            join i_user_info b ON a.uid = b.uid\n" +
-                "            join i_school_info c ON a.school = c.id\n" +
-                "            join i_op_academy d ON d.id = b.academy_op\n" +
-                "            join i_op_specialty e ON e.id = b.specialty_op\n" +
-                "            join i_op_dormitory f ON f.id = b.dormitory_op\n" +
+                "        c.domain as school_domain, \n" +
+                "        IF(c.school IS NULL, '', c.school) as school_name,\n" +
+                "        IF(d.name IS NULL, '', d.name) as academy_name,\n" +
+                "        IF(e.name IS NULL, '', e.name) as major_name,\n" +
+                "        IF(f.name IS NULL, '', f.name) as dorm_name\n" +
+                "    from\n" +
+                "        i_user_login a\n" +
+                "            left join\n" +
+                "        i_user_info b ON a.uid = b.uid\n" +
+                "            left join\n" +
+                "        i_school_info c ON a.school = c.id\n" +
+                "            left join\n" +
+                "        i_op_academy d ON d.id = b.academy_op\n" +
+                "            left join\n" +
+                "        i_op_specialty e ON e.id = b.specialty_op\n" +
+                "            left join\n" +
+                "        i_op_dormitory f ON f.id = b.dormitory_op" +
                 "\twhere a.uid=?";
         return getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new BeanPropertyRowMapper<VUserDetailEntity>(VUserDetailEntity.class));
     }

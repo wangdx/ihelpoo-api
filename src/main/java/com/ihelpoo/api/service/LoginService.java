@@ -10,6 +10,7 @@ import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +60,28 @@ public class LoginService extends RecordService {
             return genericResult;
         }
 
+
+        return succeedToLogin(userLoginEntity);
+    }
+
+
+    public GenericResult thirdLogin(int uid, String status, String ip) {
+        GenericResult genericResult = new GenericResult();
+        IUserLoginEntity userLoginEntity = null;
+        try {
+            userLoginEntity = userDao.findUserById(uid);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
+            return genericResult;
+        } catch (Exception e) {
+            genericResult.setResult(new Result(FAILURE, e.getMessage()));
+            return genericResult;
+        }
+
+        if (syncUserStatus(userLoginEntity, status, ip) < 1) {
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_SYNC_STATUS));
+            return genericResult;
+        }
 
         return succeedToLogin(userLoginEntity);
     }

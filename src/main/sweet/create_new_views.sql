@@ -91,23 +91,23 @@ create view v_user_detail as
         b.realname as real_name,
         b.fans as followers_count,
         b.follow as friends_count,
-        c.school as school_name,
         c.id as school_id,
         c.domain as school_domain,
-        d.name as academy_name,
-        e.name as major_name,
-        f.name as dorm_name
+        IF(c.school IS NULL, '', c.school) as school_name,
+        IF(d.name IS NULL, '', d.name) as academy_name,
+        IF(e.name IS NULL, '', e.name) as major_name,
+        IF(f.name IS NULL, '', f.name) as dorm_name
     from
         i_user_login a
-            join
+            left join
         i_user_info b ON a.uid = b.uid
-            join
+            left join
         i_school_info c ON a.school = c.id
-            join
+            left join
         i_op_academy d ON d.id = b.academy_op
-            join
+            left join
         i_op_specialty e ON e.id = b.specialty_op
-            join
+            left join
         i_op_dormitory f ON f.id = b.dormitory_op)
 ;
 

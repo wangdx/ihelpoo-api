@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
@@ -188,7 +189,7 @@ public class RegisterService extends RecordService {
         Result result = new Result();
         try {
             return thirdDirectLogin(thirdUid, ip, thirdType, status);
-        } catch (EmptyResultDataAccessException e) {
+        } catch (IncorrectResultSizeDataAccessException e) {// FIXME if the amount of tuple with empty email is 1, there should be a bug....
             try {
                 return toRegisterAndLogin(thirdUid, schoolId, ip, deviceType, thirdNickname, thirdType);
             } catch (Exception e1) {
@@ -207,18 +208,17 @@ public class RegisterService extends RecordService {
 
     private GenericResult thirdDirectLogin(String thirdUid, String ip, String thirdType, String status) {
         IUserLoginWbEntity entity = userDao.findByThirdAccount(thirdUid, thirdType);
-        IUserLoginEntity userLoginEntity = userDao.findUserById(entity.getUid());
-        return loginService.login(userLoginEntity.getEmail(), "", status, ip, true);
+        return loginService.thirdLogin(entity.getUid(), status, ip);
     }
 
     private GenericResult toRegisterAndLogin(String thirdUid, Integer schoolId, String ip, String deviceType, String thirdNickname, String thirdType) throws Exception {
         String email = thirdUid + getSuffixOfAccount(thirdType);
         String password = String.valueOf(new Random().nextInt(RANDOM_MAX - RANDOM_MIN) + RANDOM_MIN);
-        logger.info("-> Generate random password for " + email + " is:" + password);
         String encryptedPwd = new MD5().encrypt(password);
         String nickname = thirdNickname;
         int t = (int) (System.currentTimeMillis() / 1000L);
         IUserLoginEntity userLoginEntity = userDao.saveUser(email, encryptedPwd, nickname, schoolId, t);
+        logger.info("->>> Generate random password for user [" + userLoginEntity.getUid() + "] " + email + " is:" + password);
         userDao.saveUserThird(thirdUid, userLoginEntity.getUid(), thirdType);
         DefaultMajor defaultMajor = userDao.fetchDefaultMajor(schoolId);
         userDao.saveUserInfo(userLoginEntity.getUid(), defaultMajor.getAcademyId(), defaultMajor.getMajorId(), defaultMajor.getDormId(), "http://weibo.com/" + thirdUid);
