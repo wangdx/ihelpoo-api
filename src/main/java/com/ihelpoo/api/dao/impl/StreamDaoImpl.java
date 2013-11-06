@@ -395,6 +395,41 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
         return getJdbcTemplate().update(sql, new Object[]{replyid, authorid});
     }
 
+    @Override
+    public IAuMailSendEntity findAuMailSend(Integer sayUid, int sid, int uid) {
+        final String sql  = " SELECT * FROM i_au_mail_send WHERE uid=? AND sid=? AND helperid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{sayUid, sid, uid}, new BeanPropertyRowMapper<IAuMailSendEntity>(IAuMailSendEntity.class));
+    }
+
+    @Override
+    public int saveAuMailSend(final Integer sayUid, final int uid, final int sid, final String type) {
+        final String sql = " INSERT INTO i_au_mail_send (uid, helperid, sid, `type`, `time`) VALUES (?,?,?,?,unix_timestamp()) ";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                ps.setInt(1, sayUid);
+                ps.setInt(2, uid);
+                ps.setInt(3, sid);
+                ps.setString(4, type);
+                return ps;
+            }
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public IRecordHelpEntity findRecordHelp(int sid) {
+        final String sql = " SELECT * FROM i_record_help WHERE sid=? ";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{sid}, new BeanPropertyRowMapper<IRecordHelpEntity>(IRecordHelpEntity.class));
+    }
+
+    @Override
+    public int updateRecordHelp(int hid, String newStatus, String statusStub) {
+        final String sql = " UPDATE i_record_help SET status=IF(status != ?, ?, status) WHERE hid=? ";
+        return getJdbcTemplate().update(sql, new Object[]{statusStub, newStatus, hid});
+    }
+
 
     @Override
     public IRecordDiffusionEntity findDiffusion(Integer sid, Integer uid) {
@@ -425,8 +460,9 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public int incSayCount(Integer sid, boolean canAffect, String countColumn) {
-        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET " + countColumn + " = IF(" + countColumn + " IS NULL,1, " + countColumn + " + 1 ) ");
+    public int incSayCount(Integer sid, boolean canAffect, String countColumn, boolean shouldInc) {
+        String columnInc = shouldInc ? countColumn + " + 1" : countColumn;
+        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET " + countColumn + " = IF(" + countColumn + " IS NULL,1, " + columnInc+" ) ");
         if (canAffect) {
             sb.append(" , last_comment_ti=unix_timestamp() ");
         }

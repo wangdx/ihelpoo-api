@@ -233,6 +233,7 @@ public class LoginService extends RecordService {
         user.nickname = userLoginEntity.getNickname();
         user.email = userLoginEntity.getEmail();
         user.avatar_url = convertToAvatarUrl(userLoginEntity.getIconUrl(), userLoginEntity.getUid(), false);
+        user.active_credits = userLoginEntity.getActive();
         genericResult.setUser(user);
         genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
         genericResult.setNotice(getNotice(userLoginEntity.getUid()));

@@ -82,9 +82,9 @@ public interface UserDao {
 
     int deletePriority(int uid, int hisuid);
 
-    int incIfLessThan(String column, int limit, int uid);
+    int incUserStatusIfLessThan(String column, int limit, int uid);
 
-    int incActive(int uid, int amount);
+    int incUserLoginActive(int uid, int amount);
 
     IUserLoginEntity findUserByNickname(String nickname);
 

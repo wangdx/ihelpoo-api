@@ -299,13 +299,13 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int incIfLessThan(String column, int limit, int uid) {
+    public int incUserStatusIfLessThan(String column, int limit, int uid) {
         final String sql = " update i_user_status set " + column + "=" + column + " + 1 " + " where uid=? and " + column + " < ? ";
         return getJdbcTemplate().update(sql, new Object[]{uid, limit});
     }
 
     @Override
-    public int incActive(int uid, int amount) {
+    public int incUserLoginActive(int uid, int amount) {
         String sqlUpdateUser = " update i_user_login set active=active + ? where uid=? ";
         return getJdbcTemplate().update(sqlUpdateUser, new Object[]{amount, uid});
     }

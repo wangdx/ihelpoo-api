@@ -207,6 +207,7 @@ public class TweetService extends RecordService {
 
 
     public TweetCommentPushResult pushComment(int id, int uid, String content, int toUid, String toNickname, Boolean isHelp) {
+        isHelp = isHelp == null ? false : true;
         TweetCommentPushResult pushResult = new TweetCommentPushResult();
         Result result = new Result();
         result.setErrorCode("0");
@@ -230,6 +231,96 @@ public class TweetService extends RecordService {
         }
 
         int cid = streamDao.saveComment(id, uid, content, toUid, isHelp);
+        if (isHelp) {
+            return getTweetHelpPushResult(id, uid, content, toUid, toNickname, pushResult, result, cid);
+        }
+
+        return getTweetCommentPushResult(id, uid, content, toUid, toNickname, pushResult, result, cid);
+    }
+
+    private TweetCommentPushResult getTweetHelpPushResult(int id, int uid, String content, int toUid, String toNickname, TweetCommentPushResult pushResult, Result result, int cid) {
+
+        IRecordSayEntity recordSayEntity = null;
+        IUserLoginEntity userLoginEntity = null;
+        IAuMailSendEntity auMailSendEntity = null;
+        if (cid > 0) {
+            userLoginEntity = userDao.findUserById(uid);
+            int rank = convertToRank(userLoginEntity.getActive());
+            try {
+                recordSayEntity = streamDao.findOneTweetBy(id);
+            } catch (EmptyResultDataAccessException e) {
+                result.setErrorMessage("未找到或已被删除");
+                pushResult.notice = getNotice(uid);
+                pushResult.result = result;
+                return pushResult;
+            }
+            if (recordSayEntity.getUid().intValue() != uid) {
+                try {
+                    auMailSendEntity = streamDao.findAuMailSend(recordSayEntity.getUid(), recordSayEntity.getSid(), uid);
+                } catch (EmptyResultDataAccessException e) {
+                    IUserLoginEntity helpRecordOwner = userDao.findUserById(recordSayEntity.getUid());
+                    String body = "<p>" + helpRecordOwner.getNickname() + " 童鞋  <br />您的求助有了新回复! 看能对您有什么促进不? <br />"
+                            + recordSayEntity.getContent() + "<br>" + userLoginEntity.getNickname() + ":" + content + " 快去看看吧!</p><br /><p style='color:gray; font-size:12px; font-style:italic;'>"
+                            + helpRecordOwner.getNickname() + "校园帮助主题社交网站 - <a href='http://ihelpoo.cn'>我帮圈圈</a>敬上!" +
+                            "<a href='http://www.weibo.com/ihelpoogroup' style='font-size:10px; color:gray'>(新浪微博)</a><br />" + helpRecordOwner.getNickname() + "天天开心:D 祝好</p>";
+                    AppUtil.sendMail(helpRecordOwner.getEmail(), "有人来帮助您啦 快来看看吧 - 我帮圈圈", body);
+                    int i = streamDao.saveAuMailSend(recordSayEntity.getUid(), uid, recordSayEntity.getSid(), "2");
+                }
+            } else {
+                AppUtil.saveNotice(uid, recordSayEntity.getUid(), "stream/ih-para:newHelp", recordSayEntity.getSid());
+            }
+
+            streamDao.incSayCount(id, rank >= 2, "comment_co", auMailSendEntity == null && recordSayEntity.getUid().intValue() != uid);
+        }
+
+        if (recordSayEntity.getUid().intValue() != uid) {
+            int affected = userDao.incUserStatusIfLessThan("active_c_limit", 15, uid);
+
+            if (affected > 0) {
+                userDao.incUserLoginActive(uid, 1);
+                userDao.saveMsgActive("add", uid, fetchUserActive(userLoginEntity), 1, "回复帮助 (每天最多加15次，包含评论回复他人的记录次数)");
+            }
+            if (uid != recordSayEntity.getUid()) {
+                streamDao.saveMsgComment(recordSayEntity.getUid(), id, cid, uid);
+            }
+        }
+
+        IRecordHelpEntity helpEntity = streamDao.findRecordHelp(recordSayEntity.getSid());
+        streamDao.updateRecordHelp(helpEntity.getHid(), "2", "3");
+
+
+        final Pattern AT_PATTERN = Pattern.compile("@[\\u4e00-\\u9fa5\\w\\-]+");
+        Matcher matcher = AT_PATTERN.matcher(content);
+        while (matcher.find()) {
+            String atUserName = matcher.group().substring(1);
+            try {
+                IUserLoginEntity userLoginEntity1 = userDao.findUserByNickname(atUserName);
+                streamDao.saveMsgAt(userLoginEntity1.getUid(), uid, id, cid);
+            } catch (Exception e) {
+                logger.error("Fail to at user:", e);
+            }
+        }
+
+
+        //返回结果供显示
+        TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
+        comment.content = toUid > 9999 ? "[回复" + toNickname + "] " + content : content;
+        comment.pubDate = (new java.text.SimpleDateFormat(DEFAULT_DATE_FORMAT)).format(new Date());
+        comment.author = userLoginEntity.getNickname();
+        comment.authorid = uid;
+        comment.portrait = convertToAvatarUrl(userLoginEntity.getIconUrl(), uid, false);
+        comment.id = id;
+        comment.appclient = 0;
+
+        result.setErrorCode("1");
+        result.setErrorMessage("帮助回复成功");
+        pushResult.result = result;
+        pushResult.notice = getNotice(uid);
+        pushResult.comment = comment;
+        return pushResult;
+    }
+
+    private TweetCommentPushResult getTweetCommentPushResult(int id, int uid, String content, int toUid, String toNickname, TweetCommentPushResult pushResult, Result result, int cid) {
         IRecordSayEntity recordSayEntity = null;
         IUserLoginEntity userLoginEntity = null;
         if (cid > 0) {
@@ -243,12 +334,12 @@ public class TweetService extends RecordService {
                 pushResult.result = result;
                 return pushResult;
             }
-            streamDao.incSayCount(id, rank >= 2, "comment_co");
+            streamDao.incSayCount(id, rank >= 2, "comment_co", true);
         }
 
-        int affected = userDao.incIfLessThan("active_c_limit", 15, uid);
+        int affected = userDao.incUserStatusIfLessThan("active_c_limit", 15, uid);
         if (affected > 0) {
-            userDao.incActive(uid, 1);
+            userDao.incUserLoginActive(uid, 1);
             userDao.saveMsgActive("add", uid, fetchUserActive(userLoginEntity), 1, "评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)");
         }
         if (uid != recordSayEntity.getUid()) {
@@ -270,7 +361,7 @@ public class TweetService extends RecordService {
 
         //返回结果供显示
         TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
-        comment.content = toUid > 9999 ? "[回复"+toNickname+"] " + content : content;
+        comment.content = toUid > 9999 ? "[回复" + toNickname + "] " + content : content;
         comment.pubDate = (new java.text.SimpleDateFormat(DEFAULT_DATE_FORMAT)).format(new Date());
         comment.author = userLoginEntity.getNickname();
         comment.authorid = uid;
@@ -279,7 +370,7 @@ public class TweetService extends RecordService {
         comment.appclient = 0;
 
         result.setErrorCode("1");
-        result.setErrorMessage("评论成功");
+        result.setErrorMessage("回复成功");
         pushResult.result = result;
         pushResult.notice = getNotice(uid);
         pushResult.comment = comment;
@@ -529,7 +620,7 @@ public class TweetService extends RecordService {
         IUserLoginEntity loginEntity = userDao.findUserById(uid);
         boolean canAffect = convertToLevel(loginEntity.getActive()) >= 2;
         IRecordSayEntity sayEntity = streamDao.findOneTweetBy(sid);
-        streamDao.incSayCount(sid, canAffect, "diffusion_co");
+        streamDao.incSayCount(sid, canAffect, "diffusion_co", true);
         return sayEntity;
     }
 
@@ -604,7 +695,7 @@ public class TweetService extends RecordService {
         Result result = new Result();
         try {
             streamDao.deleteTweet(uid, sid);
-            if(isHelp != null && isHelp){
+            if (isHelp != null && isHelp) {
                 streamDao.deleteCommment(-1, uid, sid);
             } else {
                 streamDao.deleteHelpReply(-1, uid, sid);

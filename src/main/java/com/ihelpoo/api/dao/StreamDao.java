@@ -69,7 +69,7 @@ public interface StreamDao {
 
     int saveDiffusion(Integer uid, Integer sid, String content);
 
-    int incSayCount(Integer sid, boolean canAffect, String countColumn);
+    int incSayCount(Integer sid, boolean canAffect, String countColumn, boolean shouldInc);
 
     int incOrDecSayCount(Integer sid, int offset);
 
@@ -90,4 +90,12 @@ public interface StreamDao {
     int deleteCommment(Integer replyid, Integer authorid, Integer sid);
 
     int deleteHelpReply(Integer replyid, Integer authorid, Integer sid);
+
+    IAuMailSendEntity findAuMailSend(Integer sayUid, int sid, int uid);
+
+    int saveAuMailSend(Integer sayUid, int uid, int sid, String type);
+
+    IRecordHelpEntity findRecordHelp(int sid);
+
+    int updateRecordHelp(int hid, String status, String statusStub);
 }
