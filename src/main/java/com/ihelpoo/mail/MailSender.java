@@ -31,13 +31,17 @@ final class MailSender {
     public static final Pattern pattern = Pattern.compile("qq.com|foxmail.com|sina.com");
 
     public void send(final Message message) throws MessagingException {
+        if (message.getTo() == null || message.getTo().contains("@loginqq.com") || message.getTo().contains("@loginweibo.com")) {
+            return;
+        }
+
 //        if (isQqOrSina(message) || overQuotaOfMailgun()) {
-            try {
-                sendByQqmail(message);
-            } catch (EmailException e) {
-                e.printStackTrace(); // here we might hit the limit of qqmail
-                sendFromLocal(message);
-            }
+        try {
+            sendByQqmail(message);
+        } catch (EmailException e) {
+            e.printStackTrace(); // here we might hit the limit of qqmail
+            sendFromLocal(message);
+        }
 //        } else {
 //            sendByMailgun(message);
 //        }

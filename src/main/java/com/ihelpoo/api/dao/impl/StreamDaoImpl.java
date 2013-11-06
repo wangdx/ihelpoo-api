@@ -409,7 +409,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public int saveDiffusion(final Integer uid, final Integer sid, String content) {
+    public int saveDiffusion(final Integer uid, final Integer sid, final String content) {
         final String sql = " INSERT INTO i_record_diffusion (uid, sid, `view`, `time`) VALUES (?,?,?,unix_timestamp()) ";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -417,7 +417,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
                 ps.setInt(1, uid);
                 ps.setInt(2, sid);
-                ps.setString(3, "1");
+                ps.setString(3, content);
                 return ps;
             }
         }, keyHolder);
