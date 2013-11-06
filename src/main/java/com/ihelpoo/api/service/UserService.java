@@ -105,7 +105,7 @@ public class UserService extends RecordService {
     }
 
     public static void main(String[] args) {
-        Integer time =  1383496809;
+        Integer time = 1383496809;
         System.out.println((new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date((long) time * 1000)));
     }
 
@@ -237,7 +237,7 @@ public class UserService extends RecordService {
         UserResult userResult = new UserResult();
         Result result = new Result();
         result.setErrorCode("0");
-        if(uid < 10000){
+        if (uid < 10000) {
             result.setErrorMessage("用户未登录");
             userResult.result = result;
             return userResult;
@@ -350,6 +350,21 @@ public class UserService extends RecordService {
         Result result = new Result();
         genericResult.setResult(result);
         result.setErrorCode("0");
+        if (newNickname == null || newNickname.trim().equals("")) {
+            result.setErrorMessage("昵称不能为空");
+            logger.error("昵称为空");
+            genericResult.setResult(result);
+            return genericResult;
+        }
+        try {
+            userDao.findUserByNickname(newNickname.trim());
+            result.setErrorMessage("这个昵称太受欢迎了，换一个吧");
+            logger.error("修改昵称失败，昵称重复:" + newNickname);
+            genericResult.setResult(result);
+            return genericResult;
+        } catch (EmptyResultDataAccessException e) {
+            //eat it
+        }
         try {
             userDao.updateUserLogin(uid, "nickname", newNickname);
         } catch (Exception e) {
@@ -433,7 +448,7 @@ public class UserService extends RecordService {
         result.setErrorCode("0");
         try {
             userDao.updateUserLogin(uid, "school", schoolId);
-            userDao.updateUserInfo(uid, new String[]{"academy_op", "specialty_op", "dormitory_op" }, new Object[]{academyId, majorId, dormId});
+            userDao.updateUserInfo(uid, new String[]{"academy_op", "specialty_op", "dormitory_op"}, new Object[]{academyId, majorId, dormId});
         } catch (Exception e) {
             result.setErrorMessage("修改失败");
             logger.error("修改失败: ", e);
