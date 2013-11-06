@@ -41,7 +41,7 @@ public class MessageDaoImpl extends NamedParameterJdbcDaoSupport implements Mess
 
     @Override
     public List<ITalkContentEntity> findRecentChatsBy(int uid, int pageIndex, int pageSize) {
-        final String sql = " SELECT *, COUNT(*) AS chat_num FROM i_talk_content WHERE uid=? or touid=? GROUP BY uid, touid ORDER BY id DESC LIMIT ? OFFSET ? ";
+        final String sql = " SELECT *, COUNT(*) AS chat_num , max(`time`)  as max_time FROM (select * from i_talk_content order by id desc) a WHERE uid=? or touid=? GROUP BY uid, touid ORDER BY id DESC LIMIT ? OFFSET ? ";
         return getJdbcTemplate().query(sql, new Object[]{uid, uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<ITalkContentEntity>(ITalkContentEntity.class));
     }
 

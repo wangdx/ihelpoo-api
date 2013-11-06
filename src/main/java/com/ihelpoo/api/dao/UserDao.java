@@ -36,7 +36,7 @@ public interface UserDao {
 
     int saveOutimg(int uid, long t, String filePath);
 
-    int saveSay(int uid, long t, String msg, String imageIds, Integer reward, String by, int schoolId);
+    int saveSay(int uid, long lastCommentTime, String msg, String imageIds, Integer reward, String by, int schoolId);
 
     VUserDetailEntity findUserDetailById(int uid);
 

@@ -207,7 +207,7 @@ public class TweetService extends RecordService {
 
 
     public TweetCommentPushResult pushComment(int id, int uid, String content, int toUid, String toNickname, Boolean isHelp) {
-        isHelp = isHelp == null ? false : true;
+        isHelp = isHelp == null ? false : isHelp;
         TweetCommentPushResult pushResult = new TweetCommentPushResult();
         Result result = new Result();
         result.setErrorCode("0");
@@ -255,6 +255,7 @@ public class TweetService extends RecordService {
                 return pushResult;
             }
             if (recordSayEntity.getUid().intValue() != uid) {
+                AppUtil.saveNotice(uid, recordSayEntity.getUid(), "stream/ih-para:newHelp", recordSayEntity.getSid());
                 try {
                     auMailSendEntity = streamDao.findAuMailSend(recordSayEntity.getUid(), recordSayEntity.getSid(), uid);
                 } catch (EmptyResultDataAccessException e) {
@@ -267,7 +268,9 @@ public class TweetService extends RecordService {
                     int i = streamDao.saveAuMailSend(recordSayEntity.getUid(), uid, recordSayEntity.getSid(), "2");
                 }
             } else {
-                AppUtil.saveNotice(uid, recordSayEntity.getUid(), "stream/ih-para:newHelp", recordSayEntity.getSid());
+                if (toUid > 9999) {
+                    AppUtil.saveNotice(uid, toUid, "stream/ih-para:reply", recordSayEntity.getSid());
+                }
             }
 
             streamDao.incSayCount(id, rank >= 2, "comment_co", auMailSendEntity == null && recordSayEntity.getUid().intValue() != uid);
@@ -438,7 +441,7 @@ public class TweetService extends RecordService {
 
                 IUserLoginEntity loginEntity1 = userDao.findUserById(priorityEntity.getUid());
                 if (!StringUtils.isEmpty(loginEntity1.getEmail())) {
-                    helpstatusNeed(loginEntity1.getEmail(), loginEntity1.getNickname(), loginEntity.getNickname(), content, "schoolDomainTODO", "schoolNameTODO");
+                    helpstatusNeed(loginEntity1.getEmail(), loginEntity1.getNickname(), loginEntity.getNickname(), content, "ihelpoo.cn", "");
                 }
             }
 

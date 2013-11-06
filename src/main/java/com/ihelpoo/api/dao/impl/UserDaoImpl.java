@@ -52,8 +52,8 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
-    public int saveSay(final int uid, final long t, final String msg, final String imageIds, final Integer reward, final String by, final int schoolId) {
-        final String sql = "insert into i_record_say (uid, say_type, content, image, url, authority, `time`, last_comment_ti, `from`, school_id) values(?,?,?,?,'','0',?,?,?,?)";
+    public int saveSay(final int uid, final long lastCommentTime, final String msg, final String imageIds, final Integer reward, final String by, final int schoolId) {
+        final String sql = "insert into i_record_say (uid, say_type, content, image, url, authority, `time`, last_comment_ti, `from`, school_id) values(?,?,?,?,'','0',unix_timestamp(),?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -63,10 +63,9 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 ps.setString(2, getSayType(reward));
                 ps.setString(3, msg);
                 ps.setString(4, imageIds);
-                ps.setInt(5, (int) t);
-                ps.setInt(6, (int) t);
-                ps.setString(7, by);
-                ps.setInt(8, schoolId);
+                ps.setInt(5, (int) lastCommentTime);
+                ps.setString(6, by);
+                ps.setInt(7, schoolId);
                 return ps;
             }
         }, keyHolder);

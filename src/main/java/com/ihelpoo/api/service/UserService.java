@@ -13,6 +13,7 @@ import com.ihelpoo.api.model.obj.Result;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.VLoginRecordEntity;
 import com.ihelpoo.api.service.base.RecordService;
+import com.ihelpoo.common.AppUtil;
 import com.ihelpoo.common.Constant;
 import com.ihelpoo.common.util.UpYun;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,7 +204,7 @@ public class UserService extends RecordService {
             return genericResult;
         }
 
-        //TODO notice
+        AppUtil.saveNotice(uid, hisuid, "mutual/priority", 0);
 
         result.setErrorCode("1");
         result.setErrorMessage("成功圈了Ta");
