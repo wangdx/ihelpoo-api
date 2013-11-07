@@ -53,6 +53,11 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
 
     @Override
     public int saveSay(final int uid, final long lastCommentTime, final String msg, final String imageIds, final Integer reward, final String by, final int schoolId) {
+        final String[] from = new String[1];
+        from[0] = by;
+        if (from[0] != null && from[0].contains(" ") && from[0].split(" ").length > 3) {
+            from[0] = from[0].substring(0, nthOccurrence(by, ' ', 2));
+        }
         final String sql = "insert into i_record_say (uid, say_type, content, image, url, authority, `time`, last_comment_ti, `from`, school_id) values(?,?,?,?,'','0',unix_timestamp(),?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -64,7 +69,7 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
                 ps.setString(3, msg);
                 ps.setString(4, imageIds);
                 ps.setInt(5, (int) lastCommentTime);
-                ps.setString(6, by);
+                ps.setString(6, from[0]);
                 ps.setInt(7, schoolId);
                 return ps;
             }
@@ -560,7 +565,16 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
 
+    public static int nthOccurrence(String str, char c, int n) {
+        int pos = str.indexOf(c, 0);
+        while (n-- > 0 && pos != -1)
+            pos = str.indexOf(c, pos+1);
+        return pos;
+    }
     public static void main(String[] args) {
+        String by = "HTC ONE X hello world";
+        String a = by.substring(0, nthOccurrence(by, ' ', 2));
+        System.out.println(a);
 
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         System.out.println(thisYear);
