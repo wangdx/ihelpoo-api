@@ -472,8 +472,19 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     public int saveUserThird(String thirdUid, int uid, String thirdType) {
         String tableName = "weibo".equals(thirdType) ? "i_user_login_wb" : "i_user_login_qq";
         String columnName = "weibo".equals(thirdType) ? "weibo_uid" : "qq_uid";
-        final String sql = " INSERT INTO " + tableName + "(uid, "+columnName+") values(?,?)";
+        final String sql = " INSERT INTO " + tableName + "(uid, " + columnName + ") values(?,?)";
         return getJdbcTemplate().update(sql, new Object[]{uid, thirdUid});
+    }
+
+    @Override
+    public List<VUserBuddiesEntity> findAllBuddies(Integer uid, int relation, Integer pageIndex, Integer pageSize) {
+        String primaryUid = relation == 0 ? "pid" : "uid";
+        String buddiesUid = relation == 0 ? "uid" : "pid";
+        final String sql = "select a.id, a.pid, a.pid_type, a.group_id, a.sid, a.`time` as create_time, b.* " +
+                " from i_user_priority a" +
+                " inner join i_user_login b on b.uid = a." + buddiesUid +
+                " where a." + primaryUid + "=? ORDER BY `time` DESC limit ? offset ? ";
+        return getJdbcTemplate().query(sql, new Object[]{uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VUserBuddiesEntity>(VUserBuddiesEntity.class));
     }
 
     @Override

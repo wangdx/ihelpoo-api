@@ -107,4 +107,6 @@ public interface UserDao {
     IUserLoginWbEntity findByThirdAccount(String account, String weibo);
 
     int saveUserThird(String thirdUid, int uid, String thirdType);
+
+    List<VUserBuddiesEntity> findAllBuddies(Integer uid, int relation, Integer pageIndex, Integer pageSize);
 }

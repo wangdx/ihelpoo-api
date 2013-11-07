@@ -6,12 +6,9 @@ import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.model.MessageResult;
 import com.ihelpoo.api.model.UserResult;
 import com.ihelpoo.api.model.common.User;
-import com.ihelpoo.api.model.entity.IUserPriorityEntity;
-import com.ihelpoo.api.model.entity.VUserDetailEntity;
+import com.ihelpoo.api.model.entity.*;
 import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.obj.Result;
-import com.ihelpoo.api.model.entity.IUserLoginEntity;
-import com.ihelpoo.api.model.entity.VLoginRecordEntity;
 import com.ihelpoo.api.service.base.RecordService;
 import com.ihelpoo.common.AppUtil;
 import com.ihelpoo.common.Constant;
@@ -290,36 +287,36 @@ public class UserService extends RecordService {
             return foResult;
         }
 
-        return getMyFriends(foResult, getFriendIds(uid, relation, pageIndex, pageSize));
+        return getFriends(foResult, uid, relation, pageIndex, pageSize);
 
     }
 
-    private Set<Integer> getFriendIds(Integer uid, int relation, Integer pageIndex, Integer pageSize) {
-        Set<Integer> ids = new HashSet<Integer>();
-        switch (relation) {
-            case TYPE_FRIEND:
-                List<IUserPriorityEntity> entities = userDao.findAllPrioritiesByUid(uid, pageIndex, pageSize);
-                for (IUserPriorityEntity priorityEntity : entities) {
-                    ids.add(priorityEntity.getPid());
-                }
-                break;
-            case TYPE_FOLLOWER:
-                entities = userDao.findFollowersBy(uid, pageIndex, pageSize);
-                for (IUserPriorityEntity priorityEntity : entities) {
-                    ids.add(priorityEntity.getUid());
-                }
-                break;
-        }
-        return ids;
-    }
+//    private Set<Integer> getFriendIds(Integer uid, int relation, Integer pageIndex, Integer pageSize) {
+//        Set<Integer> ids = new HashSet<Integer>();
+//        switch (relation) {
+//            case TYPE_FRIEND:
+//                List<IUserPriorityEntity> entities = userDao.findAllPrioritiesByUid(uid, pageIndex, pageSize);
+//                for (IUserPriorityEntity priorityEntity : entities) {
+//                    ids.add(priorityEntity.getPid());
+//                }
+//                break;
+//            case TYPE_FOLLOWER:
+//                entities = userDao.findFollowersBy(uid, pageIndex, pageSize);
+//                for (IUserPriorityEntity priorityEntity : entities) {
+//                    ids.add(priorityEntity.getUid());
+//                }
+//                break;
+//        }
+//        return ids;
+//    }
 
-    private FriendsResult getMyFriends(FriendsResult foResult, Set<Integer> ids) {
+    private FriendsResult getFriends(FriendsResult foResult, Integer uid, int relation, Integer pageIndex, Integer pageSize) {
+        List<VUserBuddiesEntity> entities = userDao.findAllBuddies(uid, relation, pageIndex, pageSize);
+
 
         FriendsResult.Friends friends = new FriendsResult.Friends();
         List<User> users = new ArrayList<User>();
-
-        List<IUserLoginEntity> entities = userDao.findUsersBy(ids);
-        for (IUserLoginEntity entity : entities) {
+        for (VUserBuddiesEntity entity : entities) {
             User user = new User();
             user.nickname = entity.getNickname();
             user.enrol_time = entity.getEnteryear();
@@ -332,6 +329,7 @@ public class UserService extends RecordService {
             user.school_id = String.valueOf(entity.getSchool());
             user.uid = entity.getUid();
             user.user_type = entity.getType();
+            user.create_time = convertToDate(entity.getCreateTime());
             users.add(user);
         }
 
@@ -344,6 +342,38 @@ public class UserService extends RecordService {
         foResult.notice = new Notice();
         return foResult;
     }
+//
+//    private FriendsResult getMyFriends(FriendsResult foResult, Set<Integer> ids) {
+//
+//        FriendsResult.Friends friends = new FriendsResult.Friends();
+//        List<User> users = new ArrayList<User>();
+//
+//        List<IUserLoginEntity> entities = userDao.findUsersBy(ids);
+//        for (IUserLoginEntity entity : entities) {
+//            User user = new User();
+//            user.nickname = entity.getNickname();
+//            user.enrol_time = entity.getEnteryear();
+//            user.active_credits = entity.getActive() == null ? 0 : entity.getActive();
+//            user.level = convertToLevel(entity.getActive());
+//            user.gender = entity.getSex();
+//            user.avatar_url = convertToAvatarUrl(entity.getIconUrl(), entity.getUid(), false);
+//            user.uid = entity.getUid();
+//            user.online_status = entity.getOnline();
+//            user.school_id = String.valueOf(entity.getSchool());
+//            user.uid = entity.getUid();
+//            user.user_type = entity.getType();
+//            users.add(user);
+//        }
+//
+//        Result result = new Result();
+//        result.setErrorCode("1");
+//        result.setErrorMessage("成功");
+//        friends.friend = users;
+//        foResult.friends = friends;
+//        foResult.result = result;
+//        foResult.notice = new Notice();
+//        return foResult;
+//    }
 
     public GenericResult updateNickname(Integer uid, String newNickname) {
         GenericResult genericResult = new GenericResult();
