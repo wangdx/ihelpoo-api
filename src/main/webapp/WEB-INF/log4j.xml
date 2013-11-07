@@ -32,8 +32,12 @@
         <appender-ref ref="ROLL"/>
     </logger>
 
-    <!--sets the priority log level for it.helloworld.controller-->
     <logger name= "com.ihelpoo.api">
+        <level value="debug"/>
+        <appender-ref ref="ROLL"/>
+    </logger>
+
+    <logger name= "com.ihelpoo.cron">
         <level value="debug"/>
         <appender-ref ref="ROLL"/>
     </logger>

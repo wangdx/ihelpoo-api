@@ -4,7 +4,7 @@
 <oschina>
     <activeCount>0</activeCount>
     <!-- 总动弹数 -->
-    <pagesize>8</pagesize>
+    <page_size>8</page_size>
     <activies>
         <active>
             <id>2134640</id>

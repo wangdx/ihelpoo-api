@@ -1,10 +1,10 @@
 package com.ihelpoo.api;
 
-import com.ihelpoo.api.common.OoConstant;
 import com.ihelpoo.api.dao.LoginDao;
-import com.ihelpoo.api.model.LoginResult;
+import com.ihelpoo.api.model.GenericResult;
 import com.ihelpoo.api.service.LoginService;
-import com.ihelpoo.api.util.MD5;
+import com.ihelpoo.common.Constant;
+import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,14 +34,26 @@ public class OoLogin {
 
     @RequestMapping(value = "/login.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
-    public LoginResult login(@RequestParam(value = "username", required = false) String username,
-                                @RequestParam(value = "pwd", required = false) String pwd,
-                                @RequestParam(value = "status", required = false) String status,
-                                @RequestParam(value = "ip", required = false) String ip,
-                                HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
-        Cookie ooidCookie = new Cookie(OoConstant.OO_USER_COOKIE, md5.encrypt(username) + md5.encrypt(pwd) + md5.encrypt(String.valueOf(System.currentTimeMillis())));
+    public GenericResult login(
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "pwd", required = false) String pwd,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "ip", required = false) String ip,
+            HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
+        Cookie ooidCookie = new Cookie(Constant.OO_USER_COOKIE, md5.encrypt(username) + pwd + md5.encrypt(String.valueOf(System.currentTimeMillis())));
         response.addCookie(ooidCookie);
         response.setContentType("text/xml; charset=utf-8");
-        return loginService.login(username, pwd, status, ip);
+        return loginService.login(username, pwd, status, ip, false);
+    }
+
+    @RequestMapping(value = "/login.json", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public GenericResult loginJson(
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "pwd", required = false) String pwd,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "ip", required = false) String ip,
+            HttpServletResponse response) throws NoSuchAlgorithmException, IOException {
+        return login(username, pwd, status, ip, response);
     }
 }

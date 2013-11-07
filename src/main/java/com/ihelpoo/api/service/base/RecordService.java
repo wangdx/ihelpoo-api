@@ -1,8 +1,14 @@
 package com.ihelpoo.api.service.base;
 
-import com.ihelpoo.api.common.OoConstant;
+import com.ihelpoo.api.dao.NotificationDao;
+import com.ihelpoo.api.model.obj.Notice;
+import com.ihelpoo.api.service.WordService;
+import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.StreamDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -12,12 +18,57 @@ import java.util.List;
  * @author: dongxu.wang@acm.org
  */
 public class RecordService {
+    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     @Autowired
     protected StreamDao streamDao;
+    @Autowired
+    protected NotificationDao notificationDao;
+
+
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public Notice getNotice(int uid) {
+        Notice notice = new Notice();
+        if (uid < 10000) {
+            return notice;
+        }
+        notice.activeCount = countActive(uid);
+        notice.atmeCount = countAtme(uid);
+        notice.chatCount = countChat(uid);
+        notice.commentCount = countComment(uid);
+        notice.systemCount = countSystem(uid);
+        return notice;
+    }
+
+    public int countSystem(int uid) {
+        if (uid < 10000) {
+            return 0;
+        }
+        String uidStr = String.valueOf(uid);
+        Jedis jedis = new Jedis("localhost");
+        String countStr = jedis.hget(WordService.R_NOTICE + WordService.R_SYSTEM + uidStr.substring(0, uidStr.length() - 3), uidStr.substring(uidStr.length() - 3));
+        jedis.disconnect();
+        return countStr == null ? 0 : Integer.parseInt(countStr);
+    }
+
+    public int countAtme(int uid) {
+        return notificationDao.findNewAtmeCount(uid);
+    }
+
+    public int countComment(int uid) {
+        return notificationDao.findNewCommentCount(uid);
+    }
+
+    public int countActive(int uid) {
+        return notificationDao.findNewActiveCount(uid);
+    }
+
+    public int countChat(int uid) {
+        return notificationDao.fineNewChatCount(uid);
+    }
+
     protected String convertToOnlineState(String onlineCode) {
         return "1".equals(onlineCode) ? "在线" : "";
-
-
     }
 
     /**
@@ -34,11 +85,15 @@ public class RecordService {
         return imgUrl;
     }
 
-    protected String convertToAvatarUrl(String iconUrl, int uid) {
+    protected String convertToAvatarUrl(String iconUrl, int uid, boolean isPreview) {
+        String imageSize = "_s.jpg!app";
+        if (isPreview) {
+            imageSize = ".jpg";
+        }
         if (!empty(iconUrl)) {
-            return OoConstant.IMG_STORAGE_ROOT + "useralbum/" + uid + "/" + iconUrl + "_s.jpg!app?t=" + System.currentTimeMillis();
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + imageSize + "?t=" + System.currentTimeMillis();
         } else {
-            return OoConstant.IMG_STORAGE_ROOT + "useralbum/default_avatar.jpg!app";
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
         }
     }
 
@@ -47,6 +102,9 @@ public class RecordService {
     }
 
     protected String convertToType(Integer type, String enteryear) {
+        if (type == null) {
+            return "";
+        }
         String authorType = "";
         if (type == 3) {
             authorType += "商家";
@@ -85,6 +143,9 @@ public class RecordService {
     }
 
     protected String convertToGossip(Integer sex, String birthday) {
+        if (birthday == null) {
+            return "未知";
+        }
         String gossip = "";
         if (empty(birthday)) {
             gossip += "";
@@ -164,7 +225,31 @@ public class RecordService {
     }
 
     protected String convertToDate(Integer time) {
-        return (new java.text.SimpleDateFormat(
-                "yyyy-MM-dd hh:mm:ss")).format(new Date((long) (time.floatValue() * 1000)));
+        return time == null ? "" : (new java.text.SimpleDateFormat(DEFAULT_DATE_FORMAT)).format(new Date((long) time * 1000));
+    }
+
+    protected int convertToLevel(Integer activeCredits) {
+        return convertToRank(activeCredits);
+    }
+
+    protected void bounceNoticeMessageCount(Integer uid, int offset) {
+        String uidStr = String.valueOf(uid);
+        Jedis jedis = new Jedis("localhost");
+        jedis.hincrBy(WordService.R_NOTICE + WordService.R_SYSTEM + uidStr.substring(0, uidStr.length() - 3), uidStr.substring(uidStr.length() - 3), offset);
+        jedis.disconnect();
+    }
+
+    protected void deliverTo(Integer uid, long noticeId) {
+        String uidStr = String.valueOf(uid);
+        Jedis jedis = new Jedis("localhost");
+        jedis.hset(WordService.R_ACCOUNT + WordService.R_MESSAGE + uidStr, String.valueOf(noticeId), "0");
+        jedis.disconnect();
+    }
+
+    protected void deliverBack(Integer uid, long noticeId) {
+        String uidStr = String.valueOf(uid);
+        Jedis jedis = new Jedis("localhost");
+        jedis.hdel(WordService.R_ACCOUNT + WordService.R_MESSAGE + uidStr, String.valueOf(noticeId));
+        jedis.disconnect();
     }
 }

@@ -5,44 +5,58 @@ import com.ihelpoo.api.model.entity.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import java.util.List;
-
 /**
  * @author: dongxu.wang@acm.org
  */
 public class NotificationDaoImpl extends JdbcDaoSupport implements NotificationDao {
+
+
+
     @Override
-    public List<IMsgAtEntity> findAllAtMsgsByUid(int uid) {
-        String sql = " SELECT * FROM i_msg_at WHERE touid=? and deliver=0 ";
-        Object[] params = new Object[]{uid};
-        return getJdbcTemplate().query(sql, params, new BeanPropertyRowMapper<IMsgAtEntity>(IMsgAtEntity.class));
+    public int findNewAtmeCount(int uid) {
+        String sql = " SELECT COUNT(*) FROM i_msg_at WHERE touid=? and deliver=0 ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, uid);
     }
 
     @Override
-    public List<IMsgSystemEntity> findAllSystemMsgsByUid(int uid) {
-        String sql = " SELECT * FROM i_msg_system WHERE uid=? and deliver=0  ";
-        Object[] params = new Object[]{uid};
-        return getJdbcTemplate().query(sql, params, new BeanPropertyRowMapper<IMsgSystemEntity>(IMsgSystemEntity.class));
+    public int findNewCommentCount(int uid) {
+        String sql = " SELECT COUNT(*) FROM i_msg_comment WHERE uid=? and deliver=0  ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, uid);
+    }
+    @Override
+    public int findNewActiveCount(int uid) {
+        String sql = " SELECT COUNT(*) FROM i_msg_active WHERE uid=? and deliver=0  ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, uid);
     }
 
     @Override
-    public List<IMsgCommentEntity> findAllCommentMsgsByUid(int uid) {
-        String sql = " SELECT * FROM i_msg_comment WHERE uid=? and deliver=0  ";
-        Object[] params = new Object[]{uid};
-        return getJdbcTemplate().query(sql, params, new BeanPropertyRowMapper<IMsgCommentEntity>(IMsgCommentEntity.class));
+    public int deliverAllAtme(Integer uid) {
+        final String sql = " UPDATE i_msg_at SET deliver='1' WHERE touid=? AND deliver='0' ";
+        return getJdbcTemplate().update(sql, new Object[]{uid});
     }
 
     @Override
-    public List<ITalkContentEntity> findAllTalkContentsByUid(int uid) {
-        String sql = " SELECT * FROM i_talk_content WHERE touid=? and deliver=0  ";
-        Object[] params = new Object[]{uid};
-        return getJdbcTemplate().query(sql, params, new BeanPropertyRowMapper<ITalkContentEntity>(ITalkContentEntity.class));
+    public int fineNewChatCount(int uid) {
+        String sql = " SELECT COUNT(*) FROM i_talk_content WHERE touid=? and deliver=0  ";
+        return getJdbcTemplate().queryForObject(sql, Integer.class, uid);
+    }
+
+
+    @Override
+    public int deliverAllComment(Integer uid) {
+        final String sql = " UPDATE i_msg_comment SET deliver='1' WHERE uid=? AND deliver='0' ";
+        return getJdbcTemplate().update(sql, new Object[]{uid});
     }
 
     @Override
-    public List<IUserCoinsEntity> findAllUserCoinsByUid(int uid) {
-        String sql = " SELECT * FROM i_user_coins WHERE uid=? and deliver=0  ";
-        Object[] params = new Object[]{uid};
-        return getJdbcTemplate().query(sql, params, new BeanPropertyRowMapper<IUserCoinsEntity>(IUserCoinsEntity.class));
+    public int deliverAllActive(Integer uid) {
+        final String sql = " UPDATE i_msg_active SET deliver='1' WHERE uid=? AND deliver='0' ";
+        return getJdbcTemplate().update(sql, new Object[]{uid});
+    }
+
+    @Override
+    public int deliverAllMessage(Integer uid, Integer fromUid) {//TODO only fromuid
+        final String sql = " update i_talk_content set deliver='1' where touid=? and deliver='0' ";
+        return getJdbcTemplate().update(sql, new Object[]{uid});
     }
 }

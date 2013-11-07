@@ -4,12 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
-
-
-    <bean id="userPriorityDao" class="com.ihelpoo.api.dao.impl.UserPriorityDaoImpl">
-        <property name="dataSource" ref="dataSource" />
-    </bean>
-
     <bean id="streamDaoTarget" class="com.ihelpoo.api.dao.impl.StreamDaoImpl">
         <property name="dataSource" ref="dataSource" />
     </bean>

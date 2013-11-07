@@ -1,7 +1,8 @@
 package com.ihelpoo.api.model;
 
-import com.ihelpoo.api.common.OoConstant;
-import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.obj.Result;
+import com.ihelpoo.common.Constant;
+import com.ihelpoo.api.model.obj.Notice;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -12,9 +13,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author: dongxu.wang@acm.org
  */
 
-@XmlRootElement(name = OoConstant.IHELPOO_XML_ROOT)
+@XmlRootElement(name = Constant.IHELPOO_XML_ROOT)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TweetDetailResult {
+    @XmlElement
+    public Result result;
     @XmlElement
     TweetResult.Tweet tweet;
     @XmlElement

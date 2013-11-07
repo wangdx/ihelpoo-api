@@ -8,13 +8,21 @@ import java.util.List;
  * @author: dongxu.wang@acm.org
  */
 public interface NotificationDao {
-    List<IMsgAtEntity> findAllAtMsgsByUid(int uid);
 
-    List<IMsgSystemEntity> findAllSystemMsgsByUid(int uid);
+    int findNewAtmeCount(int uid);
 
-    List<IMsgCommentEntity> findAllCommentMsgsByUid(int uid);
+    int findNewCommentCount(int uid);
 
-    List<ITalkContentEntity> findAllTalkContentsByUid(int uid);
+    int fineNewChatCount(int uid);
 
-    List<IUserCoinsEntity> findAllUserCoinsByUid(int uid);
+    int findNewActiveCount(int uid);
+
+
+    int deliverAllAtme(Integer uid);
+
+    int deliverAllComment(Integer uid);
+
+    int deliverAllActive(Integer uid);
+
+    int deliverAllMessage(Integer uid, Integer touid);
 }

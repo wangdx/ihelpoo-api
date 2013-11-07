@@ -1,6 +1,6 @@
 package com.ihelpoo.api.model;
 
-import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.obj.Notice;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,9 +15,9 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PostList{
     @XmlElement
-    private int postCount;
+    private int post_count;
     @XmlElement
-    private int pagesize = 20;
+    private int page_size;
     @XmlElement
     private Posts posts;
     @XmlElement
@@ -27,24 +27,24 @@ public class PostList{
         this.notice = notice;
     }
 
-    public void setPostCount(int postCount) {
-        this.postCount = postCount;
+    public void setPost_count(int post_count) {
+        this.post_count = post_count;
     }
 
-    public void setPagesize(int pagesize) {
-        this.pagesize = pagesize;
+    public void setPage_size(int page_size) {
+        this.page_size = page_size;
     }
 
     public void setPosts(Posts posts) {
         this.posts = posts;
     }
 
-    public int getPostCount() {
-        return postCount;
+    public int getPost_count() {
+        return post_count;
     }
 
-    public int getPagesize() {
-        return pagesize;
+    public int getPage_size() {
+        return page_size;
     }
 
     public Posts getPosts() {
@@ -86,12 +86,23 @@ public class PostList{
         private Integer viewCount;
         @XmlElement
         private String pubDate;
+        @XmlElement
+        private String sayType;
+
 
         @XmlElement
         private String answer;
 
         @XmlElement
         protected int id;
+
+        public String getSayType() {
+            return sayType;
+        }
+
+        public void setSayType(String sayType) {
+            this.sayType = sayType;
+        }
 
         public void setAnswer(String answer) {
             this.answer = answer;

@@ -2,7 +2,7 @@ package com.ihelpoo.api.dao.impl;
 
 import com.ihelpoo.api.dao.PostDao;
 import com.ihelpoo.api.model.PostList;
-import com.ihelpoo.api.model.base.Notice;
+import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.model.entity.VUserPostEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -18,16 +18,17 @@ import java.util.List;
  */
 public class PostDaoImpl extends JdbcDaoSupport implements PostDao {
     @Override
-    public PostList getPostListByTimeLevel(String timeLevel, int order, int pageIndex, int pageSize) {
+    public PostList getPostListByTimeLevel(String timeLevel, Integer schoolId, int order, int pageIndex, int pageSize) {
 
         PostList postListRoot = new PostList();
 
-        String sql = "SELECT user.*, sid, say_type, content, image, url, authority, comment_co, diffusion_co, hit_co, post.time, post.from, last_comment_ti " +
+        String sql = "SELECT user.*, sid, say_type, content, image, url, authority, comment_co, diffusion_co, hit_co, post.time, post.from, last_comment_ti, post.school_id " +
                 "FROM i_record_say post INNER JOIN i_user_login user ON post.uid = user.uid " +
-                "WHERE post.say_type = ? and post.time > ? " +
+                "WHERE post.school_id = ?  and post.say_type = ? and post.time > ? " +
                 "ORDER BY post." + orderBys[order] + " DESC limit ? offset ?";
+        long oneWeek = System.currentTimeMillis() / 1000 - 3600 * 24 * 7;
         List<VUserPostEntity> postEntityList = getJdbcTemplate().query(
-                sql, new Object[]{order < 4 ? 0 : 1, /*System.currentTimeMillis() / 1000 - 3600 * 24 * 7*/0, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VUserPostEntity>(VUserPostEntity.class));
+                sql, new Object[]{schoolId, order < 4 ? 0 : 1, oneWeek, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<VUserPostEntity>(VUserPostEntity.class));
 
         PostList.Posts posts = new PostList.Posts();
         List<PostList.Post> postList = new ArrayList<PostList.Post>();
@@ -36,18 +37,20 @@ public class PostDaoImpl extends JdbcDaoSupport implements PostDao {
             post.setId(vUser.getSid());
             post.setAnswerCount(vUser.getCommentCo());
             post.setAuthor(vUser.getNickname());
-            post.setAuthorid(vUser.getActive());
-            post.setPortrait("http://ihelpoo-public.stor.sinaapp.com/useralbum/" + vUser.getUid() + "/" + vUser.getIconUrl() + "_s.jpg?t=" + System.currentTimeMillis());
+            post.setAuthorid(vUser.getUid());
+            post.setPortrait("http://img.ihelpoo.cn/useralbum/" + vUser.getUid() + "/" + vUser.getIconUrl() + "_s.jpg?t=" + System.currentTimeMillis());
             post.setPubDate(friendly_time(new Date((long) vUser.getTime() * 1000)));
             post.setTitle(vUser.getContent());
             post.setViewCount(vUser.getHitCo());
             post.setAnswer(vUser.getContent());
+            post.setSayType(vUser.getSayType());
             postList.add(post);
         }
         posts.setPost(postList);
 
         postListRoot.setPosts(posts);
         postListRoot.setNotice(new Notice());
+        postListRoot.setPage_size(postEntityList.size());
         return postListRoot;
     }
 

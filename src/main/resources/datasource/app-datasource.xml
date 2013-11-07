@@ -15,7 +15,16 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost:3306/ihelpoo?useUnicode=true&amp;characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
-        <property name="password" value=""/>
+        <property name="password" value="Ihelpoo.com"/>
+    </bean>
+
+    <!-- local DB -->
+    <bean id="dataSourceForGenerateViews"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/ihelpoo?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="Ihelpoo.com"/>
     </bean>
 
     <!-- remote SAE's DB -->
@@ -32,14 +41,14 @@
     <bean id="masterUdb"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://10.6.1.208:3306/ihelpoo"/>
+        <property name="url" value="jdbc:mysql://10.6.1.208:3306/ihelpoo?useUnicode=true&amp;characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
         <property name="password" value="Ihelpoo.com"/>
     </bean>
     <bean id="slaveUdb"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://10.6.5.68:3306/ihelpoo"/>
+        <property name="url" value="jdbc:mysql://10.6.5.68:3306/ihelpoo?useUnicode=true&amp;characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
         <property name="password" value="Ihelpoo.com"/>
     </bean>

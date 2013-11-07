@@ -1,13 +1,14 @@
 package com.ihelpoo.api.model.entity;
 
 /**
- * @author: dongxu.wang@acm.org
+ * @author: echowdx@gmail.com
  */
 public class IUserPriorityEntity {
     private int id;
     private Integer uid;
     private Integer pid;
     private Integer pidType;
+    private long groupId;
     private Integer sid;
     private Integer time;
 
@@ -43,6 +44,14 @@ public class IUserPriorityEntity {
         this.pidType = pidType;
     }
 
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
+    }
+
     public Integer getSid() {
         return sid;
     }
@@ -66,6 +75,7 @@ public class IUserPriorityEntity {
 
         IUserPriorityEntity that = (IUserPriorityEntity) o;
 
+        if (groupId != that.groupId) return false;
         if (id != that.id) return false;
         if (pid != null ? !pid.equals(that.pid) : that.pid != null) return false;
         if (pidType != null ? !pidType.equals(that.pidType) : that.pidType != null) return false;
@@ -82,6 +92,7 @@ public class IUserPriorityEntity {
         result = 31 * result + (uid != null ? uid.hashCode() : 0);
         result = 31 * result + (pid != null ? pid.hashCode() : 0);
         result = 31 * result + (pidType != null ? pidType.hashCode() : 0);
+        result = 31 * result + (int) (groupId ^ (groupId >>> 32));
         result = 31 * result + (sid != null ? sid.hashCode() : 0);
         result = 31 * result + (time != null ? time.hashCode() : 0);
         return result;

@@ -1,14 +1,16 @@
 package com.ihelpoo.api.service;
 
 import com.ihelpoo.api.dao.UserDao;
-import com.ihelpoo.api.model.LoginResult;
-import com.ihelpoo.api.model.base.Notice;
-import com.ihelpoo.api.model.base.Result;
-import com.ihelpoo.api.model.base.User;
+import com.ihelpoo.api.model.GenericResult;
+import com.ihelpoo.api.model.common.User;
 import com.ihelpoo.api.model.entity.IUserLoginEntity;
 import com.ihelpoo.api.model.entity.IUserStatusEntity;
-import com.ihelpoo.api.util.MD5;
+import com.ihelpoo.api.model.obj.Result;
+import com.ihelpoo.api.service.base.RecordService;
+import com.ihelpoo.common.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +21,7 @@ import java.util.GregorianCalendar;
  * @author: dongxu.wang@acm.org
  */
 @Service
-public class LoginService {
+public class LoginService extends RecordService {
 
     public static final String FAILURE = "0";
     public static final String SUCCESS = "1";
@@ -32,28 +34,54 @@ public class LoginService {
     @Autowired
     MD5 md5;
 
-    public LoginResult login(String username, String pwd, String status, String ip) {
-        LoginResult loginResult = new LoginResult();
+    public GenericResult login(String username, String pwd, String status, String ip, boolean isThirdLogin) {
+        GenericResult genericResult = new GenericResult();
         IUserLoginEntity userLoginEntity = null;
         try {
-            userLoginEntity = userDao.findByUserName(username);
+            userLoginEntity = userDao.findByAccount(username);
+        } catch (EmptyResultDataAccessException e) {
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
+            return genericResult;
         } catch (Exception e) {
-            //TODO gentle message to user
-            loginResult.setResult(new Result(FAILURE, e.getMessage()));
-            return loginResult;
+            genericResult.setResult(new Result(FAILURE, e.getMessage()));
+            return genericResult;
+        }
+
+        if(!isThirdLogin){
+            if (!userLoginEntity.getPassword().equals(md5.encrypt(pwd))) {
+                genericResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
+                return genericResult;
+            }
         }
 
 
-        if (!userLoginEntity.getPassword().equals(md5.encrypt(pwd))) {
-            loginResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
-            return loginResult;
+        if (syncUserStatus(userLoginEntity, status, ip) < 1) {
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_SYNC_STATUS));
+            return genericResult;
+        }
+
+
+        return succeedToLogin(userLoginEntity);
+    }
+
+
+    public GenericResult thirdLogin(int uid, String status, String ip) {
+        GenericResult genericResult = new GenericResult();
+        IUserLoginEntity userLoginEntity = null;
+        try {
+            userLoginEntity = userDao.findUserById(uid);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_USERNAME_OR_PWD));
+            return genericResult;
+        } catch (Exception e) {
+            genericResult.setResult(new Result(FAILURE, e.getMessage()));
+            return genericResult;
         }
 
         if (syncUserStatus(userLoginEntity, status, ip) < 1) {
-            loginResult.setResult(new Result(FAILURE, MSG_ERR_SYNC_STATUS));
-            return loginResult;
+            genericResult.setResult(new Result(FAILURE, MSG_ERR_SYNC_STATUS));
+            return genericResult;
         }
-
 
         return succeedToLogin(userLoginEntity);
     }
@@ -84,7 +112,7 @@ public class LoginService {
 
         if (!("1".equals(iUserStatusEntity.getActiveFlag()) && 0 == timeIntervalType)) {
 
-            int newUserActive = userLoginEntity.getActive();
+            int newUserActive = userLoginEntity.getActive() == null ? 0 : userLoginEntity.getActive();
             int activeFlag = 0;
             int hourRules = 0;
             int dayRules = 0;
@@ -116,7 +144,7 @@ public class LoginService {
             }
             if (hourRules == 1) {
                 userDao.updateActive(uid, newUserActive);
-                userDao.saveMsgActive(userLoginEntity.getUid(), total, change, reason);
+                userDao.saveMsgActive("add", userLoginEntity.getUid(), total, change, reason);
             }
             if (1 == timeIntervalType && userLoginEntity.getLoginDaysCo() != null) {
 
@@ -152,12 +180,12 @@ public class LoginService {
                 userDao.updateLogin(uid, newUserActive, 1);
                 userDao.updateStatus(uid, activeFlag, 0);
             } else {
-                userDao.updateLogin(uid, newUserActive, userLoginEntity.getLoginDaysCo());
+                userDao.updateLogin(uid, newUserActive, userLoginEntity.getLoginDaysCo() == null ? 1 : userLoginEntity.getLoginDaysCo());
                 userDao.updateStatus(uid, activeFlag, 1);
             }
 
             if (dayRules > 0) {
-                userDao.saveMsgActive(uid, total, change, reason);
+                userDao.saveMsgActive("add", uid, total, change, reason);
             }
         }
 
@@ -183,27 +211,37 @@ public class LoginService {
     private Integer mayUpdateLastLoginTime(IUserLoginEntity userLoginEntity) {
         Calendar calendar = Calendar.getInstance();
         int todayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-        calendar.setTimeInMillis((long) userLoginEntity.getLastlogintime() * 1000);
+        if (!isLoginFirstTime(userLoginEntity)) {
+            calendar.setTimeInMillis((long) userLoginEntity.getLastlogintime() * 1000);
+        }
         int latestLoginDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-        if (latestLoginDayOfYear != todayOfYear) {
+        if (latestLoginDayOfYear != todayOfYear || isLoginFirstTime(userLoginEntity)) {
             userLoginEntity.setLastlogintime(userLoginEntity.getLogintime());
         }
         return userLoginEntity.getLastlogintime();
     }
 
-    private LoginResult succeedToLogin(IUserLoginEntity userLoginEntity) {
-        LoginResult loginResult = new LoginResult();
-        User user = new User();
-        user.setUid(userLoginEntity.getUid());
+    private boolean isLoginFirstTime(IUserLoginEntity userLoginEntity) {
+        return userLoginEntity.getLastlogintime() == null;
+    }
 
-        user.setLocation(userLoginEntity.getSchool());
-        user.setName(userLoginEntity.getNickname());
-        user.setScore((userLoginEntity.getCoins() == null || "".equals(userLoginEntity.getCoins())) ? 0 : Integer.parseInt(userLoginEntity.getCoins()));
-        Notice notice = new Notice.Builder().build();
-        loginResult.setUser(user);
-        loginResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
-        loginResult.setNotice(notice);
-        return loginResult;
+    public GenericResult succeedToLogin(IUserLoginEntity userLoginEntity) {
+        GenericResult genericResult = new GenericResult();
+        User user = new User();
+        user.uid = userLoginEntity.getUid();
+        user.school_id = String.valueOf(userLoginEntity.getSchool());
+        user.nickname = userLoginEntity.getNickname();
+        user.email = userLoginEntity.getEmail();
+        user.avatar_url = convertToAvatarUrl(userLoginEntity.getIconUrl(), userLoginEntity.getUid(), false);
+        user.active_credits = userLoginEntity.getActive();
+        genericResult.setUser(user);
+        genericResult.setResult(new Result(SUCCESS, MSG_SUC_LOGIN));
+        genericResult.setNotice(getNotice(userLoginEntity.getUid()));
+        return genericResult;
+    }
+
+    protected boolean empty(String iconUrl) {
+        return iconUrl == null || iconUrl.length() <= 0;
     }
 
     public static void main(String[] args) {
