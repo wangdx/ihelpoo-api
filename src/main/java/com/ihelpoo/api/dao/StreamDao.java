@@ -75,7 +75,7 @@ public interface StreamDao {
 
     int saveComment(int sid, int uid, String content, int toUid, Boolean isHelp);
 
-    int saveMsgComment(Integer ownerUid, int sid, int ncid, int uid);
+    int saveMsgComment(Integer ownerUid, int sid, int ncid, int uid, int isReply);
 
     int saveMsgAt(int uid, int uid1, int id, int cid);
 

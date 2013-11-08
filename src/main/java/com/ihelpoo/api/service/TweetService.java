@@ -284,7 +284,7 @@ public class TweetService extends RecordService {
                 userDao.saveMsgActive("add", uid, fetchUserActive(userLoginEntity), 1, "回复帮助 (每天最多加15次，包含评论回复他人的记录次数)");
             }
             if (uid != recordSayEntity.getUid()) {
-                streamDao.saveMsgComment(recordSayEntity.getUid(), id, cid, uid);
+                streamDao.saveMsgComment(recordSayEntity.getUid(), id, cid, uid, -1);
             }
         }
 
@@ -346,11 +346,11 @@ public class TweetService extends RecordService {
             userDao.saveMsgActive("add", uid, fetchUserActive(userLoginEntity), 1, "评论或回复他人的记录 (每天最多加15次，包含回复帮助次数)");
         }
         if (uid != recordSayEntity.getUid()  && recordSayEntity.getUid() != toUid) {
-            streamDao.saveMsgComment(recordSayEntity.getUid(), id, cid, uid);
+            streamDao.saveMsgComment(recordSayEntity.getUid(), id, cid, uid, -1);
         }
 
         if(toUid > 9999){
-            streamDao.saveMsgComment(toUid, id, cid, uid);
+            streamDao.saveMsgComment(toUid, id, cid, uid, 1);
         }
 
         final Pattern AT_PATTERN = Pattern.compile("@[\\u4e00-\\u9fa5\\w\\-]+");

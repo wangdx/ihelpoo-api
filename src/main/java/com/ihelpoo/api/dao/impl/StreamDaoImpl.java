@@ -30,7 +30,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
     @Override
     public List<IRecordSayEntity> findTweetsBy(int uid, int pageIndex, int pageSize) {
-        String sql = " SELECT * from i_record_say where uid=? order by last_comment_ti DESC limit ? offset ?  ";
+        String sql = " SELECT * from i_record_say where uid=? order by `time` DESC limit ? offset ?  ";
         return getJdbcTemplate().query(sql, new Object[]{uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<IRecordSayEntity>(IRecordSayEntity.class));
     }
 
@@ -207,9 +207,11 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     }
 
     @Override
-    public int saveMsgComment(Integer ownerUid, int sid, int ncid, int uid) {
-        final String sql = "insert into i_msg_comment (uid, sid, ncid, rid, time, deliver) values(?,?,?,?,unix_timestamp(), 0) ";
-        return getJdbcTemplate().update(sql, new Object[]{ownerUid, sid, ncid, uid});
+    public int saveMsgComment(Integer ownerUid, int sid, int ncid, int uid, int isReply) {
+        String column = isReply > 0 ? "cid," : "";
+        String question = isReply > 0 ? "?," : "";
+        final String sql = "insert into i_msg_comment (uid, sid, " + column + "ncid, rid, time, deliver) values(?,?," + question + "?,?,unix_timestamp(), 0) ";
+        return getJdbcTemplate().update(sql, isReply > 0 ? new Object[]{ownerUid, sid, isReply, ncid, uid} : new Object[]{ownerUid, sid, ncid, uid});
     }
 
     @Override
@@ -397,7 +399,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
 
     @Override
     public IAuMailSendEntity findAuMailSend(Integer sayUid, int sid, int uid) {
-        final String sql  = " SELECT * FROM i_au_mail_send WHERE uid=? AND sid=? AND helperid=? ";
+        final String sql = " SELECT * FROM i_au_mail_send WHERE uid=? AND sid=? AND helperid=? ";
         return getJdbcTemplate().queryForObject(sql, new Object[]{sayUid, sid, uid}, new BeanPropertyRowMapper<IAuMailSendEntity>(IAuMailSendEntity.class));
     }
 
@@ -462,7 +464,7 @@ public class StreamDaoImpl extends JdbcDaoSupport implements StreamDao {
     @Override
     public int incSayCount(Integer sid, boolean canAffect, String countColumn, boolean shouldInc) {
         String columnInc = shouldInc ? countColumn + " + 1" : countColumn;
-        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET " + countColumn + " = IF(" + countColumn + " IS NULL,1, " + columnInc+" ) ");
+        StringBuilder sb = new StringBuilder(" UPDATE i_record_say SET " + countColumn + " = IF(" + countColumn + " IS NULL,1, " + columnInc + " ) ");
         if (canAffect) {
             sb.append(" , last_comment_ti=unix_timestamp() ");
         }
