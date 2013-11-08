@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class OoVersion {
 
-    public static final String VERSION_NAME = "1.0.0";
-    public static final String VERSION_CODE = "1";
-    public static final String DOWNLOADS_URL = "http://www.ihelpoo.com/app/mobile/downloads";
+
+    public static final String VERSION_NAME = "1.0.1";
+    public static final String VERSION_CODE = "2";
+    public static final String DOWNLOADS_URL = "http://download.ihelpoo.cn/apps/ihelpoo.apk";
     public static final String WP7_VERSION_NAME = "1.0";
     public static final String IOS_VERSION_NAME = "1.0.0";
 
@@ -24,7 +25,7 @@ public class OoVersion {
         VersionResult.Android andr = new VersionResult.Android.Builder()
                 .versionCode(VERSION_CODE)
                 .versionName(VERSION_NAME)
-                .downloadUrl(DOWNLOADS_URL + "/ihelpoo-" + VERSION_NAME + ".apk")
+                .downloadUrl(DOWNLOADS_URL)
                 .changeLog("\r\n  版本信息：ihelpoo.com for Android v" + VERSION_NAME
                         + "\r\n  更新日志：首次发布"
                         + "\r\n")

@@ -1,6 +1,7 @@
 package com.ihelpoo.api.service.base;
 
 import com.ihelpoo.api.dao.NotificationDao;
+import com.ihelpoo.api.dao.UserDao;
 import com.ihelpoo.api.model.obj.Notice;
 import com.ihelpoo.api.service.WordService;
 import com.ihelpoo.common.Constant;
@@ -24,10 +25,13 @@ public class RecordService {
     @Autowired
     protected NotificationDao notificationDao;
 
+    @Autowired
+    UserDao userDao;
+
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Notice getNotice(int uid) {
+    public Notice getNotice(final int uid) {
         Notice notice = new Notice();
         if (uid < 10000) {
             return notice;
@@ -37,6 +41,11 @@ public class RecordService {
         notice.chatCount = countChat(uid);
         notice.commentCount = countComment(uid);
         notice.systemCount = countSystem(uid);
+        new Thread(){
+            public void run(){
+                userDao.updateUserStatus(uid);
+            }
+        }.start();
         return notice;
     }
 
@@ -81,7 +90,7 @@ public class RecordService {
         List<String> imgs = streamDao.findUserImgLinkEntitiesBy(sid);
         String imgUrl = "";
         if (imgs != null && imgs.size() > 0)
-            imgUrl = imgs.get(0) + "?t=" + System.currentTimeMillis();
+            imgUrl = imgs.get(0) + "?t=" + System.currentTimeMillis()/10000000;
         return imgUrl;
     }
 
@@ -91,7 +100,7 @@ public class RecordService {
             imageSize = ".jpg";
         }
         if (!empty(iconUrl)) {
-            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + imageSize + "?t=" + System.currentTimeMillis();
+            return Constant.IMG_STORAGE_ROOT + "/useralbum/" + uid + "/" + iconUrl + imageSize + "?t=" + System.currentTimeMillis()/10000000;
         } else {
             return Constant.IMG_STORAGE_ROOT + "/useralbum/default_avatar.jpg!app";
         }
@@ -251,5 +260,10 @@ public class RecordService {
         Jedis jedis = new Jedis("localhost");
         jedis.hdel(WordService.R_ACCOUNT + WordService.R_MESSAGE + uidStr, String.valueOf(noticeId));
         jedis.disconnect();
+    }
+
+    public static void main(String[] args){
+        long t = System.currentTimeMillis();
+        System.out.println(t/10000000);
     }
 }

@@ -109,4 +109,6 @@ public interface UserDao {
     int saveUserThird(String thirdUid, int uid, String thirdType);
 
     List<VUserBuddiesEntity> findAllBuddies(Integer uid, int relation, Integer pageIndex, Integer pageSize);
+
+    int updateUserStatus(int uid);
 }

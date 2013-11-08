@@ -493,6 +493,17 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     }
 
     @Override
+    public int updateUserStatus(int uid) {
+        final String sql = " update i_user_status \n" +
+                "set total_active_ti=IF(unix_timestamp()-last_active_ti > 999, total_active_ti, total_active_ti + unix_timestamp()-last_active_ti),\n" +
+                "last_active_ti = unix_timestamp(),\n" +
+                "acquire_seconds = 1500,\n" +
+                "acquire_times = 5\n" +
+                "where uid=? ";
+        return getJdbcTemplate().update(sql, uid);
+    }
+
+    @Override
     public List<ISchoolInfoEntity> fetchAllSchools() {
         String sql = " SELECT * FROM i_school_info where id!=35 AND status=1 ORDER BY initial ";// exclude test school by id!=35
         return getJdbcTemplate().query(sql, new BeanPropertyRowMapper<ISchoolInfoEntity>(ISchoolInfoEntity.class));
@@ -568,9 +579,10 @@ public class UserDaoImpl extends NamedParameterJdbcDaoSupport implements UserDao
     public static int nthOccurrence(String str, char c, int n) {
         int pos = str.indexOf(c, 0);
         while (n-- > 0 && pos != -1)
-            pos = str.indexOf(c, pos+1);
+            pos = str.indexOf(c, pos + 1);
         return pos;
     }
+
     public static void main(String[] args) {
         String by = "HTC ONE X hello world";
         String a = by.substring(0, nthOccurrence(by, ' ', 2));

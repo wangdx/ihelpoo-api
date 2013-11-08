@@ -634,7 +634,7 @@ public class TweetService extends RecordService {
             throw new AppException("上传图片太大，最大能上传单张3.5MB");
         }
 
-        int curSize = userDao.findSizeOfAlbum(uid);
+//        int curSize = userDao.findSizeOfAlbum(uid);
         IUserLoginEntity loginEntity = userDao.findUserById(uid);
         int rank = this.convertToRank(loginEntity.getActive());
         BigInteger defaultSize = getAlbumSize(rank);
