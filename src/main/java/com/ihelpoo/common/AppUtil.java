@@ -48,7 +48,7 @@ public class AppUtil {
 
             String db = "ihelpoo";
             String table = "i_msg_notice";
-            wr = new HSClientImpl(Constant.HS_WR.getLeft(), Constant.HS_WR.getRight(), 2);
+            wr = new HSClientImpl(Constant.HS_WR.getLeft(), Constant.HS_WR.getRight(), 1);
             IndexSession sessionChat = wr.openIndexSession(db, table,
                     "PRIMARY", new String[]{"notice_id", "notice_type", "source_id", "detail_id", "format_id", "create_time"});
             ModifyStatement stmt = sessionChat.createStatement();
