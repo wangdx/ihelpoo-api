@@ -255,7 +255,8 @@ public class TweetService extends RecordService {
                 return pushResult;
             }
             if (recordSayEntity.getUid().intValue() != uid) {
-                AppUtil.saveNotice(uid, recordSayEntity.getUid(), "stream/ih-para:newHelp", recordSayEntity.getSid());
+                long noticeId = AppUtil.toNotice(recordSayEntity.getUid());
+                streamDao.saveNotice(uid, "stream/ih-para:newHelp", recordSayEntity.getSid(), noticeId);
                 try {
                     auMailSendEntity = streamDao.findAuMailSend(recordSayEntity.getUid(), recordSayEntity.getSid(), uid);
                 } catch (EmptyResultDataAccessException e) {
@@ -269,7 +270,8 @@ public class TweetService extends RecordService {
                 }
             } else {
                 if (toUid > 9999) {
-                    AppUtil.saveNotice(uid, toUid, "stream/ih-para:reply", recordSayEntity.getSid());
+                    long noticeId = AppUtil.toNotice(toUid);
+                    streamDao.saveNotice(uid, "stream/ih-para:reply", recordSayEntity.getSid(), noticeId);
                 }
             }
 
@@ -441,7 +443,8 @@ public class TweetService extends RecordService {
         if (isHelp(reward)) {
             List<IUserPriorityEntity> priorityEntities = userDao.findFollowersBy(uid, 0, Integer.MAX_VALUE);
             for (IUserPriorityEntity priorityEntity : priorityEntities) {
-                AppUtil.saveNotice(uid, priorityEntity.getUid(), "stream/ih-para:needhelp", sayId);
+                long noticeId = AppUtil.toNotice(priorityEntity.getUid());
+                streamDao.saveNotice(uid, "stream/ih-para:needhelp", sayId, noticeId);
 
                 IUserLoginEntity loginEntity1 = userDao.findUserById(priorityEntity.getUid());
                 if (!StringUtils.isEmpty(loginEntity1.getEmail())) {

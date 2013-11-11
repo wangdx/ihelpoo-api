@@ -201,7 +201,8 @@ public class UserService extends RecordService {
             return genericResult;
         }
 
-        AppUtil.saveNotice(uid, hisuid, "mutual/priority", 0);
+        long noticeId = AppUtil.toNotice(hisuid);
+        streamDao.saveNotice(uid, "mutual/priority", 0, noticeId);
 
         result.setErrorCode("1");
         result.setErrorMessage("成功圈了Ta");
@@ -342,38 +343,6 @@ public class UserService extends RecordService {
         foResult.notice = new Notice();
         return foResult;
     }
-//
-//    private FriendsResult getMyFriends(FriendsResult foResult, Set<Integer> ids) {
-//
-//        FriendsResult.Friends friends = new FriendsResult.Friends();
-//        List<User> users = new ArrayList<User>();
-//
-//        List<IUserLoginEntity> entities = userDao.findUsersBy(ids);
-//        for (IUserLoginEntity entity : entities) {
-//            User user = new User();
-//            user.nickname = entity.getNickname();
-//            user.enrol_time = entity.getEnteryear();
-//            user.active_credits = entity.getActive() == null ? 0 : entity.getActive();
-//            user.level = convertToLevel(entity.getActive());
-//            user.gender = entity.getSex();
-//            user.avatar_url = convertToAvatarUrl(entity.getIconUrl(), entity.getUid(), false);
-//            user.uid = entity.getUid();
-//            user.online_status = entity.getOnline();
-//            user.school_id = String.valueOf(entity.getSchool());
-//            user.uid = entity.getUid();
-//            user.user_type = entity.getType();
-//            users.add(user);
-//        }
-//
-//        Result result = new Result();
-//        result.setErrorCode("1");
-//        result.setErrorMessage("成功");
-//        friends.friend = users;
-//        foResult.friends = friends;
-//        foResult.result = result;
-//        foResult.notice = new Notice();
-//        return foResult;
-//    }
 
     public GenericResult updateNickname(Integer uid, String newNickname) {
         GenericResult genericResult = new GenericResult();

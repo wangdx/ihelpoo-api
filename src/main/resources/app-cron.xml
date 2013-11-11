@@ -8,11 +8,20 @@
     <mvc:annotation-driven/>
 
     <bean id="mailSendingJob" class="com.ihelpoo.cron.MailSendingJob"/>
+    <bean id="chatStoringJob" class="com.ihelpoo.cron.ChatStoringJob">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
 
     <bean id="sendingJobBean" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="mailSendingJob"/>
         <property name="targetMethod" value="send"/>
     </bean>
+
+    <bean id="storingChatJobBean" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="chatStoringJob"/>
+        <property name="targetMethod" value="store"/>
+    </bean>
+
 
     <bean id="sendingJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="sendingJobBean"/>
@@ -21,15 +30,25 @@
         <property name="startDelay" value="3000"/>
     </bean>
 
+    <bean id="storingChatTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="storingChatJobBean"/>
+        <property name="repeatInterval" value="10000"/>
+        <property name="startDelay" value="3000"/>
+    </bean>
+
+
+
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="jobDetails">
             <list>
                 <ref bean="sendingJobBean"/>
+                <ref bean="storingChatJobBean"/>
             </list>
         </property>
         <property name="triggers">
             <list>
                 <ref bean="sendingJobTrigger"/>
+                <ref bean="storingChatTrigger"/>
             </list>
         </property>
     </bean>

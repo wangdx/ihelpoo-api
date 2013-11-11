@@ -160,7 +160,8 @@ public class RegisterService extends RecordService {
 
         userDao.saveStatus(userLoginEntity.getUid(), 6);
 
-        long noticeId = streamDao.saveNotice(10000, "system/welcome", 0);
+        final long noticeId = ID.INSTANCE.next();
+        streamDao.saveNotice(10000, "system/welcome", 0, noticeId);
         deliverTo(userLoginEntity.getUid(), noticeId);
         bounceNoticeMessageCount(userLoginEntity.getUid(), 1);
 

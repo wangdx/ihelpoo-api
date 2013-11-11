@@ -31,13 +31,13 @@ public class MailSendingJob {
             String to = jedis.rpop(MAIL_QUEUE_TO);
             String subject = jedis.rpop(MAIL_QUEUE_SUBJECT);
             String body = jedis.rpop(MAIL_QUEUE_BODY);
-            if(to == null || subject == null || body == null){
+            if (to == null) {
                 continue;
             }
             message.setTo(to);
             message.setSubject(subject);
             message.setBody(body);
-            logger.info("//////////sending email//////////"+body+"////");
+            logger.info(">>>sending email to:" + to);
             mailService.send(message);
 
         } while (jedis.decr(MAIL_COUNTER) > 0);

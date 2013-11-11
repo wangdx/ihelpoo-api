@@ -83,7 +83,7 @@ public interface StreamDao {
 
     int findAllCommentsCountBy(int sid);
 
-    long saveNotice(int from, String noticeType, int detailId);
+    void saveNotice(int from, String noticeType, int detailId, long noticeId);
 
     IRecordCommentEntity findLastCommentBy(int uid, Boolean isHelp);
 
@@ -98,4 +98,6 @@ public interface StreamDao {
     IRecordHelpEntity findRecordHelp(int sid);
 
     int updateRecordHelp(int hid, String status, String statusStub);
+
+
 }

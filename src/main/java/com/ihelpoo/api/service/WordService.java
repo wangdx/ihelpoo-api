@@ -1,18 +1,13 @@
 package com.ihelpoo.api.service;
 
-import com.google.code.hs4j.HSClient;
-import com.google.code.hs4j.IndexSession;
-import com.google.code.hs4j.ModifyStatement;
-import com.google.code.hs4j.exception.HandlerSocketException;
-import com.google.code.hs4j.impl.HSClientImpl;
-import com.ihelpoo.api.model.*;
-import com.ihelpoo.api.model.obj.*;
-import com.ihelpoo.common.Constant;
 import com.ihelpoo.api.dao.CommentDao;
 import com.ihelpoo.api.dao.MessageDao;
 import com.ihelpoo.api.dao.UserDao;
+import com.ihelpoo.api.model.*;
 import com.ihelpoo.api.model.entity.*;
+import com.ihelpoo.api.model.obj.*;
 import com.ihelpoo.api.service.base.RecordService;
+import com.ihelpoo.common.Constant;
 import org.cometd.bayeux.client.ClientSession;
 import org.cometd.client.BayeuxClient;
 import org.cometd.client.transport.ClientTransport;
@@ -26,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -477,8 +470,6 @@ public class WordService extends RecordService {
 
         final Date now = new Date();
         int time = (int) (now.getTime() / 1000L);
-//
-//        store(String.valueOf(receiver), String.valueOf(uid), content, "", time);
         IUserLoginEntity user = userDao.findUserById(uid);
 
         DoChatResult doChatResult = new DoChatResult();
@@ -550,43 +541,6 @@ public class WordService extends RecordService {
 
     }
 
-
-    private void store(String to, String from, String chat, String image, int time) {
-        HSClient wr = null;
-        try {
-
-            String db = "ihelpoo";
-            String table = "i_talk_content";
-
-            wr = new HSClientImpl(HS_WR.getLeft(), HS_WR.getRight(), 2);
-            IndexSession sessionChat = wr.openIndexSession(db, table,
-                    "PRIMARY", new String[]{"uid", "touid", "content", "image", "time", "deliver", "del"});
-            ModifyStatement stmt = sessionChat.createStatement();
-
-            stmt.setInt(1, Integer.parseInt(from));
-            stmt.setInt(2, Integer.parseInt(to));
-            stmt.setString(3, chat);
-            stmt.setString(4, image);
-            stmt.setInt(5, (int) time);
-//            stmt.setString(6, value != null && value.equals(from) ? "1" : "0");//TODO should be delivered if they are talking, namely, touid is online
-            stmt.setString(6, "0");
-            stmt.setInt(7, 0);
-            boolean result = stmt.insert();
-            System.err.println("store ++++--insert into talk table===" + result);
-        } catch (InterruptedException e) {
-        } catch (TimeoutException e) {
-        } catch (HandlerSocketException e) {
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                wr.shutdown();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     class ValueComparator implements Comparator<String> {
 
         Map<String, ITalkContentEntity> base;
@@ -616,37 +570,4 @@ public class WordService extends RecordService {
         matcher.appendTail(target);
         return target.toString();
     }
-
-//    public TweetCommentResult pullChatsBy(int id, int pageIndex, int pageSize) {
-//
-//        List<VTweetCommentEntity> commentEntities = messageDao.findAllChatsBy(id, pageIndex, pageSize);
-//        int all_count = commentEntities.size();
-//        List<TweetCommentResult.Comment> comments = new ArrayList<TweetCommentResult.Comment>();
-//        for (VTweetCommentEntity commentEntity : commentEntities) {
-//            TweetCommentResult.Comment comment = new TweetCommentResult.Comment.Builder()
-//                    .content(commentEntity.getContent())
-//                    .date(convertToDate(commentEntity.getTime()))
-//                    .author(commentEntity.getNickname())
-//                    .authorid(commentEntity.getUid())
-//                    .avatar(convertToAvatarUrl(commentEntity.getIconUrl(), commentEntity.getUid()))
-//                    .by(0)
-//                    .id(commentEntity.getSid())
-//                    .build();
-//            comments.add(comment);
-//        }
-//        Notice notice = new Notice.Builder()
-//                .talk(0)
-//                .system(0)
-//                .comment(0)
-//                .at(0)
-//                .build();
-//
-//        TweetCommentResult commentResult = new TweetCommentResult();
-//        TweetCommentResult.Comments commentWrapper = new TweetCommentResult.Comments(comments);
-//        commentResult.setAllCount(all_count);
-//        commentResult.setPage_size(pageSize);
-//        commentResult.setComments(commentWrapper);
-//        commentResult.setNotice(notice);
-//        return commentResult;
-//    }
 }
