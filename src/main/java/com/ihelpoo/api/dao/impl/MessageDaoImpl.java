@@ -54,7 +54,10 @@ public class MessageDaoImpl extends NamedParameterJdbcDaoSupport implements Mess
     @Override
     public List<VTweetCommentEntity> findAllChatsBy(Integer uid, Integer id, Integer pageIndex, Integer pageSize) {
         List<VTweetCommentEntity> commentEntities = new ArrayList<VTweetCommentEntity>();
-        final String sql = " select t.content, t.`time`,t.deliver, t.del,t.touid,t.id, u.* from i_talk_content t join i_user_login u on t.uid = u.uid WHERE (t.uid = :me AND touid = :friend) OR (t.uid = :friend AND touid = :me)  AND del != :me ORDER BY time DESC LIMIT :limit OFFSET :offset ";
+        final String sql = " select t.content, t.`time`,t.deliver, t.del,t.touid,t.id, u.* " +
+                "from i_talk_content t left join i_user_login u on t.uid = u.uid " +
+                "WHERE ((t.uid = :me AND touid = :friend) OR (t.uid = :friend AND touid = :me))  AND del != :me " +
+                "ORDER BY `time` DESC LIMIT :limit OFFSET :offset ";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("me", uid);
         parameters.addValue("friend", id);
