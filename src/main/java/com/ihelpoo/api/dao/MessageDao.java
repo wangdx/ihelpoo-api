@@ -22,4 +22,12 @@ public interface MessageDao {
     List<ITalkContentEntity> findRecentChatsBy(int uid, int pageIndex, int pageSize);
 
     List<VTweetCommentEntity> findAllChatsBy(Integer uid, Integer id, Integer pageIndex, Integer pageSize);
+
+    void updateChats(Integer uid, Integer friendId);
+
+    void deleteChats(Integer uid, Integer friendId);
+
+    void updateOneChat(Integer id, Integer uid, Integer friendId);
+
+    void deleteOneChat(Integer id, Integer uid, Integer friendId);
 }

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class OoVersion {
 
 
-    public static final String VERSION_NAME = "1.0.1";
-    public static final String VERSION_CODE = "2";
+    public static final String VERSION_NAME = "1.0.2";
+    public static final String VERSION_CODE = "3";
     public static final String DOWNLOADS_URL = "http://download.ihelpoo.cn/apps/ihelpoo.apk";
     public static final String WP7_VERSION_NAME = "1.0";
     public static final String IOS_VERSION_NAME = "1.0.0";
@@ -27,7 +27,7 @@ public class OoVersion {
                 .versionName(VERSION_NAME)
                 .downloadUrl(DOWNLOADS_URL)
                 .changeLog("\r\n  版本信息：ihelpoo.com for Android v" + VERSION_NAME
-                        + "\r\n  更新日志：首次发布"
+                        + "\r\n  更新日志：\r\n1.增加悄悄话删除功能；\r\n2.调整列表界面；\r\n3.优化安装包体积"
                         + "\r\n")
                 .build();
         //TODO using CDATA and escape

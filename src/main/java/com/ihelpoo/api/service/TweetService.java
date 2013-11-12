@@ -735,7 +735,7 @@ public class TweetService extends RecordService {
         return pushComment(id, uid, content, authorid, author, help);//TODO
     }
 
-    public GenericResult deleteComment(Integer authorid, Integer replyid, Boolean help) {
+    public GenericResult deleteComment(Integer authorid, Integer replyid, Boolean help, Integer sid) {
         GenericResult genericResult = new GenericResult();
         Result result = new Result();
         result.setErrorCode("0");

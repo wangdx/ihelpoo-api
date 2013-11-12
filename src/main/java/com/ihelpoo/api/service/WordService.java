@@ -62,8 +62,6 @@ public class WordService extends RecordService {
                 break;
         }
 
-        long t = System.currentTimeMillis();
-
         Jedis jedis = new Jedis(Constant.R_HOST);
         Set<String> notices = jedis.hkeys(R_ACCOUNT + R_MESSAGE + uid);
 
@@ -107,13 +105,13 @@ public class WordService extends RecordService {
             ObjectReply or = null;
             int sid = 0;
             String sayType = null;
-            if(diffusionEntity != null){
+            if (diffusionEntity != null) {
                 try {
                     tweetDetailEntity = streamDao.findTweetDetailBy(diffusionEntity.getSid());
                 } catch (EmptyResultDataAccessException e) {
                     //eat it
                 }
-            }else if (msg.getDetailId() > 0) {
+            } else if (msg.getDetailId() > 0) {
                 try {
                     tweetDetailEntity = streamDao.findTweetDetailBy(msg.getDetailId());
                 } catch (EmptyResultDataAccessException e) {
@@ -127,18 +125,16 @@ public class WordService extends RecordService {
             }
 
 
-
-
             Active active = new Active();
-            if(tweetDetailEntity != null && (
+            if (tweetDetailEntity != null && (
                     "diffusiontoowner".equals(msg.getFormatId())
-                    || "diffusion".equals(msg.getFormatId())
-                    || "plus".equals(msg.getFormatId())
-                    || "stream/ih-para:needhelp".equals(msg.getFormatId())
-                    || "stream/ih-para:newHelp".equals(msg.getFormatId())
-                    || "stream/ih-para:reply".equals(msg.getFormatId())
-                    || "stream/ih-para:success".equals(msg.getFormatId())
-            )){
+                            || "diffusion".equals(msg.getFormatId())
+                            || "plus".equals(msg.getFormatId())
+                            || "stream/ih-para:needhelp".equals(msg.getFormatId())
+                            || "stream/ih-para:newHelp".equals(msg.getFormatId())
+                            || "stream/ih-para:reply".equals(msg.getFormatId())
+                            || "stream/ih-para:success".equals(msg.getFormatId())
+            )) {
                 active.catalog = 3; //TWEET
             }
             active.sid = msg.getDetailId();
@@ -175,17 +171,12 @@ public class WordService extends RecordService {
         List<VAtUserEntity> atUserEntities = commentDao.fetchAllAtBy(uid, pageIndex, pageSize);
         List<Active> activeList = new ArrayList<Active>();
         for (VAtUserEntity atUserEntity : atUserEntities) {
-//            String content = "";
             String info = "";
             String contentDetail = "";
             if (atUserEntity.getCid() != null && atUserEntity.getCid() > 0) {
                 info = "这条评论@了你";
-//                IRecordCommentEntity commentEntity = commentDao.fetchCommentBy(atUserEntity.getCid());
-//                content = commentEntity.getContent() == null ? "这条评论被你删除了的" : commentEntity.getContent();
             } else if (atUserEntity.getHid() != null && atUserEntity.getHid() > 0) {
                 info = "这条帮助回复@了你";
-//                IRecordHelpreplyEntity helpreplyEntity = streamDao.findHelpBy(atUserEntity.getHid());
-//                content = helpreplyEntity.getContent() == null ? "这条评论被你删除了的" : helpreplyEntity.getContent();
             } else if (atUserEntity.getSid() != null && atUserEntity.getSid() > 0) {
                 IRecordSayEntity sayEntity = null;
                 try {
@@ -379,6 +370,7 @@ public class WordService extends RecordService {
             c1.content = talk.getContent();
             c1.messageCount = talk.getChatNum() == null ? 0 : talk.getChatNum();
             c1.pubDate = convertToDate(talk.getTime());
+            c1.del = talk.getDel() == null ? 0 : talk.getDel();
             chats.add(c1);
 
         }
@@ -438,7 +430,22 @@ public class WordService extends RecordService {
 
 
     //TODO we need to refactor here, since it would be very slow to establish cometd connection every time.
-    public DoChatResult doChat(Integer uid, Integer receiver, String content) throws Exception {
+    public DoChatResult doChat(Integer uid, Integer receiver, String content, String receiverNickname) throws Exception {
+
+        DoChatResult doChatResult = new DoChatResult();
+        Result result = new Result();
+        result.setErrorCode("0");
+        if (receiverNickname != null && receiverNickname.length() > 0) {
+            try {
+                IUserLoginEntity user = userDao.findUserByNickname(receiverNickname);
+                receiver = user.getUid();
+            } catch (EmptyResultDataAccessException e) {
+                result.setErrorMessage("没有使用该昵称的用户");
+                doChatResult.result = result;
+                return doChatResult;
+            }
+        }
+
 
         // Set up a Jetty HTTP client to use with CometD
         HttpClient httpClient = new HttpClient();
@@ -472,8 +479,6 @@ public class WordService extends RecordService {
         int time = (int) (now.getTime() / 1000L);
         IUserLoginEntity user = userDao.findUserById(uid);
 
-        DoChatResult doChatResult = new DoChatResult();
-        Result result = new Result();
         result.setErrorCode("1");
         result.setErrorMessage("发送成功");
         TweetCommentResult.Comment comment = new TweetCommentResult.Comment();
@@ -505,6 +510,38 @@ public class WordService extends RecordService {
             }
         }
         throw new IllegalStateException("Client did not handshake with server");
+    }
+
+    public GenericResult delChat(Integer uid, Integer friendId) {
+        GenericResult genericResult = new GenericResult();
+        genericResult.setNotice(new Notice());
+        Result result = new Result();
+        genericResult.setResult(result);
+        result.setErrorCode("0");
+
+        messageDao.updateChats(uid, friendId);
+        messageDao.deleteChats(uid, friendId);
+
+        result.setErrorCode("1");
+        result.setErrorMessage("删除成功");
+        genericResult.setResult(result);
+        return genericResult;
+    }
+
+    public GenericResult deleteOneChat(Integer id, Integer authorid, Integer replyid) {
+        GenericResult genericResult = new GenericResult();
+        genericResult.setNotice(new Notice());
+        Result result = new Result();
+        genericResult.setResult(result);
+        result.setErrorCode("0");
+
+        messageDao.updateOneChat(replyid, authorid, id);
+        messageDao.deleteOneChat(replyid, authorid, id);
+
+        result.setErrorCode("1");
+        result.setErrorMessage("删除成功");
+        genericResult.setResult(result);
+        return genericResult;
     }
 
     static class Pair<L, R> {

@@ -224,7 +224,7 @@ public class RegisterService extends RecordService {
         DefaultMajor defaultMajor = userDao.fetchDefaultMajor(schoolId);
         userDao.saveUserInfo(userLoginEntity.getUid(), defaultMajor.getAcademyId(), defaultMajor.getMajorId(), defaultMajor.getDormId(), "http://weibo.com/" + thirdUid);
         userDao.saveStatus(userLoginEntity.getUid(), 6);
-        wordService.doChat(10000, userLoginEntity.getUid(), "系统为您自动分配了我帮圈圈登录账号:" + email + " 密码为:" + password + "。为方便保证独立账号登录，希望您能及时重新设置账号和密码:)");
+        wordService.doChat(10000, userLoginEntity.getUid(), "系统为您自动分配了我帮圈圈登录账号:" + email + " 密码为:" + password + "。为方便保证独立账号登录，希望您能及时重新设置账号和密码:)", null);
         int sid = tweetService.pubTweet(userLoginEntity.getUid(), 0L, "我刚刚通过" + getThirdName(thirdType) + "登录加入了我帮圈圈:)", null, null, deviceType, schoolId);
         userDao.addDynamic(sid, "join");
         return loginService.succeedToLogin(userLoginEntity);//First Time is register , not login

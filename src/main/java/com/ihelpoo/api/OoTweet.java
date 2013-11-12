@@ -292,11 +292,16 @@ public class OoTweet {
     @RequestMapping(value = "/commentDelete.xml", method = RequestMethod.POST, produces = "application/xml")
     @ResponseBody
     public GenericResult commentDeleteXML(
+            @RequestParam(value = "id", required = false) Integer id,
             @RequestParam(value = "authorid", required = false) Integer authorid,
             @RequestParam(value = "replyid", required = false) Integer replyid,
             @RequestParam(value = "is_help", required = false) Boolean isHelp,
+            @RequestParam(value = "catalog", required = false) Integer catalog,
             @CookieValue(value = Constant.OO_USER_COOKIE, required = false) String userCookie) {
-        return tweetService.deleteComment(authorid, replyid, isHelp);
+        if(catalog != null && catalog == 4){
+            return wordService.deleteOneChat(id, authorid, replyid);
+        }
+        return tweetService.deleteComment(authorid, replyid, isHelp, id);
     }
 
     @RequestMapping(value = "/commentReply.xml", method = RequestMethod.POST, produces = "application/xml")

@@ -41,8 +41,14 @@ public class MessageDaoImpl extends NamedParameterJdbcDaoSupport implements Mess
 
     @Override
     public List<ITalkContentEntity> findRecentChatsBy(int uid, int pageIndex, int pageSize) {
-        final String sql = " SELECT *, COUNT(*) AS chat_num , max(`time`)  as max_time FROM (select * from i_talk_content order by id desc) a WHERE uid=? or touid=? GROUP BY uid, touid ORDER BY id DESC LIMIT ? OFFSET ? ";
-        return getJdbcTemplate().query(sql, new Object[]{uid, uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<ITalkContentEntity>(ITalkContentEntity.class));
+        final String sql = " SELECT *, COUNT(*) AS chat_num , max(`time`)  as max_time FROM (" +
+                "select * from i_talk_content where del != :me and (uid=:me or touid=:me) order by `time` desc) a " +
+                "GROUP BY uid, touid ORDER BY `time` DESC LIMIT :limit OFFSET :offset ";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("me", uid);
+        parameters.addValue("limit", pageSize);
+        parameters.addValue("offset", pageIndex * pageSize);
+        return getNamedParameterJdbcTemplate().query(sql, parameters, new BeanPropertyRowMapper<ITalkContentEntity>(ITalkContentEntity.class));
     }
 
     @Override
@@ -62,41 +68,45 @@ public class MessageDaoImpl extends NamedParameterJdbcDaoSupport implements Mess
             commentEntity.setContent(talk.getContent());
             commentEntity.setIconUrl(talk.getIconUrl());
             commentEntity.setUid(talk.getUid());
+            commentEntity.setSid(talk.getId());
             commentEntities.add(commentEntity);
         }
         return commentEntities;
     }
 
-//    @Override
-//    public List<VTweetCommentEntity> findAllChatsBy(int uid, int pageIndex, int pageSize) {
-//        final String sql = " SELECT * FROM i_talk_content WHERE uid=? or touid=? GROUP BY uid, touid ORDER BY id DESC LIMIT ? OFFSET ? ";
-//        List<ITalkContentEntity> talks = getJdbcTemplate().query(sql, new Object[]{uid, uid, pageSize, pageIndex * pageSize}, new BeanPropertyRowMapper<ITalkContentEntity>(ITalkContentEntity.class));
-//        Set<Integer> uids = new HashSet<Integer>();
-//        for (ITalkContentEntity talk : talks) {
-//            uids.add(talk.getUid());
-//            uids.add(talk.getTouid());
-//        }
-//        MapSqlParameterSource parameters = new MapSqlParameterSource();
-//        parameters.addValue("ids", uids);
-//        List<IUserLoginEntity> users = getNamedParameterJdbcTemplate().query(" SELECT * FROM i_user_login WHERE uid IN (:ids) ", parameters, new BeanPropertyRowMapper<IUserLoginEntity>(IUserLoginEntity.class));
-//        Map<Integer, IUserLoginEntity> usersMap = new HashMap<Integer, IUserLoginEntity>();
-//        for (IUserLoginEntity user : users) {
-//            usersMap.put(user.getUid(), user);
-//        }
-//
-//        List<VTweetCommentEntity> comments = new ArrayList<VTweetCommentEntity>();
-//        for (ITalkContentEntity talk : talks) {
-//            VTweetCommentEntity comment = new VTweetCommentEntity();
-//            comment.setCid(talk.getId());
-//            comment.setIconUrl(usersMap.get(talk.getUid()).getIconUrl());
-//            comment.setNickname(usersMap.get(talk.getUid()).getNickname());
-//            comment.setUid(talk.getUid());
-//            comment.setContent(talk.getContent());
-//            comment.setTime(talk.getTime());
-//            comments.add(comment);
-//        }
-//        return comments;
-//    }
+    @Override
+    public void updateChats(Integer uid, Integer friendId) {
+        final String sql = " UPDATE i_talk_content SET del = :me WHERE ((uid= :me and touid= :friendId) or (touid= :me and uid= :friendId)) AND del = 0 ";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("me", uid);
+        parameters.addValue("friendId", friendId);
+        getNamedParameterJdbcTemplate().update(sql, parameters);
+    }
 
+    @Override
+    public void deleteChats(Integer uid, Integer friendId) {
+        final String sql = " DELETE FROM i_talk_content WHERE ((uid= :me and touid= :friendId) or (touid= :me and uid= :friendId)) AND del = :friendId ";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("me", uid);
+        parameters.addValue("friendId", friendId);
+        getNamedParameterJdbcTemplate().update(sql, parameters);
+    }
 
+    @Override
+    public void updateOneChat(Integer id, Integer uid, Integer friendId) {
+        final String sql = " UPDATE i_talk_content SET del = :me WHERE id=:id AND del = 0 ";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("id", id);
+        parameters.addValue("me", uid);
+        getNamedParameterJdbcTemplate().update(sql, parameters);
+    }
+
+    @Override
+    public void deleteOneChat(Integer id, Integer uid, Integer friendId) {
+        final String sql = " DELETE FROM i_talk_content WHERE  id=:id AND del = :friendId ";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("id", id);
+        parameters.addValue("friendId", friendId);
+        getNamedParameterJdbcTemplate().update(sql, parameters);
+    }
 }

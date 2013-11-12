@@ -56,5 +56,8 @@ public class ChatResult {
         public int messageCount;
         @XmlElement
         public String pubDate;
+        @XmlElement
+        public int del;
+
     }
 }
