@@ -13,33 +13,6 @@
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
     </bean>
 
-
-    <bean id="mailSendingJob" class="com.ihelpoo.cron.MailSendingJob"/>
-
-    <bean id="sendingJobBean" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="mailSendingJob"/>
-        <property name="targetMethod" value="send"/>
-    </bean>
-
-    <bean id="sendingJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="sendingJobBean"/>
-        <property name="repeatInterval" value="10000"/><!-- five minutes -->
-        <property name="startDelay" value="3000"/>
-    </bean>
-
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="jobDetails">
-            <list>
-                <ref bean="sendingJobBean"/>
-            </list>
-        </property>
-        <property name="triggers">
-            <list>
-                <ref bean="sendingJobTrigger"/>
-            </list>
-        </property>
-    </bean>
-
     <import resource="app-cron.xml"/>
     <import resource="datasource/app-datasource.xml"/>
     <import resource="datasource/data-model.xml"/>
