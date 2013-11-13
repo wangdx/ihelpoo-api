@@ -206,7 +206,7 @@ public class TweetService extends RecordService {
     }
 
 
-    public TweetCommentPushResult pushComment(int id, int uid, String content, int toUid, String toNickname, Boolean isHelp) {
+    public TweetCommentPushResult pushComment(int id, int uid, int replyId, String content, int toUid, String toNickname, Boolean isHelp) {
         isHelp = isHelp == null ? false : isHelp;
         TweetCommentPushResult pushResult = new TweetCommentPushResult();
         Result result = new Result();
@@ -235,7 +235,7 @@ public class TweetService extends RecordService {
             return getTweetHelpPushResult(id, uid, content, toUid, toNickname, pushResult, result, cid);
         }
 
-        return getTweetCommentPushResult(id, uid, content, toUid, toNickname, pushResult, result, cid);
+        return getTweetCommentPushResult(id, uid, content, toUid, toNickname, pushResult, result, cid, replyId);
     }
 
     private TweetCommentPushResult getTweetHelpPushResult(int id, int uid, String content, int toUid, String toNickname, TweetCommentPushResult pushResult, Result result, int cid) {
@@ -325,7 +325,7 @@ public class TweetService extends RecordService {
         return pushResult;
     }
 
-    private TweetCommentPushResult getTweetCommentPushResult(int id, int uid, String content, int toUid, String toNickname, TweetCommentPushResult pushResult, Result result, int cid) {
+    private TweetCommentPushResult getTweetCommentPushResult(int id, int uid, String content, int toUid, String toNickname, TweetCommentPushResult pushResult, Result result, int cid, int replyId) {
         IRecordSayEntity recordSayEntity = null;
         IUserLoginEntity userLoginEntity = null;
         if (cid > 0) {
@@ -352,7 +352,7 @@ public class TweetService extends RecordService {
         }
 
         if(toUid > 9999){
-            streamDao.saveMsgComment(toUid, id, cid, uid, 1);
+            streamDao.saveMsgComment(toUid, id, cid, uid, replyId);
         }
 
         final Pattern AT_PATTERN = Pattern.compile("@[\\u4e00-\\u9fa5\\w\\-]+");
@@ -731,8 +731,8 @@ public class TweetService extends RecordService {
         System.out.println(Arrays.asList(new String[]{"a", "b", "c"}).indexOf("d"));
     }
 
-    public TweetCommentPushResult replyComment(int id, int uid, String content, int authorid, String author, Boolean help) {
-        return pushComment(id, uid, content, authorid, author, help);//TODO
+    public TweetCommentPushResult replyComment(int id, int uid, int replyId, String content, int authorid, String author, Boolean help) {
+        return pushComment(id, uid, replyId, content, authorid, author, help);
     }
 
     public GenericResult deleteComment(Integer authorid, Integer replyid, Boolean help, Integer sid) {

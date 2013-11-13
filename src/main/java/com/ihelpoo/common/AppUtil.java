@@ -18,10 +18,10 @@ public class AppUtil {
 
     public static void sendMail(String to, String subject, String body) {
         Jedis jedis = new Jedis(Constant.R_HOST);
-        jedis.incr(MAIL_COUNTER);
         jedis.lpush(MAIL_QUEUE_TO, to);
         jedis.lpush(MAIL_QUEUE_SUBJECT, subject);
         jedis.lpush(MAIL_QUEUE_BODY, body);
+        jedis.incr(MAIL_COUNTER);
         jedis.disconnect();
     }
 
