@@ -21,8 +21,6 @@ public class ChatStoringJob extends JdbcDaoSupport {
     public static final String CHAT_QUEUE_IMAGE = "Chat:Queue:image";
     public static final String CHAT_QUEUE_TIME = "Chat:Queue:time";
     public void store() {
-        System.out.println(">>>>>");
-
         final List<ITalkContentEntity> chats = new ArrayList<ITalkContentEntity>();
         Jedis jedis = new Jedis("localhost");
 

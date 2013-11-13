@@ -285,9 +285,6 @@ public class TweetService extends RecordService {
                 userDao.incUserLoginActive(uid, 1);
                 userDao.saveMsgActive("add", uid, fetchUserActive(userLoginEntity), 1, "回复帮助 (每天最多加15次，包含评论回复他人的记录次数)");
             }
-            if (uid != recordSayEntity.getUid()) {
-                streamDao.saveMsgComment(recordSayEntity.getUid(), id, cid, uid, -1);
-            }
         }
 
         IRecordHelpEntity helpEntity = streamDao.findRecordHelp(recordSayEntity.getSid());
