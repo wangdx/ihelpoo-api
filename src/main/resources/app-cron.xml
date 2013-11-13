@@ -32,8 +32,8 @@
 
     <bean id="storingChatTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="storingChatJobBean"/>
-        <property name="repeatInterval" value="10000"/>
-        <property name="startDelay" value="3000"/>
+        <property name="repeatInterval" value="8000"/>
+        <property name="startDelay" value="5000"/>
     </bean>
 
 

@@ -21,6 +21,7 @@ public class ChatStoringJob extends JdbcDaoSupport {
     public static final String CHAT_QUEUE_IMAGE = "Chat:Queue:image";
     public static final String CHAT_QUEUE_TIME = "Chat:Queue:time";
     public void store() {
+        System.out.println(">>>>>");
 
         final List<ITalkContentEntity> chats = new ArrayList<ITalkContentEntity>();
         Jedis jedis = new Jedis("localhost");
@@ -39,6 +40,8 @@ public class ChatStoringJob extends JdbcDaoSupport {
             chat.setImage(jedis.rpop(CHAT_QUEUE_IMAGE));
             chat.setTime(Integer.parseInt(jedis.rpop(CHAT_QUEUE_TIME)));
             chats.add(chat);
+
+            logger.info(">>>sending message from:" + chat.getUid() + " to " + chat.getTouid());
         } while (jedis.decr(CHAT_COUNTER) > 0);
         jedis.del(CHAT_COUNTER);
         jedis.disconnect();

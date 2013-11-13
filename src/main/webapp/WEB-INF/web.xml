@@ -6,10 +6,6 @@
     <display-name>ihelpoo-api</display-name>
 
     <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:app-context.xml</param-value>
-    </context-param>
-    <context-param>
         <param-name>webAppRootKey</param-name>
         <param-value>ihelpoo.api.root</param-value>
     </context-param>
